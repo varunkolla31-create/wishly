@@ -32,9 +32,27 @@ export function CanvaVideoGallery({
   const [query, setQuery] = useState("");
   const [visible, setVisible] = useState(PAGE_SIZE);
 
+  const ordered = useMemo(() => {
+    const groups = new Map<string, CanvaVideoTemplate[]>();
+    for (const template of templates) {
+      const group = groups.get(template.category) ?? [];
+      group.push(template);
+      groups.set(template.category, group);
+    }
+    const buckets = [...groups.values()];
+    const interleaved: CanvaVideoTemplate[] = [];
+    for (let index = 0; interleaved.length < templates.length; index += 1) {
+      for (const bucket of buckets) {
+        const template = bucket[index];
+        if (template) interleaved.push(template);
+      }
+    }
+    return interleaved;
+  }, [templates]);
+
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
-    return templates.filter((template) => {
+    return ordered.filter((template) => {
       if (category !== "all" && template.category !== category) return false;
       if (aspect !== "all" && template.aspect_ratio !== aspect) return false;
       if (freeOnly && template.plan_tier !== "FREE") return false;
@@ -44,7 +62,7 @@ export function CanvaVideoGallery({
       }
       return true;
     });
-  }, [templates, category, aspect, freeOnly, query]);
+  }, [ordered, category, aspect, freeOnly, query]);
 
   const shown = filtered.slice(0, visible);
 
