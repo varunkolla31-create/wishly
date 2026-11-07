@@ -98,9 +98,11 @@ function Gallery({
 export function RevealExperience({
   content,
   className,
+  children,
 }: {
   content: RevealContent;
   className?: string;
+  children?: React.ReactNode;
 }) {
   const { template, music, media } = content;
   const { palette } = template;
@@ -150,6 +152,8 @@ export function RevealExperience({
         />
 
         <Gallery media={media} layout={template.photoLayout} />
+
+        {children}
       </div>
 
       {music ? <MusicMiniPlayer track={music} palette={palette} /> : null}

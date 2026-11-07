@@ -5,6 +5,7 @@ import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { POST as createWish } from "@/app/api/wishes/route";
 import { DELETE as deleteWish, PATCH as patchWish } from "@/app/api/wishes/[id]/route";
 import { POST as setPassword } from "@/app/api/wishes/[id]/password/route";
+import { POST as publishWish } from "@/app/api/wishes/[id]/publish/route";
 import { POST as duplicateWish } from "@/app/api/wishes/[id]/duplicate/route";
 import { POST as presignUpload } from "@/app/api/upload/presign/route";
 import { mediaFilePath } from "@/lib/media/storage";
@@ -230,6 +231,55 @@ describe("wish API routes", () => {
     await expect(
       verifyPassword(stored?.passwordHash ?? null, "open sesame 42"),
     ).resolves.toBe(true);
+  });
+
+  it("refuses to publish an incomplete wish", async () => {
+    const wish = await wishRepo().create({
+      ownerId: "dev_sender",
+      category: "birthday",
+      templateId: "confetti-pop",
+    });
+
+    const missingReceiver = await publishWish(
+      request("POST"),
+      params(wish.wishId),
+    );
+    expect(missingReceiver.status).toBe(400);
+
+    await wishRepo().update(wish.wishId, {
+      receiverName: "Amma",
+      message: "A letter",
+    });
+    const missingPassword = await publishWish(
+      request("POST"),
+      params(wish.wishId),
+    );
+    expect(missingPassword.status).toBe(400);
+  });
+
+  it("publishes a complete wish", async () => {
+    const wish = await wishRepo().create({
+      ownerId: "dev_sender",
+      category: "birthday",
+      templateId: "confetti-pop",
+    });
+    await wishRepo().update(wish.wishId, {
+      receiverName: "Amma",
+      message: "A letter",
+      passwordHash: "$argon2id$fake",
+    });
+
+    const response = await publishWish(
+      request("POST"),
+      params(wish.wishId),
+    );
+    expect(response.status).toBe(200);
+
+    const payload = (await response.json()) as ApiEnvelope<Wish>;
+    expect(payload.data.status).toBe("published");
+    await expect(wishRepo().getById(wish.wishId)).resolves.toMatchObject({
+      status: "published",
+    });
   });
 
   it("issues local upload and read targets for an owned wish", async () => {

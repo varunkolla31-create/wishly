@@ -4,10 +4,12 @@ import { ArrowLeft, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import { ContentStep } from "@/components/wizard/content-step";
 import { OccasionStep } from "@/components/wizard/occasion-step";
 import { PasswordStep } from "@/components/wizard/password-step";
 import { PreviewStep } from "@/components/wizard/preview-step";
+import { PublishSuccess } from "@/components/wizard/publish-success";
 import { TemplateStep } from "@/components/wizard/template-step";
 import { WizardStepper } from "@/components/wizard/stepper";
 import {
@@ -16,7 +18,7 @@ import {
   WIZARD_STEPS,
   type DraftValues,
 } from "@/components/wizard/types";
-import { Button, ButtonLink } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 import { getOccasion } from "@/lib/catalog/occasions";
 import type { MediaItem } from "@/lib/media/types";
 import type { SenderWish } from "@/lib/repos/dto";
@@ -66,6 +68,9 @@ export function WishWizard({
   const [media, setMedia] = useState<MediaItem[]>(initialMedia);
   const [hasPassword, setHasPassword] = useState(wish.hasPassword);
   const [saveState, setSaveState] = useState<SaveState>("saved");
+  const [savedPassword, setSavedPassword] = useState<string | null>(null);
+  const [publishing, setPublishing] = useState(false);
+  const [published, setPublished] = useState(false);
 
   const form = useForm<DraftValues>({ defaultValues: initialValues(wish) });
   const values = form.watch();
@@ -102,6 +107,59 @@ export function WishWizard({
     return () => window.clearTimeout(timer);
   }, [values, wish.wishId]);
 
+  async function flushDraft() {
+    const patch = toPatch(form.getValues());
+    const serialized = JSON.stringify(patch);
+    if (serialized === lastSaved.current) return;
+
+    const sequence = ++saveSequence.current;
+    setSaveState("saving");
+
+    const response = await fetch(`/api/wishes/${wish.wishId}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: serialized,
+    });
+
+    if (!response.ok) {
+      if (sequence === saveSequence.current) setSaveState("error");
+      throw new Error("save_failed");
+    }
+
+    if (sequence === saveSequence.current) {
+      lastSaved.current = serialized;
+      setSaveState("saved");
+    }
+  }
+
+  async function publish() {
+    if (publishing) return;
+    setPublishing(true);
+
+    try {
+      await flushDraft();
+
+      const response = await fetch(`/api/wishes/${wish.wishId}/publish`, {
+        method: "POST",
+      });
+
+      if (!response.ok) {
+        const payload = (await response.json()) as {
+          error?: { message?: string };
+        };
+        throw new Error(payload.error?.message ?? "Couldn't publish that wish.");
+      }
+
+      setPublished(true);
+    } catch (caught) {
+      toast.error(
+        caught instanceof Error ? caught.message : "Couldn't publish that wish.",
+      );
+    } finally {
+      setPublishing(false);
+    }
+  }
+
   function goTo(index: number) {
     const next = Math.max(0, Math.min(STEPS.length - 1, index));
     setStepIndex(next);
@@ -130,12 +188,26 @@ export function WishWizard({
   }
 
   const occasion = getOccasion(values.category);
+  const canPublish =
+    values.message.trim().length > 0 &&
+    hasPassword &&
+    (values.title.trim().length > 0 || values.receiverName.trim().length > 0);
   const saveLabel =
     saveState === "saving"
       ? "Saving…"
       : saveState === "error"
         ? "Couldn't save"
         : "Saved";
+
+  if (published) {
+    return (
+      <PublishSuccess
+        wishId={wish.wishId}
+        title={values.title || values.receiverName}
+        password={savedPassword}
+      />
+    );
+  }
 
   return (
     <div>
@@ -151,7 +223,8 @@ export function WishWizard({
             {values.title || wish.title || "A new wish"}
           </h1>
           <p className="mt-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-ink-muted">
-            {occasion?.name ?? "Wish"} · Draft
+            {occasion?.name ?? "Wish"} ·{" "}
+            {wish.status === "published" ? "Published" : "Draft"}
           </p>
         </div>
         <span
@@ -208,14 +281,23 @@ export function WishWizard({
             wishId={wish.wishId}
             hasPassword={hasPassword}
             initialHint={wish.passwordHint}
-            onSaved={() => setHasPassword(true)}
+            onSaved={(password) => {
+              setHasPassword(true);
+              setSavedPassword(password);
+            }}
           />
         ) : null}
 
         {stepIndex === 4 ? <PreviewStep values={values} media={media} /> : null}
       </div>
 
-      <div className="mt-8 flex items-center justify-between border-t border-hairline pt-5">
+      {stepIndex === STEPS.length - 1 && !canPublish ? (
+        <p className="mt-6 text-xs text-ink-muted">
+          Add a name, a message, and a password before publishing.
+        </p>
+      ) : null}
+
+      <div className="mt-6 flex items-center justify-between border-t border-hairline pt-5">
         <Button
           type="button"
           variant="outline"
@@ -227,9 +309,21 @@ export function WishWizard({
         </Button>
 
         {stepIndex === STEPS.length - 1 ? (
-          <ButtonLink href="/dashboard" variant="outline">
-            Back to dashboard
-          </ButtonLink>
+          <div className="flex items-center gap-3">
+            <Link
+              href="/dashboard"
+              className="text-sm text-ink-muted transition-colors hover:text-ink"
+            >
+              Dashboard
+            </Link>
+            <Button
+              type="button"
+              onClick={publish}
+              disabled={!canPublish || publishing}
+            >
+              {publishing ? "Publishing…" : "Publish wish"}
+            </Button>
+          </div>
         ) : (
           <Button type="button" onClick={() => goTo(stepIndex + 1)}>
             Continue

@@ -19,7 +19,7 @@ export function PasswordStep({
   wishId: string;
   hasPassword: boolean;
   initialHint: string | null;
-  onSaved: () => void;
+  onSaved: (password: string) => void;
 }) {
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
@@ -59,7 +59,7 @@ export function PasswordStep({
       setPassword("");
       setConfirm("");
       setSaved(true);
-      onSaved();
+      onSaved(password);
       toast.success("Password saved");
     } catch (caught) {
       setError(
