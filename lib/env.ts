@@ -48,6 +48,16 @@ const envSchema = z.object({
   FEATURE_BILLING: boolFromEnv(false),
   FEATURE_GROUP_MODE: boolFromEnv(true),
 
+  /** Independent switches: data and media can use different backends. */
+  DB_DRIVER: z.preprocess(
+    emptyToUndefined,
+    z.enum(["file", "postgres", "aws"]).optional(),
+  ),
+  MEDIA_DRIVER: z.preprocess(
+    emptyToUndefined,
+    z.enum(["file", "aws"]).optional(),
+  ),
+  /** Deprecated aliases, still honoured for existing configs and tests. */
   DATA_ADAPTER: z.preprocess(
     emptyToUndefined,
     z.enum(["file", "dynamodb", "postgres"]).optional(),
@@ -56,10 +66,15 @@ const envSchema = z.object({
     emptyToUndefined,
     z.enum(["file", "s3"]).optional(),
   ),
-  /** Coarse switch: aws means dynamodb + s3 unless the finer vars are set. */
+  /** Coarse fallback: aws means DynamoDB + S3 unless a finer var is set. */
   STORAGE_DRIVER: z.enum(["file", "aws"]).default("file"),
 
+  /** Pooled connection string used by the app. */
   DATABASE_URL: z.string().optional(),
+  /** Direct connection string; migrations prefer it when present. */
+  DATABASE_URL_UNPOOLED: z.string().optional(),
+  /** Contract tests only. They create a throwaway schema. */
+  DATABASE_URL_TEST: z.string().optional(),
 
   AWS_REGION: z.string().optional(),
   AWS_ENDPOINT_URL: z.string().optional(),
@@ -93,10 +108,14 @@ export function env(): AppEnv {
     WISH_UNLOCK_SECRET: process.env.WISH_UNLOCK_SECRET,
     FEATURE_BILLING: process.env.FEATURE_BILLING,
     FEATURE_GROUP_MODE: process.env.FEATURE_GROUP_MODE,
+    DB_DRIVER: process.env.DB_DRIVER,
+    MEDIA_DRIVER: process.env.MEDIA_DRIVER,
     DATA_ADAPTER: process.env.DATA_ADAPTER,
     MEDIA_ADAPTER: process.env.MEDIA_ADAPTER,
     STORAGE_DRIVER: process.env.STORAGE_DRIVER,
     DATABASE_URL: process.env.DATABASE_URL,
+    DATABASE_URL_UNPOOLED: process.env.DATABASE_URL_UNPOOLED,
+    DATABASE_URL_TEST: process.env.DATABASE_URL_TEST,
     AWS_REGION: process.env.AWS_REGION,
     AWS_ENDPOINT_URL: process.env.AWS_ENDPOINT_URL,
     AWS_ACCESS_KEY_ID: process.env.AWS_ACCESS_KEY_ID,
@@ -116,20 +135,31 @@ export function env(): AppEnv {
   }
 
   const value = parsed.data;
-  const data = dataAdapter(value);
-  const media = mediaAdapter(value);
+  const db = dbDriver(value);
+  const media = mediaDriver(value);
 
-  if (data === "postgres" && !value.DATABASE_URL) {
-    throw new Error("DATA_ADAPTER=postgres requires DATABASE_URL.");
+  if (db === "postgres") {
+    const url = value.DATABASE_URL;
+    if (!url) {
+      throw new Error("DB_DRIVER=postgres requires DATABASE_URL.");
+    }
+    if (!/^postgres(ql)?:\/\//.test(url)) {
+      throw new Error("DATABASE_URL must be a postgres:// or postgresql:// URL.");
+    }
+    if (!/[?&]sslmode=(require|verify-ca|verify-full)\b/.test(url)) {
+      throw new Error(
+        "DATABASE_URL must include sslmode=require (TLS is mandatory).",
+      );
+    }
   }
-  if (data === "dynamodb" && !value.AWS_REGION) {
+  if (db === "dynamodb" && !value.AWS_REGION) {
     throw new Error(
-      "The DynamoDB adapter requires AWS_REGION (set STORAGE_DRIVER=aws or DATA_ADAPTER=dynamodb).",
+      "The DynamoDB adapter requires AWS_REGION (set STORAGE_DRIVER=aws or DB_DRIVER=aws).",
     );
   }
   if (media === "s3" && !value.S3_BUCKET) {
     throw new Error(
-      "The S3 adapter requires S3_BUCKET (set STORAGE_DRIVER=aws or MEDIA_ADAPTER=s3).",
+      "The S3 adapter requires S3_BUCKET (set STORAGE_DRIVER=aws or MEDIA_DRIVER=aws).",
     );
   }
   if (media === "s3" && !value.AWS_REGION) {
@@ -153,22 +183,31 @@ export function env(): AppEnv {
   return value;
 }
 
-export type DataAdapter = "file" | "dynamodb" | "postgres";
-export type MediaAdapter = "file" | "s3";
+export type DbDriver = "file" | "postgres" | "dynamodb";
+export type MediaDriver = "file" | "s3";
 
 /**
- * `DATA_ADAPTER` wins when set; otherwise `STORAGE_DRIVER=aws` selects
- * DynamoDB. Keeps older configs working while giving the coarse switch.
+ * Precedence: `DB_DRIVER`, then the deprecated `DATA_ADAPTER`, then the coarse
+ * `STORAGE_DRIVER` (where `aws` means DynamoDB).
  */
-export function dataAdapter(value: AppEnv = env()): DataAdapter {
+export function dbDriver(value: AppEnv = env()): DbDriver {
+  if (value.DB_DRIVER) return value.DB_DRIVER === "aws" ? "dynamodb" : value.DB_DRIVER;
   if (value.DATA_ADAPTER) return value.DATA_ADAPTER;
   return value.STORAGE_DRIVER === "aws" ? "dynamodb" : "file";
 }
 
-/** Same precedence for media: explicit `MEDIA_ADAPTER` beats `STORAGE_DRIVER`. */
-export function mediaAdapter(value: AppEnv = env()): MediaAdapter {
+/** Same precedence for media: `MEDIA_DRIVER`, `MEDIA_ADAPTER`, `STORAGE_DRIVER`. */
+export function mediaDriver(value: AppEnv = env()): MediaDriver {
+  if (value.MEDIA_DRIVER) return value.MEDIA_DRIVER === "aws" ? "s3" : value.MEDIA_DRIVER;
   if (value.MEDIA_ADAPTER) return value.MEDIA_ADAPTER;
   return value.STORAGE_DRIVER === "aws" ? "s3" : "file";
+}
+
+/** The app always uses the pooled URL. */
+export function databaseUrl(value: AppEnv = env()): string {
+  const url = value.DATABASE_URL;
+  if (!url) throw new Error("DATABASE_URL is required for the postgres driver.");
+  return url;
 }
 
 export interface DynamoTables {

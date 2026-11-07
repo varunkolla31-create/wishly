@@ -4,7 +4,7 @@ import path from "node:path";
 import { Readable, Transform } from "node:stream";
 import { pipeline } from "node:stream/promises";
 import { fail } from "@/lib/api/respond";
-import { mediaAdapter } from "@/lib/env";
+import { mediaDriver } from "@/lib/env";
 import { mediaFilePath } from "@/lib/media/storage";
 import { MEDIA_LIMITS, type MediaKind } from "@/lib/media/validate";
 import { verifyMediaToken } from "@/lib/security/media-token";
@@ -29,7 +29,7 @@ export async function PUT(
   request: Request,
   context: { params: Promise<{ key: string[] }> },
 ) {
-  if (mediaAdapter() !== "file") {
+  if (mediaDriver() !== "file") {
     return fail(404, "not_found", "Not found.");
   }
 

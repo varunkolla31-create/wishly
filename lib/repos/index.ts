@@ -1,5 +1,5 @@
 import "server-only";
-import { dataAdapter, mediaAdapter } from "@/lib/env";
+import { dbDriver, mediaDriver } from "@/lib/env";
 import { DynamoContributionRepo } from "@/lib/repos/dynamodb/contribution-repo";
 import { DynamoReplyRepo } from "@/lib/repos/dynamodb/reply-repo";
 import { DynamoWishRepo } from "@/lib/repos/dynamodb/wish-repo";
@@ -36,27 +36,27 @@ function jsonCollection<T>(name: string): JsonCollection<T> {
 }
 
 export function wishRepo(): WishRepo {
-  const adapter = dataAdapter();
-  if (adapter === "dynamodb") return new DynamoWishRepo();
-  if (adapter === "postgres") return new PostgresWishRepo();
+  const driver = dbDriver();
+  if (driver === "dynamodb") return new DynamoWishRepo();
+  if (driver === "postgres") return new PostgresWishRepo();
   return new FileWishRepo(jsonCollection<Wish>("wishes"));
 }
 
 export function contributionRepo(): ContributionRepo {
-  const adapter = dataAdapter();
-  if (adapter === "dynamodb") return new DynamoContributionRepo();
-  if (adapter === "postgres") return new PostgresContributionRepo();
+  const driver = dbDriver();
+  if (driver === "dynamodb") return new DynamoContributionRepo();
+  if (driver === "postgres") return new PostgresContributionRepo();
   return new FileContributionRepo(jsonCollection<Contribution>("contributions"));
 }
 
 export function replyRepo(): ReplyRepo {
-  const adapter = dataAdapter();
-  if (adapter === "dynamodb") return new DynamoReplyRepo();
-  if (adapter === "postgres") return new PostgresReplyRepo();
+  const driver = dbDriver();
+  if (driver === "dynamodb") return new DynamoReplyRepo();
+  if (driver === "postgres") return new PostgresReplyRepo();
   return new FileReplyRepo(jsonCollection<Reply>("replies"));
 }
 
 export function mediaStore(): MediaStore {
-  if (mediaAdapter() === "s3") return new S3MediaStore();
+  if (mediaDriver() === "s3") return new S3MediaStore();
   return new FileMediaStore();
 }
