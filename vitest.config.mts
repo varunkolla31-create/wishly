@@ -10,6 +10,9 @@ export default defineConfig({
       "server-only": fileURLToPath(
         new URL("./tests/stubs/server-only.ts", import.meta.url),
       ),
+      "next/cache": fileURLToPath(
+        new URL("./tests/stubs/next-cache.ts", import.meta.url),
+      ),
     },
   },
   test: {

@@ -79,14 +79,16 @@ export class FileWishRepo implements WishRepo {
     });
   }
 
-  async incrementViews(wishId: string): Promise<void> {
+  async incrementViews(wishId: string, by = 1): Promise<void> {
+    const amount = Number.isFinite(by) ? Math.max(0, Math.trunc(by)) : 1;
+
     await this.collection.mutate((items) => {
       const index = items.findIndex((wish) => wish.wishId === wishId);
       const current = index === -1 ? undefined : items[index];
       if (!current) return { items, result: null };
 
       const copy = items.slice();
-      copy[index] = { ...current, views: current.views + 1 };
+      copy[index] = { ...current, views: current.views + amount };
       return { items: copy, result: null };
     });
   }

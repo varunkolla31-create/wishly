@@ -46,7 +46,7 @@ export interface WishRepo {
   listByOwner(ownerId: string): Promise<Wish[]>;
   update(wishId: string, patch: WishPatch): Promise<Wish | null>;
   delete(wishId: string): Promise<boolean>;
-  incrementViews(wishId: string): Promise<void>;
+  incrementViews(wishId: string, by?: number): Promise<void>;
 }
 
 export type ContributionType = "photo" | "video" | "voice" | "text";

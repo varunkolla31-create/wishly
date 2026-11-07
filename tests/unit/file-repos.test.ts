@@ -81,18 +81,18 @@ describe("file repositories", () => {
     expect(list.map((wish) => wish.wishId)).toEqual([newer.wishId, mine.wishId]);
   });
 
-  it("increments views without changing updatedAt", async () => {
+  it("increments views by a batch without changing updatedAt", async () => {
     const created = await wishRepo().create({
       ownerId: "owner_1",
       category: "birthday",
       templateId: "clean-white",
     });
 
-    await wishRepo().incrementViews(created.wishId);
+    await wishRepo().incrementViews(created.wishId, 5);
     await wishRepo().incrementViews(created.wishId);
 
     const reloaded = await wishRepo().getById(created.wishId);
-    expect(reloaded?.views).toBe(2);
+    expect(reloaded?.views).toBe(6);
     expect(reloaded?.updatedAt).toBe(created.updatedAt);
   });
 

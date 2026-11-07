@@ -24,7 +24,7 @@ Switching services is env-only: `AUTH_MODE=clerk` plus Clerk keys for auth, and 
 ## Scripts
 
 ```bash
-pnpm dev            # dev server (Turbopack)
+pnpm dev            # dev server
 pnpm build          # production build
 pnpm start          # serve the production build
 pnpm typecheck      # tsc --noEmit

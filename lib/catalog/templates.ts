@@ -153,6 +153,12 @@ export function getTemplate(id: string): TemplateDefinition | null {
   return TEMPLATE_MAP.get(id) ?? null;
 }
 
+export function getTemplateOrDefault(id: string): TemplateDefinition {
+  const template = getTemplate(id) ?? getTemplate(DEFAULT_TEMPLATE_ID);
+  if (!template) throw new Error("The template catalog is empty.");
+  return template;
+}
+
 export const DEFAULT_TEMPLATE_ID = "clean-white";
 
 export const CALM_TEMPLATE_IDS = TEMPLATES.filter(

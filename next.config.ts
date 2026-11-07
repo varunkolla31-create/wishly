@@ -9,7 +9,6 @@ const nextConfig: NextConfig = {
   serverExternalPackages: ["@node-rs/argon2"],
   poweredByHeader: false,
   outputFileTracingRoot: projectRoot,
-  turbopack: { root: projectRoot },
   async headers() {
     return [
       {

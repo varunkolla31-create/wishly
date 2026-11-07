@@ -5,12 +5,14 @@ interface TemplatePreviewProps {
   template: TemplateDefinition;
   title?: string;
   className?: string;
+  flat?: boolean;
 }
 
 export function TemplatePreview({
   template,
   title = "For you, always",
   className,
+  flat = false,
 }: TemplatePreviewProps) {
   const { palette, preview } = template;
 
@@ -18,7 +20,8 @@ export function TemplatePreview({
     <div
       aria-hidden="true"
       className={cn(
-        "relative aspect-[4/5] overflow-hidden rounded-card ring-1 ring-black/5",
+        "relative aspect-[4/5] overflow-hidden",
+        flat ? "rounded-none" : "rounded-card ring-1 ring-black/5",
         className,
       )}
       style={{
@@ -26,12 +29,14 @@ export function TemplatePreview({
       }}
     >
       <div className="absolute inset-0 flex flex-col justify-between p-4 sm:p-5">
-        <span
-          className="text-[10px] font-semibold uppercase tracking-[0.12em]"
-          style={{ color: palette.muted }}
-        >
-          A wish for you
-        </span>
+        {flat ? null : (
+          <span
+            className="text-[10px] font-semibold uppercase tracking-[0.12em]"
+            style={{ color: palette.muted }}
+          >
+            A wish for you
+          </span>
+        )}
 
         <div className="space-y-3">
           <div className="flex items-end gap-2">
