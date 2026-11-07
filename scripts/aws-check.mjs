@@ -1,7 +1,12 @@
 import { readFileSync } from "node:fs";
-import { DescribeTableCommand, DynamoDBClient } from "@aws-sdk/client-dynamodb";
+import {
+  DescribeTableCommand,
+  DynamoDBClient,
+  ListTablesCommand,
+} from "@aws-sdk/client-dynamodb";
 import {
   DeleteObjectCommand,
+  GetBucketLocationCommand,
   HeadBucketCommand,
   HeadObjectCommand,
   ListObjectsV2Command,
@@ -54,7 +59,7 @@ function detail(error) {
   const name = error?.name ?? "UnknownError";
   const code = error?.Code ?? error?.code;
   const status = error?.$metadata?.httpStatusCode;
-  const message = typeof error?.message === "string" ? error.message.slice(0, 160) : "";
+  const message = typeof error?.message === "string" ? error.message.slice(0, 300) : "";
   return [name, code && code !== name ? code : null, status ? `HTTP ${status}` : null, message]
     .filter(Boolean)
     .join(" · ");
@@ -106,6 +111,19 @@ function describeIndexes(table) {
 }
 
 console.log("\ndynamodb");
+try {
+  const listed = await ddb.send(new ListTablesCommand({}));
+  const names = listed.TableNames ?? [];
+  console.log(`  info  ListTables ok — ${names.length} table(s): ${names.join(", ") || "(none)"}`);
+  for (const role of ["wishes", "contributions", "replies"]) {
+    if (!names.includes(tables[role])) {
+      console.log(`  info  ${tables[role]} is not in the visible list (expected name may differ)`);
+    }
+  }
+} catch (error) {
+  console.log(`  info  ListTables failed: ${detail(error)}`);
+}
+
 const described = {};
 for (const [role, name] of Object.entries(tables)) {
   try {
@@ -144,10 +162,19 @@ if (bucket) {
       bad("list permission", error?.name ?? "unknown");
     }
   } catch (error) {
-    if (error?.name === "NotFound" || error?.name === "NoSuchBucket") {
-      bad("bucket", "not found in this region/account");
-    } else {
-      bad("bucket", detail(error));
+    bad("bucket", detail(error));
+    // S3 hides existence when permission is missing, so probe again explicitly:
+    // 404 on both means the name is wrong; AccessDenied means the policy is.
+    for (const [label, command] of [
+      ["ListObjectsV2", new ListObjectsV2Command({ Bucket: bucket, MaxKeys: 1 })],
+      ["GetBucketLocation", new GetBucketLocationCommand({ Bucket: bucket })],
+    ]) {
+      try {
+        await s3.send(command);
+        ok(label);
+      } catch (probeError) {
+        console.log(`  info  ${label}: ${detail(probeError)}`);
+      }
     }
   }
 

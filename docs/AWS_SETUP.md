@@ -182,6 +182,10 @@ The bucket stays private; there is no public object URL anywhere in the code.
 |---|---|---|
 | `ResourceNotFoundException` | table name or region wrong | check `DYNAMODB_*_TABLE` and `AWS_REGION` |
 | `AccessDeniedException` | IAM policy missing an action | add the action from §6 |
+| `AccessDeniedException … no identity-based policy allows` | the user simply lacks the grant | attach the policy in §6 to that user |
+| `AccessDeniedException … explicit deny in a service control policy` | an AWS Organizations SCP blocks the action; IAM changes cannot override it | an organization admin must allow DynamoDB in the SCP, or use an account whose SCP permits it. Common in AWS Academy / lab accounts |
+| `NoSuchBucket` from `HeadBucket`, `ListObjectsV2` and `GetBucketLocation` | the bucket name does not exist in any region (S3 names are global) | fix the spelling in `S3_BUCKET` / `S3_BUCKET_MEDIA`, or create the bucket |
+| `PermanentRedirect` / HTTP 301 | bucket exists but in a different region | set `AWS_REGION` to the bucket's region |
 | `ValidationException: provided key element does not match schema` | table key names differ from the domain ids | recreate/rename the key, or point the env var at the right table |
 | `[dynamodb] … falling back to Scan` | no GSI for that lookup | add `OwnerIndex` / `ContributorTokenIndex` |
 | Uploads fail in the browser, `aws:check --write` passes | missing S3 CORS | apply §5 |
