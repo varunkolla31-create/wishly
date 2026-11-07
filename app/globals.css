@@ -1,0 +1,101 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  --canvas: #ffffff;
+  --sand: #f7f1e8;
+  --cream: #f5f0e6;
+  --surface: #ffffff;
+  --surface-2: #f7f1e8;
+  --hover: #f5f0e6;
+  --ink: #1c1b1a;
+  --ink-muted: #6b6762;
+  --hairline: #ebe5da;
+  --coral: #ff385c;
+  --coral-hover: #e31c5f;
+  --gold: #d6c283;
+  --success: #1f9d55;
+  --error: #f3727f;
+  --warning: #ffa42b;
+}
+
+.dark {
+  --canvas: #121212;
+  --sand: #181818;
+  --cream: #1f1f1f;
+  --surface: #181818;
+  --surface-2: #1f1f1f;
+  --hover: #282828;
+  --ink: #ffffff;
+  --ink-muted: #b3b3b3;
+  --hairline: #262626;
+}
+
+@theme inline {
+  --color-canvas: var(--canvas);
+  --color-sand: var(--sand);
+  --color-cream: var(--cream);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-hover: var(--hover);
+  --color-ink: var(--ink);
+  --color-ink-muted: var(--ink-muted);
+  --color-hairline: var(--hairline);
+  --color-coral: var(--coral);
+  --color-coral-hover: var(--coral-hover);
+  --color-gold: var(--gold);
+  --color-success: var(--success);
+  --color-error: var(--error);
+  --color-warning: var(--warning);
+
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-instrument-serif), ui-serif, Georgia, serif;
+
+  --radius-card: 24px;
+  --radius-media: 16px;
+
+  --shadow-soft: 0 8px 24px rgba(28, 27, 26, 0.08);
+  --shadow-glow: 0 0 48px rgba(214, 194, 131, 0.25);
+
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@layer base {
+  *,
+  ::before,
+  ::after {
+    border-color: var(--hairline);
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--canvas);
+    color: var(--ink);
+    text-rendering: optimizeLegibility;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--coral);
+    outline-offset: 2px;
+  }
+
+  ::selection {
+    background-color: var(--coral);
+    color: #ffffff;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    ::before,
+    ::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
