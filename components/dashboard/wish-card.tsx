@@ -47,6 +47,7 @@ export function WishCard({
       <div className="flex items-center justify-between border-t border-hairline px-2 py-1">
         <WishActions
           wishId={wish.wishId}
+          templateId={wish.templateId}
           status={wish.status}
           mode={wish.mode}
         />

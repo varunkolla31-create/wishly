@@ -219,6 +219,7 @@ export function WishWizard({
     return (
       <PublishSuccess
         wishId={wish.wishId}
+        templateId={values.templateId}
         title={values.title || values.receiverName}
         password={savedPassword}
         occasionName={occasion?.name}

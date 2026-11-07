@@ -1,6 +1,6 @@
 "use client";
 
-import { Copy, CopyPlus, Download, Pencil, QrCode, Trash2, Users } from "lucide-react";
+import { Copy, CopyPlus, Download, Pencil, QrCode, Trash2, Users, Video } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -14,11 +14,12 @@ const actionClass =
 
 interface WishActionsProps {
   wishId: string;
+  templateId: string;
   status: WishStatus;
   mode: "solo" | "group";
 }
 
-export function WishActions({ wishId, status, mode }: WishActionsProps) {
+export function WishActions({ wishId, templateId, status, mode }: WishActionsProps) {
   const router = useRouter();
   const [qrOpen, setQrOpen] = useState(false);
   const [qrData, setQrData] = useState<string | null>(null);
@@ -97,6 +98,15 @@ export function WishActions({ wishId, status, mode }: WishActionsProps) {
         title="Edit"
       >
         <Pencil aria-hidden="true" className="size-[18px]" />
+      </Link>
+
+      <Link
+        href={`/studio/${templateId}`}
+        className={actionClass}
+        aria-label="Create a video with this wish's look"
+        title="Create video"
+      >
+        <Video aria-hidden="true" className="size-[18px]" />
       </Link>
 
       {mode === "group" ? (

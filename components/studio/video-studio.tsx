@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import type { CanvaVideoTemplate } from "@/lib/catalog/canva-videos";
+import type { StudioTemplate } from "@/lib/catalog/studio-templates";
 
 const DURATION_MS = 6000;
 const FPS = 30;
@@ -194,19 +194,20 @@ function pickMimeType() {
   return "";
 }
 
-export function VideoStudio({ template }: { template: CanvaVideoTemplate }) {
+export function VideoStudio({ template }: { template: StudioTemplate }) {
   const dims = dimsFor(template.aspect_ratio);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const originRef = useRef<number>(0);
-  const paletteRef = useRef<Palette>(FALLBACK);
+  const paletteRef = useRef<Palette>(template.palette ?? FALLBACK);
   const photoRef = useRef<HTMLImageElement | null>(null);
   const recorderRef = useRef<MediaRecorder | null>(null);
   const videoUrlRef = useRef<string | null>(null);
   const usedRef = useRef(false);
 
-  const [palette, setPalette] = useState<Palette>(FALLBACK);
+  const [palette, setPalette] = useState<Palette>(template.palette ?? FALLBACK);
   const [headline, setHeadline] = useState(
-    DEFAULT_HEADLINES[template.category] ?? "A wish for you",
+    (template.category ? DEFAULT_HEADLINES[template.category] : undefined) ??
+      "A wish for you",
   );
   const [names, setNames] = useState("");
   const [date, setDate] = useState("");
@@ -226,11 +227,20 @@ export function VideoStudio({ template }: { template: CanvaVideoTemplate }) {
   }, [palette]);
 
   useEffect(() => {
+    if (template.palette) {
+      setPalette(template.palette);
+      return undefined;
+    }
+    if (!template.thumb) {
+      setPalette(FALLBACK);
+      return undefined;
+    }
     const image = new Image();
     image.onload = () => setPalette(extractPalette(image));
     image.onerror = () => setPalette(FALLBACK);
     image.src = template.thumb;
-  }, [template.thumb]);
+    return undefined;
+  }, [template.palette, template.thumb]);
 
   useEffect(() => {
     const canvas = canvasRef.current;

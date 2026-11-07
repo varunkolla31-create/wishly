@@ -1,6 +1,6 @@
 "use client";
 
-import { Check, Copy, Printer, Share2 } from "lucide-react";
+import { Check, Copy, Printer, Share2, Video } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -12,12 +12,14 @@ const shareClass =
 
 export function PublishSuccess({
   wishId,
+  templateId,
   title,
   password,
   occasionName,
   hint,
 }: {
   wishId: string;
+  templateId: string;
   title: string;
   password: string | null;
   occasionName?: string | null;
@@ -206,6 +208,15 @@ export function PublishSuccess({
             filename={`wishly-card-${wishId}.png`}
             label="Download card"
           />
+          <a
+            href={`/studio/${templateId}`}
+            target="_blank"
+            rel="noreferrer"
+            className={shareClass}
+          >
+            <Video aria-hidden="true" className="size-4" />
+            Make a video
+          </a>
         </div>
 
         <div className="mt-8 flex items-center gap-4 rounded-media border border-hairline p-4">

@@ -1,5 +1,6 @@
 "use client";
 
+import { Video } from "lucide-react";
 import { RevealExperience } from "@/components/reveal/reveal-experience";
 import type { DraftValues } from "@/components/wizard/types";
 import { getMusicTrack } from "@/lib/catalog/music";
@@ -41,6 +42,21 @@ export function PreviewStep({
             media: visibleMedia,
           }}
         />
+      </div>
+
+      <div className="mt-4 flex flex-wrap items-center justify-between gap-3 rounded-card border border-hairline bg-surface p-4">
+        <p className="text-sm text-ink-muted">
+          Want this in motion? Build a short video with the same look.
+        </p>
+        <a
+          href={`/studio/${template.id}`}
+          target="_blank"
+          rel="noreferrer"
+          className="inline-flex min-h-11 items-center gap-2 rounded-full bg-ink px-5 text-sm font-medium text-canvas transition-opacity hover:opacity-90"
+        >
+          <Video aria-hidden="true" className="size-4" />
+          Create a video
+        </a>
       </div>
     </div>
   );

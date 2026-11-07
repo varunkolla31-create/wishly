@@ -1,5 +1,6 @@
 "use client";
 
+import { Video } from "lucide-react";
 import { TemplatePreview } from "@/components/marketing/template-preview";
 import { getTemplateOrDefault, TEMPLATES } from "@/lib/catalog/templates";
 import type { TemplateDefinition } from "@/lib/catalog/types";
@@ -75,6 +76,25 @@ export function TemplateStep({
             </p>
           </div>
         </aside>
+      </div>
+
+      <div className="mt-8 rounded-card border border-hairline bg-surface p-5">
+        <p className="text-sm font-medium text-ink">
+          Want this look in motion?
+        </p>
+        <p className="mt-1 max-w-lg text-sm leading-relaxed text-ink-muted">
+          Make a six-second video with the same colors and type, add your own
+          words and photo, then download it. It renders in your browser.
+        </p>
+        <a
+          href={`/studio/${selectedTemplate.id}`}
+          target="_blank"
+          rel="noreferrer"
+          className="mt-3 inline-flex min-h-12 items-center gap-2 rounded-full bg-ink px-5 text-sm font-medium text-canvas transition-opacity hover:opacity-90"
+        >
+          <Video aria-hidden="true" className="size-4" />
+          Create a video for “{selectedTemplate.name}”
+        </a>
       </div>
     </div>
   );
