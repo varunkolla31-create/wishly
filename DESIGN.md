@@ -7,7 +7,11 @@ Concept: warm like Airbnb, immersive like Spotify, calm and premium like Oura. I
 
 ## Tokens
 
-Defined as CSS variables in `app/globals.css` and mapped into Tailwind v4 with `@theme inline`. Components use token utilities (`bg-canvas`, `text-ink-muted`, `border-hairline`, `text-coral`) — never raw hex.
+Defined as CSS variables in `app/globals.css` and mapped into Tailwind v4 with `@theme inline`. Components use token utilities (`bg-canvas`, `text-ink-muted`, `border-hairline`, `text-coral-strong`) — never raw hex.
+
+`--coral` is the brand accent (decorative). Anything that carries text or a
+label uses `--coral-strong`, because `#FF385C` on white is only 3.5:1 and fails
+WCAG AA. This split is enforced by the axe suite in `e2e/a11y.spec.ts`.
 
 ### Surface
 
@@ -27,8 +31,10 @@ Defined as CSS variables in `app/globals.css` and mapped into Tailwind v4 with `
 
 | Token | Value | Use |
 |---|---|---|
-| `--coral` | `#FF385C` | **only** primary action color |
-| `--coral-hover` | `#E31C5F` | primary hover/pressed |
+| `--coral` | `#FF385C` | brand accent: glow, dots, focus rings, large type only |
+| `--coral-hover` | `#E31C5F` | accent hover |
+| `--coral-strong` | `#C2184F` | **text and filled actions** — 5.9:1 on white, 5.4:1 on sand |
+| `--coral-strong-hover` | `#A51444` | filled action hover |
 | `--gold` | `#D6C283` | surprise moments only: unlock ring, reveal glow, confetti accent |
 | `--success` | `#1F9D55` | confirmations |
 | `--error` | `#F3727F` | errors, wrong password |

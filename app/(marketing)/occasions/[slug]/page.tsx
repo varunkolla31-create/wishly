@@ -175,7 +175,7 @@ export default async function OccasionPage({ params }: OccasionPageProps) {
           </h2>
           <Link
             href="/templates"
-            className="text-sm font-medium text-coral hover:text-coral-hover"
+            className="text-sm font-medium text-coral-strong hover:text-coral-hover"
           >
             All templates →
           </Link>

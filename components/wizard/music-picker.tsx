@@ -100,7 +100,7 @@ export function MusicPicker({
               </span>
             </button>
             {selected ? (
-              <span className="text-[11px] font-semibold uppercase tracking-[0.12em] text-coral">
+              <span className="text-[11px] font-semibold uppercase tracking-[0.12em] text-coral-strong">
                 Chosen
               </span>
             ) : null}

@@ -135,7 +135,7 @@ export function PasswordStep({
           <button
             type="button"
             onClick={generate}
-            className="mt-2 inline-flex min-h-10 items-center gap-1.5 text-xs font-medium text-coral hover:text-coral-hover"
+            className="mt-2 inline-flex min-h-10 items-center gap-1.5 text-xs font-medium text-coral-strong hover:text-coral-hover"
           >
             <Wand2 aria-hidden="true" className="size-3.5" />
             Suggest a strong one

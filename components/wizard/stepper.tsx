@@ -47,7 +47,7 @@ export function WizardStepper({
               <span
                 className={cn(
                   "flex size-7 shrink-0 items-center justify-center rounded-full text-xs font-medium",
-                  state === "current" && "bg-coral text-white",
+                  state === "current" && "bg-coral-strong text-white",
                   state === "complete" && "bg-ink text-canvas",
                   state === "upcoming" &&
                     "border border-hairline text-ink-muted",

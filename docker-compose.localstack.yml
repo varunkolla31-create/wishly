@@ -1,0 +1,17 @@
+services:
+  localstack:
+    image: localstack/localstack:3
+    ports:
+      - "4566:4566"
+    environment:
+      - SERVICES=dynamodb,s3
+      - DEBUG=0
+      - PERSISTENCE=0
+      - AWS_DEFAULT_REGION=us-east-1
+    volumes:
+      - "./.localstack:/var/lib/localstack"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://localhost:4566/_localstack/health || exit 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 20

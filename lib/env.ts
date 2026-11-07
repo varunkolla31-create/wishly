@@ -32,6 +32,13 @@ const envSchema = z.object({
 
   DATA_ADAPTER: z.enum(["file", "dynamodb"]).default("file"),
   MEDIA_ADAPTER: z.enum(["file", "s3"]).default("file"),
+
+  AWS_REGION: z.string().optional(),
+  AWS_ENDPOINT_URL: z.string().optional(),
+  AWS_ACCESS_KEY_ID: z.string().optional(),
+  AWS_SECRET_ACCESS_KEY: z.string().optional(),
+  DYNAMODB_TABLE: z.string().optional(),
+  S3_BUCKET: z.string().optional(),
 });
 
 export type AppEnv = z.infer<typeof envSchema>;
@@ -54,6 +61,12 @@ export function env(): AppEnv {
     FEATURE_GROUP_MODE: process.env.FEATURE_GROUP_MODE,
     DATA_ADAPTER: process.env.DATA_ADAPTER,
     MEDIA_ADAPTER: process.env.MEDIA_ADAPTER,
+    AWS_REGION: process.env.AWS_REGION,
+    AWS_ENDPOINT_URL: process.env.AWS_ENDPOINT_URL,
+    AWS_ACCESS_KEY_ID: process.env.AWS_ACCESS_KEY_ID,
+    AWS_SECRET_ACCESS_KEY: process.env.AWS_SECRET_ACCESS_KEY,
+    DYNAMODB_TABLE: process.env.DYNAMODB_TABLE,
+    S3_BUCKET: process.env.S3_BUCKET,
   });
 
   if (!parsed.success) {
@@ -64,6 +77,15 @@ export function env(): AppEnv {
   }
 
   const value = parsed.data;
+
+  if (value.DATA_ADAPTER === "dynamodb" && (!value.AWS_REGION || !value.DYNAMODB_TABLE)) {
+    throw new Error(
+      "DATA_ADAPTER=dynamodb requires AWS_REGION and DYNAMODB_TABLE.",
+    );
+  }
+  if (value.MEDIA_ADAPTER === "s3" && (!value.AWS_REGION || !value.S3_BUCKET)) {
+    throw new Error("MEDIA_ADAPTER=s3 requires AWS_REGION and S3_BUCKET.");
+  }
 
   if (value.NODE_ENV === "production") {
     if (value.AUTH_SECRET === DEV_SECRET) {

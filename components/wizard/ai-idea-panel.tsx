@@ -55,7 +55,7 @@ export function AiIdeaPanel({
   return (
     <div className="rounded-card border border-hairline bg-surface p-5">
       <div className="flex items-center gap-2">
-        <Sparkles aria-hidden="true" className="size-4 text-coral" />
+        <Sparkles aria-hidden="true" className="size-4 text-coral-strong" />
         <h3 className="text-sm font-medium text-ink">
           Need a starting point?
         </h3>
@@ -106,7 +106,7 @@ export function AiIdeaPanel({
                 className="w-full rounded-media border border-hairline bg-canvas px-3 py-2.5 text-left text-sm leading-relaxed text-ink transition-colors hover:bg-hover"
               >
                 {idea}
-                <span className="mt-1 block text-[11px] font-semibold uppercase tracking-[0.12em] text-coral">
+                <span className="mt-1 block text-[11px] font-semibold uppercase tracking-[0.12em] text-coral-strong">
                   Add to message
                 </span>
               </button>

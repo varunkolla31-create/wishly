@@ -14,6 +14,10 @@
   --hairline: #ebe5da;
   --coral: #ff385c;
   --coral-hover: #e31c5f;
+  /* WCAG AA pair for text and filled actions. #C2184F is 5.9:1 on white and
+     5.4:1 on sand; white on it is 5.9:1. */
+  --coral-strong: #c2184f;
+  --coral-strong-hover: #a51444;
   --gold: #d6c283;
   --success: #1f9d55;
   --error: #f3727f;
@@ -44,6 +48,8 @@
   --color-hairline: var(--hairline);
   --color-coral: var(--coral);
   --color-coral-hover: var(--coral-hover);
+  --color-coral-strong: var(--coral-strong);
+  --color-coral-strong-hover: var(--coral-strong-hover);
   --color-gold: var(--gold);
   --color-success: var(--success);
   --color-error: var(--error);

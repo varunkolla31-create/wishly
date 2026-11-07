@@ -106,7 +106,7 @@ export default function LandingPage() {
                 key={item.step}
                 className="rounded-card border border-hairline bg-surface p-6"
               >
-                <span className="text-xs font-semibold tracking-[0.12em] text-coral">
+                <span className="text-xs font-semibold tracking-[0.12em] text-coral-strong">
                   {item.step}
                 </span>
                 <h3 className="mt-3 text-base font-medium text-ink">
@@ -166,7 +166,7 @@ export default function LandingPage() {
           <div className="mt-8">
             <Link
               href="/templates"
-              className="text-sm font-medium text-coral hover:text-coral-hover"
+              className="text-sm font-medium text-coral-strong hover:text-coral-hover"
             >
               See all eight templates →
             </Link>
