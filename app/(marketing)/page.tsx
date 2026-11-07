@@ -2,6 +2,8 @@ import Link from "next/link";
 import { OccasionGrid } from "@/components/marketing/occasion-grid";
 import { TemplateCard } from "@/components/marketing/template-card";
 import { TemplatePreview } from "@/components/marketing/template-preview";
+import { MemoryPreview } from "@/src/components/three-memory/memory-preview";
+import { SAMPLE_PHOTOS } from "@/src/components/three-memory/catalog";
 import { ButtonLink } from "@/components/ui/button";
 import { OCCASIONS } from "@/lib/catalog/occasions";
 import { getTemplate } from "@/lib/catalog/templates";
@@ -115,6 +117,44 @@ export default function LandingPage() {
                 />
               </Link>
             </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="border-y border-hairline bg-sand">
+        <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:py-20">
+          <div className="grid gap-10 lg:grid-cols-2 lg:items-center">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.12em] text-ink-muted">
+                3D memory reels
+              </p>
+              <h2 className="mt-3 max-w-xl font-serif text-4xl italic leading-tight text-ink sm:text-5xl">
+                Photos in, a little world out.
+              </h2>
+              <p className="mt-4 max-w-lg text-base leading-relaxed text-ink-muted">
+                Add three to ten photos and Wishly builds an interactive 3D
+                scene and a silent 9:16 reel for Stories, Reels or WhatsApp.
+                Drag the preview to move through it — no other editor, no
+                templates to download.
+              </p>
+              <div className="mt-6 flex flex-wrap gap-3">
+                <ButtonLink href="/studio" size="lg">
+                  Try the 3D studio
+                </ButtonLink>
+                <ButtonLink href="/templates#memory-reels" variant="outline" size="lg">
+                  See all reels
+                </ButtonLink>
+              </div>
+            </div>
+            <MemoryPreview
+              input={{
+                templateId: "3d-cylinder-ring",
+                photos: SAMPLE_PHOTOS,
+                title: "For you, always",
+                receiverName: "you",
+              }}
+              className="mx-auto w-full max-w-xs"
+            />
           </div>
         </div>
       </section>
