@@ -51,8 +51,10 @@ export function CanvaVideoCard({
         <h3 className="line-clamp-2 text-sm font-medium leading-snug text-ink">
           {template.title}
         </h3>
-        <div className="mt-1 flex items-center justify-between gap-2">
-          <span className="text-xs text-ink-muted">{template.categoryName}</span>
+        <div className="mt-1 flex flex-wrap items-center justify-between gap-x-2 gap-y-1">
+          <span className="min-w-0 truncate text-xs text-ink-muted">
+            {template.categoryName}
+          </span>
           <div className="flex shrink-0 items-center gap-1">
             <button
               type="button"
