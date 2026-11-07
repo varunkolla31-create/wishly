@@ -9,6 +9,7 @@ const isoDate = z.string().refine(
 export const draftPatchSchema = z.object({
   category: z.string().min(1).max(60).optional(),
   templateId: z.string().min(1).max(60).optional(),
+  mode: z.enum(["solo", "group"]).optional(),
   receiverName: z.string().trim().max(80).optional(),
   title: z.string().trim().max(120).optional(),
   message: z.string().max(4000).optional(),

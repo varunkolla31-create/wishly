@@ -43,6 +43,7 @@ export type WishPatch = Partial<
 export interface WishRepo {
   create(input: NewWish): Promise<Wish>;
   getById(wishId: string): Promise<Wish | null>;
+  getByContributorToken(token: string): Promise<Wish | null>;
   listByOwner(ownerId: string): Promise<Wish[]>;
   update(wishId: string, patch: WishPatch): Promise<Wish | null>;
   delete(wishId: string): Promise<boolean>;

@@ -64,6 +64,11 @@ test.describe("wish wizard", () => {
     await page.getByRole("button", { name: "Continue" }).click();
 
     await expect(
+      page.getByRole("heading", { name: "Is this just from you?" }),
+    ).toBeVisible();
+    await page.getByRole("button", { name: "Continue" }).click();
+
+    await expect(
       page.getByRole("heading", { name: "Lock it with a password." }),
     ).toBeVisible();
     await page.getByLabel("Password", { exact: true }).fill("Golden-Orchid-42!");

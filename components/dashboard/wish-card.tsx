@@ -45,7 +45,11 @@ export function WishCard({
       </div>
 
       <div className="flex items-center justify-between border-t border-hairline px-2 py-1">
-        <WishActions wishId={wish.wishId} status={wish.status} />
+        <WishActions
+          wishId={wish.wishId}
+          status={wish.status}
+          mode={wish.mode}
+        />
         {wish.status === "published" || wish.status === "locked" ? (
           <span className="pr-3 text-xs text-ink-muted">Live</span>
         ) : null}

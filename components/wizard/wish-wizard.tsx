@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { ContentStep } from "@/components/wizard/content-step";
+import { CollectStep } from "@/components/wizard/collect-step";
 import { OccasionStep } from "@/components/wizard/occasion-step";
 import { PasswordStep } from "@/components/wizard/password-step";
 import { PreviewStep } from "@/components/wizard/preview-step";
@@ -29,6 +30,7 @@ function initialValues(wish: SenderWish): DraftValues {
   return {
     category: wish.category,
     templateId: wish.templateId,
+    mode: wish.mode,
     receiverName: wish.receiverName,
     title: wish.title,
     message: wish.message,
@@ -42,6 +44,7 @@ function toPatch(values: DraftValues) {
   return {
     category: values.category,
     templateId: values.templateId,
+    mode: values.mode,
     receiverName: values.receiverName,
     title: values.title,
     message: values.message,
@@ -57,10 +60,12 @@ export function WishWizard({
   wish,
   initialMedia,
   initialStep,
+  groupEnabled,
 }: {
   wish: SenderWish;
   initialMedia: MediaItem[];
   initialStep: number;
+  groupEnabled: boolean;
 }) {
   const [stepIndex, setStepIndex] = useState(
     Math.max(0, Math.min(STEPS.length - 1, initialStep)),
@@ -71,6 +76,9 @@ export function WishWizard({
   const [savedPassword, setSavedPassword] = useState<string | null>(null);
   const [publishing, setPublishing] = useState(false);
   const [published, setPublished] = useState(false);
+  const [contributorToken, setContributorToken] = useState(
+    wish.contributorToken,
+  );
 
   const form = useForm<DraftValues>({ defaultValues: initialValues(wish) });
   const values = form.watch();
@@ -97,6 +105,14 @@ export function WishWizard({
           if (sequence === saveSequence.current) {
             lastSaved.current = serialized;
             setSaveState("saved");
+          }
+          return response.json() as Promise<{
+            data?: { contributorToken?: string | null };
+          }>;
+        })
+        .then((payload) => {
+          if (payload?.data && "contributorToken" in payload.data) {
+            setContributorToken(payload.data.contributorToken ?? null);
           }
         })
         .catch(() => {
@@ -277,6 +293,18 @@ export function WishWizard({
         ) : null}
 
         {stepIndex === 3 ? (
+          <CollectStep
+            wishId={wish.wishId}
+            mode={values.mode}
+            contributorToken={contributorToken}
+            groupEnabled={groupEnabled}
+            onChange={(mode) =>
+              form.setValue("mode", mode, { shouldDirty: true })
+            }
+          />
+        ) : null}
+
+        {stepIndex === 4 ? (
           <PasswordStep
             wishId={wish.wishId}
             hasPassword={hasPassword}
@@ -288,7 +316,7 @@ export function WishWizard({
           />
         ) : null}
 
-        {stepIndex === 4 ? <PreviewStep values={values} media={media} /> : null}
+        {stepIndex === 5 ? <PreviewStep values={values} media={media} /> : null}
       </div>
 
       {stepIndex === STEPS.length - 1 && !canPublish ? (

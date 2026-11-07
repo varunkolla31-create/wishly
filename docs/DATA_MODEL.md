@@ -73,6 +73,8 @@ Single table, on-demand capacity.
 - `PK = WISH#<wishId>`, `SK = REPLY#<replyId>` → reply
 - `GSI1`: `GSI1PK = OWNER#<ownerId>`, `GSI1SK = UPDATED#<updatedAt>` → dashboard list
 - `GSI2`: `GSI2PK = OWNER#<ownerId>`, `GSI2SK = REPLY#<createdAt>` → reply inbox
+- `GSI3`: `GSI3PK = CONTRIB_TOKEN#<contributorToken>`, `GSI3SK = META` → contributor link lookup.
+  Only written while the token is active; revoking removes the attribute so the GSI entry disappears.
 - Contributions wall: `Query PK = WISH#<wishId>` with `begins_with(SK, "CONTRIB#")` then filter status/order, or store approved contributions under `SK = CONTRIB#APPROVED#<order>#<id>` for direct ordered reads.
 
 Projection rules:
@@ -91,6 +93,7 @@ Projection rules:
 | Unlock | GetItem including `passwordHash` (server only) |
 | Reveal content | GetItem + presigned media reads |
 | Contributor wall | Query contributions, approved, ordered |
+| Contributor link | GSI3 by token; a miss means revoked or never existed |
 | Reply inbox | GSI2 query by owner |
 
 ## Deletion

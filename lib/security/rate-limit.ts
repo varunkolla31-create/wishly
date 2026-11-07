@@ -90,6 +90,43 @@ export function clearRateLimit(key: string): void {
   entries.delete(key);
 }
 
+interface Window {
+  count: number;
+  startedAt: number;
+}
+
+/** Plain request counters for non-credential limits (uploads, contributions). */
+const windows = new Map<string, Window>();
+
+/**
+ * Sliding-window request limiter. Unlike `recordFailure`, this counts successful
+ * calls too — use it for volume limits, not for credential guessing.
+ */
+export function consumeRateLimit(
+  key: string,
+  limit: number,
+  windowMs: number,
+  now = Date.now(),
+): RateLimitDecision {
+  const existing = windows.get(key);
+
+  if (!existing || now - existing.startedAt > windowMs) {
+    windows.set(key, { count: 1, startedAt: now });
+    return { allowed: true, retryAfterMs: 0 };
+  }
+
+  if (existing.count >= limit) {
+    return {
+      allowed: false,
+      retryAfterMs: existing.startedAt + windowMs - now,
+    };
+  }
+
+  existing.count += 1;
+  return { allowed: true, retryAfterMs: 0 };
+}
+
 export function resetRateLimiter(): void {
   entries.clear();
+  windows.clear();
 }

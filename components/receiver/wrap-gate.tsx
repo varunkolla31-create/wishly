@@ -53,6 +53,7 @@ export function WrapGate({ content }: { content: PublicWishContent }) {
             template,
             music,
             media: content.media,
+            contributions: content.contributions,
           }}
         >
           <ReplyForm wishId={content.id} palette={palette} />

@@ -2,8 +2,8 @@ import "server-only";
 import { getOccasion } from "@/lib/catalog/occasions";
 import { mediaKindFromKey } from "@/lib/media/validate";
 import type { MediaItem } from "@/lib/media/types";
-import { mediaStore } from "@/lib/repos/index";
-import type { Wish } from "@/lib/repos/types";
+import { contributionRepo, mediaStore } from "@/lib/repos/index";
+import type { ContributionType, Wish } from "@/lib/repos/types";
 
 export type LockState = "locked" | "counting_down";
 
@@ -18,6 +18,14 @@ export interface PublicWishMeta {
   unlockAt: string | null;
 }
 
+export interface PublicContribution {
+  contributionId: string;
+  contributorName: string;
+  type: ContributionType;
+  text: string | null;
+  media: MediaItem | null;
+}
+
 export interface PublicWishContent {
   id: string;
   receiverName: string;
@@ -28,6 +36,7 @@ export interface PublicWishContent {
   musicId: string | null;
   unlockAt: string | null;
   media: MediaItem[];
+  contributions: PublicContribution[];
 }
 
 export function isPublished(wish: Wish): boolean {
@@ -68,6 +77,27 @@ export async function buildWishContent(
     })),
   );
 
+  const approved =
+    wish.mode === "group"
+      ? await contributionRepo().listByWish(wish.wishId, "approved")
+      : [];
+
+  const contributions = await Promise.all(
+    approved.map(async (item): Promise<PublicContribution> => ({
+      contributionId: item.contributionId,
+      contributorName: item.contributorName,
+      type: item.type,
+      text: item.text,
+      media: item.mediaKey
+        ? {
+            key: item.mediaKey,
+            url: await store.createReadUrl(item.mediaKey),
+            kind: mediaKindFromKey(item.mediaKey) ?? "photo",
+          }
+        : null,
+    })),
+  );
+
   return {
     id: wish.wishId,
     receiverName: wish.receiverName,
@@ -78,5 +108,6 @@ export async function buildWishContent(
     musicId: wish.musicId,
     unlockAt: wish.unlockAt,
     media,
+    contributions,
   };
 }

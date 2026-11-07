@@ -74,7 +74,9 @@ All data access goes through interfaces, so the app runs with no cloud keys.
 | MediaStore | Local folder with fake signed URLs | S3 presigned URLs |
 | AuthProvider | Dev bypass user (flag) | Clerk |
 
-Select adapters with `STORAGE_DRIVER=memory|aws` and `AUTH_DRIVER=dev|clerk`.
+Select adapters with `DATA_ADAPTER=file|dynamodb` and `MEDIA_ADAPTER=file|s3`, and identity with
+`AUTH_MODE=dev|clerk`. These are the names the code reads (`lib/env.ts`); the file adapter is the
+default so the app runs with no cloud keys.
 
 ---
 
@@ -110,18 +112,26 @@ Select adapters with `STORAGE_DRIVER=memory|aws` and `AUTH_DRIVER=dev|clerk`.
 |---|---|---|---|
 | POST | /api/wishes | Sender | Create draft |
 | GET | /api/wishes | Sender | List own wishes |
-| GET | /api/wishes/:id/owner | Sender | Read own wish (full) |
-| PUT | /api/wishes/:id | Sender | Update draft or published wish |
+| PATCH | /api/wishes/:id | Sender | Update draft or published wish |
 | DELETE | /api/wishes/:id | Sender | Delete wish and media |
-| POST | /api/wishes/:id/publish | Sender | Set password hash, publish |
-| GET | /api/public/wishes/:id | None | Lock screen data only |
-| POST | /api/wishes/:id/unlock | None, rate limited | Verify password, set cookie |
-| GET | /api/wishes/:id/content | Unlock cookie | Message, media URLs, contributions |
-| POST | /api/wishes/:id/replies | Unlock cookie | Receiver reply |
-| GET | /api/wishes/:id/replies | Sender | Read replies |
-| POST | /api/upload-url | Sender or contributor token | Presigned upload URL |
-| POST | /api/contribute/:token | Contributor token | Add contribution |
-| POST | /api/ai/suggest | Sender | Generate message ideas |
+| GET | /api/wishes/:id/contributions | Sender | List contributions for moderation |
+| PATCH | /api/wishes/:id/contributions | Sender | Reorder contributions |
+| PATCH | /api/wishes/:id/contributions/:contributionId | Sender | Approve, hide, or restore |
+| DELETE | /api/wishes/:id/contributions/:contributionId | Sender | Remove a contribution and its media |
+| POST | /api/wishes/:id/password | Sender | Hash and store the password |
+| POST | /api/wishes/:id/publish | Sender | Publish (bumps `passwordVersion`) |
+| POST | /api/wishes/:id/duplicate | Sender | Duplicate as a fresh draft |
+| POST | /api/wishes/:id/contributor-link | Sender | Mint or rotate the contributor link |
+| DELETE | /api/wishes/:id/contributor-link | Sender | Revoke the contributor link |
+| GET | /api/w/:id/meta | None | Lock screen data only (strict projection) |
+| POST | /api/w/:id/unlock | None, rate limited | Verify password, set cookie |
+| GET | /api/w/:id/content | Unlock cookie | Message, media URLs, approved contributions |
+| POST | /api/w/:id/reply | Unlock cookie | Receiver reply |
+| POST | /api/w/:id/view | None | Aggregate view counter |
+| POST | /api/c/:token/upload/presign | Contributor token | Presigned upload URL |
+| POST | /api/c/:token/contribute | Contributor token | Add a pending contribution |
+| POST | /api/upload/presign | Sender | Presigned upload URL |
+| POST | /api/ai/ideas | Sender | Generate message ideas |
 
 All inputs are validated with Zod. Errors are generic on the unlock route.
 
@@ -143,7 +153,9 @@ GSI: `ownerId` + `createdAt` (dashboard list)
 Aggregated counter on the wish item only. No personal data.
 
 **S3 key layout**
-`wishes/{wishId}/{random-uuid}.{ext}` in a private bucket (block public access ON).
+`wishes/{wishId}/{kind}/{random-id}.{ext}` in a private bucket (block public access ON), where
+`kind` is `photo | video | voice`. The kind segment is what lets rendering code derive the media
+type from the key alone.
 
 ---
 
@@ -169,27 +181,28 @@ Aggregated counter on the wish item only. No personal data.
 ## 9. Frontend structure
 
 ```
-src/
-  app/
-    (marketing)/            landing, occasions, templates, pricing
-    (sender)/dashboard/     wish list, replies inbox
-    (sender)/create/        wizard
-    w/[id]/                 receiver lock + reveal
-    c/[token]/              contributor page
-    api/                    route handlers (section 6)
-  components/               ui, wizard, reveal, player, unlock-ring
-  templates/                one folder per template
-  lib/
-    repos/                  interfaces + memory + aws adapters
-    auth/                   clerk + dev adapters
-    security/               hash, rate limit, cookies
-    ai/                     gemini client
-  styles/tokens.css         design tokens
+app/
+  (marketing)/            landing, occasions, templates, pricing, privacy, terms, report
+  (auth)/sign-in/         Clerk sign-in (dev bypass explains itself)
+  (app)/dashboard/        wish list, replies inbox, edit wizard, collect moderation, QR card
+  w/[id]/                 receiver lock + reveal
+  c/[token]/              contributor page (no login)
+  api/                    route handlers (section 6)
+components/
+  ui/ marketing/ wizard/ reveal/ receiver/ contributor/ dashboard/
+lib/
+  repos/                  interfaces + file adapter (+ dynamodb/s3 adapters)
+  auth/                   dev bypass + clerk adapters
+  security/               hash, rate limit, unlock token, media token, contributor token
+  ai/                     gemini client + curated fallback
+  catalog/                occasions, templates, music
+  validation/             shared Zod schemas
+app/globals.css           design tokens
 docs/
   ARCHITECTURE.md
   DATA_MODEL.md
 DESIGN.md
-CLAUDE.md                   agent conventions and commands
+CLAUDE.md                 agent conventions and commands
 ```
 
 ---
@@ -212,23 +225,28 @@ Full tokens live in `DESIGN.md`.
 ## 11. Environment variables
 
 ```
-STORAGE_DRIVER=memory            # memory | aws
-AUTH_DRIVER=dev                  # dev | clerk
+DATA_ADAPTER=file                # file | dynamodb
+MEDIA_ADAPTER=file               # file | s3
+AUTH_MODE=dev                    # dev | clerk
+WISHLY_DEV_AUTH_BYPASS=true      # dev only
 
 NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=
 CLERK_SECRET_KEY=
 
 AWS_REGION=
+AWS_ENDPOINT_URL=                # optional; set to LocalStack for local AWS
 AWS_ACCESS_KEY_ID=
 AWS_SECRET_ACCESS_KEY=
-DDB_TABLE_WISHES=
-DDB_TABLE_CONTRIBUTIONS=
-DDB_TABLE_REPLIES=
-S3_BUCKET_MEDIA=
+DYNAMODB_TABLE=
+S3_BUCKET=
 
 GEMINI_API_KEY=
-COOKIE_SECRET=                   # random 32+ chars
+GEMINI_MODEL=gemini-2.0-flash
+AUTH_SECRET=                     # min 16 chars; signs dev media URLs and rate-limit keys
+WISH_UNLOCK_SECRET=              # min 16 chars; signs unlock cookies
 NEXT_PUBLIC_APP_URL=
+FEATURE_BILLING=false
+FEATURE_GROUP_MODE=false
 ```
 
 Never paste real keys into chat or commit them.

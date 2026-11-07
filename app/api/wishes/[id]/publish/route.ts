@@ -36,7 +36,10 @@ export function POST(
       );
     }
 
-    const updated = await wishRepo().update(id, { status: "published" });
+    const updated = await wishRepo().update(id, {
+      status: "published",
+      passwordVersion: wish.passwordVersion + 1,
+    });
     if (!updated) {
       throw new HttpError(404, "not_found", "That wish could not be found.");
     }

@@ -1,6 +1,7 @@
 import "server-only";
 import type { JsonCollection } from "@/lib/storage/json-collection";
 import type { NewWish, Wish, WishPatch, WishRepo } from "@/lib/repos/types";
+import { tokensMatch } from "@/lib/security/contributor-token";
 import { newId } from "@/lib/utils/ids";
 
 export class FileWishRepo implements WishRepo {
@@ -42,6 +43,18 @@ export class FileWishRepo implements WishRepo {
   async getById(wishId: string): Promise<Wish | null> {
     const items = await this.collection.read();
     return items.find((wish) => wish.wishId === wishId) ?? null;
+  }
+
+  async getByContributorToken(token: string): Promise<Wish | null> {
+    const items = await this.collection.read();
+    return (
+      items.find(
+        (wish) =>
+          wish.contributorToken !== null &&
+          wish.contributorTokenRevokedAt === null &&
+          tokensMatch(wish.contributorToken, token),
+      ) ?? null
+    );
   }
 
   async listByOwner(ownerId: string): Promise<Wish[]> {

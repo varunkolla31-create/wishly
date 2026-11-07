@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { MemoryWall } from "@/components/reveal/memory-wall";
 import { MusicMiniPlayer } from "@/components/reveal/music-mini-player";
 import { TypedMessage } from "@/components/reveal/typed-message";
 import type {
@@ -9,6 +10,7 @@ import type {
   TemplateDefinition,
 } from "@/lib/catalog/types";
 import type { MediaItem } from "@/lib/media/types";
+import type { PublicContribution } from "@/lib/wishes/public";
 import { cn } from "@/lib/utils/cn";
 
 export interface RevealContent {
@@ -18,6 +20,7 @@ export interface RevealContent {
   template: TemplateDefinition;
   music: MusicTrack | null;
   media: MediaItem[];
+  contributions?: PublicContribution[];
 }
 
 function Gallery({
@@ -152,6 +155,8 @@ export function RevealExperience({
         />
 
         <Gallery media={media} layout={template.photoLayout} />
+
+        <MemoryWall contributions={content.contributions ?? []} palette={palette} />
 
         {children}
       </div>

@@ -29,7 +29,7 @@ export function POST(request: Request) {
       ownerId: sender.userId,
       category: occasion.slug,
       templateId: template.id,
-      mode: "solo",
+      mode: input.mode,
     });
 
     revalidatePath("/dashboard");

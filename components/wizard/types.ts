@@ -2,6 +2,7 @@ export const WIZARD_STEPS = [
   { id: "occasion", label: "Occasion" },
   { id: "template", label: "Template" },
   { id: "content", label: "Content" },
+  { id: "collect", label: "Collect" },
   { id: "password", label: "Password" },
   { id: "preview", label: "Preview" },
 ] as const;
@@ -9,6 +10,7 @@ export const WIZARD_STEPS = [
 export interface DraftValues {
   category: string;
   templateId: string;
+  mode: "solo" | "group";
   receiverName: string;
   title: string;
   message: string;

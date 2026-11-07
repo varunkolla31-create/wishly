@@ -28,7 +28,7 @@ const envSchema = z.object({
   WISH_UNLOCK_SECRET: z.string().min(16).default(DEV_SECRET),
 
   FEATURE_BILLING: boolFromEnv(false),
-  FEATURE_GROUP_MODE: boolFromEnv(false),
+  FEATURE_GROUP_MODE: boolFromEnv(true),
 
   DATA_ADAPTER: z.enum(["file", "dynamodb"]).default("file"),
   MEDIA_ADAPTER: z.enum(["file", "s3"]).default("file"),

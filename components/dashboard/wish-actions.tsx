@@ -1,6 +1,6 @@
 "use client";
 
-import { Copy, CopyPlus, Pencil, QrCode, Trash2 } from "lucide-react";
+import { Copy, CopyPlus, Pencil, QrCode, Trash2, Users } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -15,9 +15,10 @@ const actionClass =
 interface WishActionsProps {
   wishId: string;
   status: WishStatus;
+  mode: "solo" | "group";
 }
 
-export function WishActions({ wishId, status }: WishActionsProps) {
+export function WishActions({ wishId, status, mode }: WishActionsProps) {
   const router = useRouter();
   const [qrOpen, setQrOpen] = useState(false);
   const [qrData, setQrData] = useState<string | null>(null);
@@ -97,6 +98,17 @@ export function WishActions({ wishId, status }: WishActionsProps) {
       >
         <Pencil aria-hidden="true" className="size-[18px]" />
       </Link>
+
+      {mode === "group" ? (
+        <Link
+          href={`/dashboard/wishes/${wishId}/collect`}
+          className={actionClass}
+          aria-label="Collect memories"
+          title="Collect"
+        >
+          <Users aria-hidden="true" className="size-[18px]" />
+        </Link>
+      ) : null}
 
       {isPublic ? (
         <>

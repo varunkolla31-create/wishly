@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { WishWizard } from "@/components/wizard/wish-wizard";
 import { WIZARD_STEPS } from "@/components/wizard/types";
 import { requirePageSender } from "@/lib/auth/page";
+import { env } from "@/lib/env";
 import { mediaKindFromKey } from "@/lib/media/validate";
 import { toSenderWish } from "@/lib/repos/dto";
 import { mediaStore, wishRepo } from "@/lib/repos/index";
@@ -49,6 +50,7 @@ export default async function EditWishPage({
       wish={toSenderWish(wish)}
       initialMedia={initialMedia}
       initialStep={initialStep}
+      groupEnabled={env().FEATURE_GROUP_MODE}
     />
   );
 }

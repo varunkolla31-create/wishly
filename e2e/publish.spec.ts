@@ -45,7 +45,7 @@ test("publishes from the wizard, unlocks, reveals, and replies", async ({
 }) => {
   const wishId = await createPublishedWish(request, "Golden-Orchid-42!");
 
-  await page.goto(`/dashboard/wishes/${wishId}/edit?step=4`);
+  await page.goto(`/dashboard/wishes/${wishId}/edit?step=5`);
   await expect(
     page.getByRole("heading", { name: "Lock it with a password." }),
   ).toBeVisible();

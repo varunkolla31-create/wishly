@@ -8,6 +8,7 @@ import { mediaKeyPrefix } from "@/lib/media/validate";
 import { toSenderWish } from "@/lib/repos/dto";
 import { mediaStore, wishRepo } from "@/lib/repos/index";
 import { draftPatchSchema } from "@/lib/validation/draft";
+import { modeTransitionPatch } from "@/lib/wishes/mode";
 import { deleteWishCascade } from "@/lib/wishes/delete";
 
 export const runtime = "nodejs";
@@ -44,7 +45,11 @@ export function PATCH(
       }
     }
 
-    const updated = await wishRepo().update(id, patch);
+    const { mode, ...rest } = patch;
+    const effective: typeof patch =
+      mode === undefined ? rest : { ...rest, ...modeTransitionPatch(wish, mode) };
+
+    const updated = await wishRepo().update(id, effective);
     if (!updated) {
       throw new HttpError(404, "not_found", "That wish could not be found.");
     }
