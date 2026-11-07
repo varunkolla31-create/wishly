@@ -39,7 +39,7 @@ const tables = {
   contributions: env.DYNAMODB_CONTRIBUTIONS_TABLE ?? "Contributions",
   replies: env.DYNAMODB_REPLIES_TABLE ?? "Replies",
 };
-const bucket = env.S3_BUCKET;
+const bucket = env.S3_BUCKET ?? env.S3_BUCKET_MEDIA;
 
 let problems = 0;
 const ok = (label, detail = "") => console.log(`  ok    ${label}${detail ? ` — ${detail}` : ""}`);
@@ -48,6 +48,17 @@ const bad = (label, detail = "") => {
   problems += 1;
   console.log(`  FAIL  ${label}${detail ? ` — ${detail}` : ""}`);
 };
+
+/** `name`, HTTP status and a short message. Never includes credentials. */
+function detail(error) {
+  const name = error?.name ?? "UnknownError";
+  const code = error?.Code ?? error?.code;
+  const status = error?.$metadata?.httpStatusCode;
+  const message = typeof error?.message === "string" ? error.message.slice(0, 160) : "";
+  return [name, code && code !== name ? code : null, status ? `HTTP ${status}` : null, message]
+    .filter(Boolean)
+    .join(" · ");
+}
 
 console.log("Wishly AWS check\n");
 
@@ -116,8 +127,8 @@ for (const [role, name] of Object.entries(tables)) {
   } catch (error) {
     const code = error?.name ?? "unknown";
     if (code === "ResourceNotFoundException") bad(`${role}: ${name}`, "table not found in this region/account");
-    else if (code === "AccessDeniedException" || code === "AccessDenied") bad(`${role}: ${name}`, "missing dynamodb:DescribeTable permission");
-    else bad(`${role}: ${name}`, code);
+    else if (code === "AccessDeniedException" || code === "AccessDenied") bad(`${role}: ${name}`, detail(error));
+    else bad(`${role}: ${name}`, detail(error));
   }
 }
 
@@ -133,9 +144,11 @@ if (bucket) {
       bad("list permission", error?.name ?? "unknown");
     }
   } catch (error) {
-    const code = error?.name ?? "unknown";
-    if (code === "NotFound" || code === "NoSuchBucket") bad("bucket", "not found");
-    else bad("bucket", code);
+    if (error?.name === "NotFound" || error?.name === "NoSuchBucket") {
+      bad("bucket", "not found in this region/account");
+    } else {
+      bad("bucket", detail(error));
+    }
   }
 
   if (WRITE) {

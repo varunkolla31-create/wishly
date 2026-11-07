@@ -105,7 +105,7 @@ export function env(): AppEnv {
     DYNAMODB_CONTRIBUTIONS_TABLE: process.env.DYNAMODB_CONTRIBUTIONS_TABLE,
     DYNAMODB_REPLIES_TABLE: process.env.DYNAMODB_REPLIES_TABLE,
     DYNAMODB_TABLE: process.env.DYNAMODB_TABLE,
-    S3_BUCKET: process.env.S3_BUCKET,
+    S3_BUCKET: process.env.S3_BUCKET ?? process.env.S3_BUCKET_MEDIA,
   });
 
   if (!parsed.success) {
