@@ -1,10 +1,12 @@
 import type { Wish } from "@/lib/repos/types";
 
-export type SenderWish = Omit<Wish, "passwordHash">;
+export type SenderWish = Omit<Wish, "passwordHash"> & {
+  hasPassword: boolean;
+};
 
 /**
  * Explicit mapping so a future secret field cannot leak by accident.
- * The password hash never leaves the server.
+ * The password hash never leaves the server; only its presence is exposed.
  */
 export function toSenderWish(wish: Wish): SenderWish {
   return {
@@ -27,5 +29,6 @@ export function toSenderWish(wish: Wish): SenderWish {
     views: wish.views,
     createdAt: wish.createdAt,
     updatedAt: wish.updatedAt,
+    hasPassword: wish.passwordHash !== null,
   };
 }

@@ -1,7 +1,8 @@
 "use client";
 
-import { Copy, CopyPlus, QrCode, Trash2 } from "lucide-react";
+import { Copy, CopyPlus, Pencil, QrCode, Trash2 } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -88,6 +89,15 @@ export function WishActions({ wishId, status }: WishActionsProps) {
 
   return (
     <div className="flex items-center">
+      <Link
+        href={`/dashboard/wishes/${wishId}/edit`}
+        className={actionClass}
+        aria-label="Edit wish"
+        title="Edit"
+      >
+        <Pencil aria-hidden="true" className="size-[18px]" />
+      </Link>
+
       {isPublic ? (
         <>
           <button

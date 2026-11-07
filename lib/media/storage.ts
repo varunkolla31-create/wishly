@@ -1,13 +1,7 @@
 import "server-only";
 import path from "node:path";
+import { isValidMediaKey } from "@/lib/media/validate";
 import { dataDir } from "@/lib/storage/paths";
-
-const KEY_PATTERN =
-  /^wishes\/[A-Za-z0-9_-]{1,64}\/(photo|video|voice)\/[A-Za-z0-9_-]{1,64}\.[a-z0-9]{1,5}$/;
-
-export function isValidMediaKey(key: string): boolean {
-  return KEY_PATTERN.test(key);
-}
 
 export function mediaFilePath(key: string): string {
   if (!isValidMediaKey(key)) {

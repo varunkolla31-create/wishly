@@ -26,9 +26,13 @@ export function NewWishButton({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({}),
       });
-      if (!response.ok) throw new Error("create_failed");
-      toast.success("Draft created");
-      router.refresh();
+      const payload = (await response.json()) as {
+        ok: boolean;
+        data?: { wishId?: string };
+      };
+      const wishId = payload.data?.wishId;
+      if (!response.ok || !wishId) throw new Error("create_failed");
+      router.push(`/dashboard/wishes/${wishId}/edit`);
     } catch {
       toast.error("Couldn't start a new wish.");
     } finally {

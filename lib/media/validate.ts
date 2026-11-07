@@ -5,6 +5,24 @@ export function isMediaKind(value: string): value is MediaKind {
   return (MEDIA_KINDS as readonly string[]).includes(value);
 }
 
+const MEDIA_KEY_PATTERN =
+  /^wishes\/[A-Za-z0-9_-]{1,64}\/(photo|video|voice)\/[A-Za-z0-9_-]{1,64}\.[a-z0-9]{1,5}$/;
+
+export function isValidMediaKey(key: string): boolean {
+  return MEDIA_KEY_PATTERN.test(key);
+}
+
+export function mediaKeyPrefix(wishId: string): string {
+  return `wishes/${wishId}/`;
+}
+
+export function mediaKindFromKey(key: string): MediaKind | null {
+  if (!isValidMediaKey(key)) return null;
+  const segment = key.split("/")[2];
+  if (!segment || !isMediaKind(segment)) return null;
+  return segment;
+}
+
 const PHOTO_TYPES: Record<string, string> = {
   "image/jpeg": "jpg",
   "image/png": "png",

@@ -13,6 +13,7 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
+    "pretest:e2e": "node scripts/clean-next.mjs",
     "test:e2e": "playwright test",
     "music:generate": "node scripts/generate-music.mjs",
     "postinstall": "node scripts/generate-music.mjs --if-missing"

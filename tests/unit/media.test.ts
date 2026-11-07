@@ -1,8 +1,9 @@
 import { describe, expect, it } from "vitest";
-import { mediaFilePath, isValidMediaKey } from "@/lib/media/storage";
+import { mediaFilePath } from "@/lib/media/storage";
 import {
   acceptAttribute,
   contentTypeForKey,
+  isValidMediaKey,
   validateUpload,
 } from "@/lib/media/validate";
 
