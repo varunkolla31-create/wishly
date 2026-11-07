@@ -8,6 +8,9 @@ import { FileMediaStore } from "@/lib/repos/file/media-store";
 import { FileReplyRepo } from "@/lib/repos/file/reply-repo";
 import { FileWishRepo } from "@/lib/repos/file/wish-repo";
 import { S3MediaStore } from "@/lib/repos/s3/media-store";
+import { PostgresContributionRepo } from "@/lib/repos/postgres/contribution-repo";
+import { PostgresReplyRepo } from "@/lib/repos/postgres/reply-repo";
+import { PostgresWishRepo } from "@/lib/repos/postgres/wish-repo";
 import type {
   Contribution,
   ContributionRepo,
@@ -33,17 +36,23 @@ function jsonCollection<T>(name: string): JsonCollection<T> {
 }
 
 export function wishRepo(): WishRepo {
-  if (env().DATA_ADAPTER === "dynamodb") return new DynamoWishRepo();
+  const adapter = env().DATA_ADAPTER;
+  if (adapter === "dynamodb") return new DynamoWishRepo();
+  if (adapter === "postgres") return new PostgresWishRepo();
   return new FileWishRepo(jsonCollection<Wish>("wishes"));
 }
 
 export function contributionRepo(): ContributionRepo {
-  if (env().DATA_ADAPTER === "dynamodb") return new DynamoContributionRepo();
+  const adapter = env().DATA_ADAPTER;
+  if (adapter === "dynamodb") return new DynamoContributionRepo();
+  if (adapter === "postgres") return new PostgresContributionRepo();
   return new FileContributionRepo(jsonCollection<Contribution>("contributions"));
 }
 
 export function replyRepo(): ReplyRepo {
-  if (env().DATA_ADAPTER === "dynamodb") return new DynamoReplyRepo();
+  const adapter = env().DATA_ADAPTER;
+  if (adapter === "dynamodb") return new DynamoReplyRepo();
+  if (adapter === "postgres") return new PostgresReplyRepo();
   return new FileReplyRepo(jsonCollection<Reply>("replies"));
 }
 

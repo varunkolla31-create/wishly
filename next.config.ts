@@ -6,7 +6,7 @@ const projectRoot = path.dirname(fileURLToPath(import.meta.url));
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
-  serverExternalPackages: ["@node-rs/argon2"],
+  serverExternalPackages: ["@node-rs/argon2", "pg"],
   poweredByHeader: false,
   outputFileTracingRoot: projectRoot,
   async headers() {

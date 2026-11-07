@@ -68,16 +68,21 @@ All data access goes through interfaces, so the app runs with no cloud keys.
 
 | Interface | Dev adapter | Production adapter |
 |---|---|---|
-| WishRepo | JSON file | DynamoDB |
-| ContributionRepo | JSON file | DynamoDB |
-| ReplyRepo | JSON file | DynamoDB |
+| WishRepo | JSON file | DynamoDB or Postgres |
+| ContributionRepo | JSON file | DynamoDB or Postgres |
+| ReplyRepo | JSON file | DynamoDB or Postgres |
 | MediaStore | Local folder with fake signed URLs | S3 presigned URLs |
 | AuthProvider | Dev bypass user (flag) | Clerk |
 
-Select adapters with `DATA_ADAPTER=file|dynamodb` and `MEDIA_ADAPTER=file|s3`, and identity with
-`AUTH_MODE=dev|clerk`. These are the names the code reads (`lib/env.ts`); the file adapter is the
-default so the app runs with no cloud keys. `lib/repos/index.ts` branches on those values and is the
+Select adapters with `DATA_ADAPTER=file|dynamodb|postgres` and
+`MEDIA_ADAPTER=file|s3`, and identity with `AUTH_MODE=dev|clerk`. These are the
+names the code reads (`lib/env.ts`); the file adapter is the default so the app
+runs with no cloud keys. `lib/repos/index.ts` branches on those values and is the
 only place that constructs an adapter.
+
+Postgres targets Neon (or any Postgres 15+). `db/schema.sql` is idempotent and
+applied with `pnpm db:push`; `tests/integration/postgres.test.ts` runs the same
+contract as the other adapters via `pnpm test:db`.
 
 The local upload/serve routes (`/api/uploads/*`, `/api/media/*`) are gated to `MEDIA_ADAPTER=file`;
 with S3 the browser uploads and reads straight from presigned URLs.
@@ -229,10 +234,12 @@ Full tokens live in `DESIGN.md`.
 ## 11. Environment variables
 
 ```
-DATA_ADAPTER=file                # file | dynamodb
+DATA_ADAPTER=file                # file | dynamodb | postgres
 MEDIA_ADAPTER=file               # file | s3
 AUTH_MODE=dev                    # dev | clerk
 WISHLY_DEV_AUTH_BYPASS=true      # dev only
+
+DATABASE_URL=                    # required for DATA_ADAPTER=postgres
 
 NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=
 CLERK_SECRET_KEY=

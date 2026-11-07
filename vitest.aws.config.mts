@@ -21,7 +21,7 @@ export default defineConfig({
   },
   test: {
     environment: "node",
-    include: ["tests/integration/**/*.test.ts"],
+    include: ["tests/integration/aws.test.ts"],
     setupFiles: ["tests/setup.ts"],
     restoreMocks: true,
     testTimeout: 20_000,

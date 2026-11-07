@@ -11,6 +11,17 @@ function boolFromEnv(fallback: boolean) {
   }, z.boolean());
 }
 
+function intFromEnv(fallback: number, min: number, max: number) {
+  return z.preprocess(
+    (value) => {
+      if (value === undefined || value === null || value === "") return fallback;
+      const parsed = Number(value);
+      return Number.isFinite(parsed) ? parsed : fallback;
+    },
+    z.number().int().min(min).max(max),
+  );
+}
+
 const envSchema = z.object({
   NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
   APP_URL: z.string().min(1).default("http://localhost:3000"),
@@ -24,14 +35,19 @@ const envSchema = z.object({
   GEMINI_API_KEY: z.string().optional(),
   GEMINI_MODEL: z.string().min(1).default("gemini-2.0-flash"),
 
+  YOUTUBE_API_KEY: z.string().optional(),
+  YOUTUBE_DAILY_SEARCH_LIMIT: intFromEnv(80, 1, 100),
+
   AUTH_SECRET: z.string().min(16).default(DEV_SECRET),
   WISH_UNLOCK_SECRET: z.string().min(16).default(DEV_SECRET),
 
   FEATURE_BILLING: boolFromEnv(false),
   FEATURE_GROUP_MODE: boolFromEnv(true),
 
-  DATA_ADAPTER: z.enum(["file", "dynamodb"]).default("file"),
+  DATA_ADAPTER: z.enum(["file", "dynamodb", "postgres"]).default("file"),
   MEDIA_ADAPTER: z.enum(["file", "s3"]).default("file"),
+
+  DATABASE_URL: z.string().optional(),
 
   AWS_REGION: z.string().optional(),
   AWS_ENDPOINT_URL: z.string().optional(),
@@ -55,12 +71,15 @@ export function env(): AppEnv {
       process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY,
     GEMINI_API_KEY: process.env.GEMINI_API_KEY,
     GEMINI_MODEL: process.env.GEMINI_MODEL,
+    YOUTUBE_API_KEY: process.env.YOUTUBE_API_KEY,
+    YOUTUBE_DAILY_SEARCH_LIMIT: process.env.YOUTUBE_DAILY_SEARCH_LIMIT,
     AUTH_SECRET: process.env.AUTH_SECRET,
     WISH_UNLOCK_SECRET: process.env.WISH_UNLOCK_SECRET,
     FEATURE_BILLING: process.env.FEATURE_BILLING,
     FEATURE_GROUP_MODE: process.env.FEATURE_GROUP_MODE,
     DATA_ADAPTER: process.env.DATA_ADAPTER,
     MEDIA_ADAPTER: process.env.MEDIA_ADAPTER,
+    DATABASE_URL: process.env.DATABASE_URL,
     AWS_REGION: process.env.AWS_REGION,
     AWS_ENDPOINT_URL: process.env.AWS_ENDPOINT_URL,
     AWS_ACCESS_KEY_ID: process.env.AWS_ACCESS_KEY_ID,
@@ -78,6 +97,9 @@ export function env(): AppEnv {
 
   const value = parsed.data;
 
+  if (value.DATA_ADAPTER === "postgres" && !value.DATABASE_URL) {
+    throw new Error("DATA_ADAPTER=postgres requires DATABASE_URL.");
+  }
   if (value.DATA_ADAPTER === "dynamodb" && (!value.AWS_REGION || !value.DYNAMODB_TABLE)) {
     throw new Error(
       "DATA_ADAPTER=dynamodb requires AWS_REGION and DYNAMODB_TABLE.",

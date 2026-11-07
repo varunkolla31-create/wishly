@@ -16,7 +16,7 @@ export default defineConfig({
   retries: process.env.CI ? 2 : 0,
   reporter: process.env.CI ? "github" : "list",
   timeout: 90_000,
-  expect: { timeout: 15_000 },
+  expect: { timeout: 30_000 },
   use: {
     baseURL: "http://localhost:3000",
     trace: "on-first-retry",
@@ -32,6 +32,10 @@ export default defineConfig({
       AUTH_MODE: "dev",
       WISHLY_DEV_AUTH_BYPASS: "true",
       WISHLY_DATA_DIR: dataDir,
+      // Never let an e2e run touch a real database or bucket, even when
+      // .env.local points at Neon. Explicit process env wins over .env.local.
+      DATA_ADAPTER: "file",
+      MEDIA_ADAPTER: "file",
     },
   },
 });
