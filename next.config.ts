@@ -12,6 +12,15 @@ const nextConfig: NextConfig = {
   images: {
     remotePatterns: [{ protocol: "https", hostname: "template.canva.com" }],
   },
+  async redirects() {
+    return [
+      {
+        source: "/video-templates",
+        destination: "/templates#video-templates",
+        permanent: false,
+      },
+    ];
+  },
   async headers() {
     return [
       {

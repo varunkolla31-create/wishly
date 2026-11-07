@@ -4,7 +4,7 @@ import { Logo } from "@/components/marketing/logo";
 const FOOTER_LINKS = [
   { href: "/occasions/birthday", label: "Occasions" },
   { href: "/templates", label: "Templates" },
-  { href: "/video-templates", label: "Video templates" },
+  { href: "/templates#video-templates", label: "Video templates" },
   { href: "/pricing", label: "Pricing" },
   { href: "/privacy", label: "Privacy" },
   { href: "/terms", label: "Terms" },

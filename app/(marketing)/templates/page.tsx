@@ -1,14 +1,18 @@
 import type { Metadata } from "next";
+import { CanvaVideoGallery } from "@/components/marketing/canva-video-gallery";
 import { TemplateCard } from "@/components/marketing/template-card";
 import { ButtonLink } from "@/components/ui/button";
-import { CANVA_VIDEO_TEMPLATES } from "@/lib/catalog/canva-videos";
+import {
+  CANVA_VIDEO_CATEGORIES,
+  CANVA_VIDEO_TEMPLATES,
+} from "@/lib/catalog/canva-videos";
 import { TEMPLATES } from "@/lib/catalog/templates";
 import { pageMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = pageMetadata({
   title: "Templates",
   description:
-    "Eight wish page templates, from clean and quiet to dark and cinematic. Calm styles for get well and remembrance.",
+    "Eight wish page templates plus 212 Canva video templates for birthdays, weddings, Diwali, anniversaries and reels. Pick a look, or open a video template in Canva.",
   path: "/templates",
 });
 
@@ -44,21 +48,31 @@ export default function TemplatesPage() {
         </div>
       </section>
 
-      <section className="border-t border-hairline">
-        <div className="mx-auto flex max-w-6xl flex-col gap-5 px-4 py-12 sm:px-6 md:flex-row md:items-center md:justify-between">
-          <div>
-            <h2 className="font-serif text-3xl italic leading-tight text-ink">
-              Want it in motion?
-            </h2>
-            <p className="mt-2 max-w-xl text-base leading-relaxed text-ink-muted">
-              Browse {CANVA_VIDEO_TEMPLATES.length} Canva video templates for
-              birthdays, weddings, festivals, reels and more — open any of them in
-              Canva in a new tab.
-            </p>
+      <section
+        id="video-templates"
+        className="scroll-mt-24 border-t border-hairline bg-sand"
+      >
+        <div className="mx-auto max-w-6xl px-4 pb-4 pt-14 sm:px-6">
+          <p className="text-xs font-semibold uppercase tracking-[0.12em] text-ink-muted">
+            Canva video templates
+          </p>
+          <h2 className="mt-3 max-w-3xl font-serif text-4xl italic leading-tight text-ink sm:text-5xl">
+            Add motion to the moment.
+          </h2>
+          <p className="mt-4 max-w-2xl text-base leading-relaxed text-ink-muted">
+            {CANVA_VIDEO_TEMPLATES.length} Canva video templates across{" "}
+            {CANVA_VIDEO_CATEGORIES.length} occasions. Open any template in Canva,
+            add your photos and words, and send it as a video — or pair it with a
+            Wishly page. Pro templates need a Canva Pro plan.
+          </p>
+        </div>
+        <div className="bg-canvas">
+          <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
+            <CanvaVideoGallery
+              templates={CANVA_VIDEO_TEMPLATES}
+              categories={CANVA_VIDEO_CATEGORIES}
+            />
           </div>
-          <ButtonLink href="/video-templates" variant="outline" size="lg">
-            Video templates
-          </ButtonLink>
         </div>
       </section>
 
