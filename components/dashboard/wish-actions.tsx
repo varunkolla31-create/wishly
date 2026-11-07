@@ -1,6 +1,6 @@
 "use client";
 
-import { Copy, CopyPlus, Pencil, QrCode, Trash2, Users } from "lucide-react";
+import { Copy, CopyPlus, Download, Pencil, QrCode, Trash2, Users } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -130,6 +130,14 @@ export function WishActions({ wishId, status, mode }: WishActionsProps) {
           >
             <QrCode aria-hidden="true" className="size-[18px]" />
           </button>
+          <Link
+            href={`/dashboard/wishes/${wishId}/card`}
+            className={actionClass}
+            aria-label="Download keepsake card"
+            title="Download card"
+          >
+            <Download aria-hidden="true" className="size-[18px]" />
+          </Link>
         </>
       ) : null}
 

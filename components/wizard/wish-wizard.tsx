@@ -221,6 +221,8 @@ export function WishWizard({
         wishId={wish.wishId}
         title={values.title || values.receiverName}
         password={savedPassword}
+        occasionName={occasion?.name}
+        hint={wish.passwordHint}
       />
     );
   }

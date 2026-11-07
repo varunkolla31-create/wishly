@@ -4,6 +4,7 @@ import { Check, Copy, Printer, Share2 } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
+import { DownloadCardButton } from "@/components/keepsake/download-card-button";
 import { Button, ButtonLink } from "@/components/ui/button";
 
 const shareClass =
@@ -13,10 +14,14 @@ export function PublishSuccess({
   wishId,
   title,
   password,
+  occasionName,
+  hint,
 }: {
   wishId: string;
   title: string;
   password: string | null;
+  occasionName?: string | null;
+  hint?: string | null;
 }) {
   const [origin, setOrigin] = useState("");
   const [qr, setQr] = useState<string | null>(null);
@@ -192,6 +197,15 @@ export function PublishSuccess({
             <Printer aria-hidden="true" className="size-4" />
             Print card
           </a>
+          <DownloadCardButton
+            title={shareTitle}
+            occasionName={occasionName}
+            url={url}
+            qrDataUrl={qr ?? ""}
+            hint={hint}
+            filename={`wishly-card-${wishId}.png`}
+            label="Download card"
+          />
         </div>
 
         <div className="mt-8 flex items-center gap-4 rounded-media border border-hairline p-4">

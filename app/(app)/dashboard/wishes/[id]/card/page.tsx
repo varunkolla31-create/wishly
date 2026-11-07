@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import QRCode from "qrcode";
+import { DownloadCardButton } from "@/components/keepsake/download-card-button";
 import { requirePageSender } from "@/lib/auth/page";
 import { getOccasion } from "@/lib/catalog/occasions";
 import { env } from "@/lib/env";
@@ -93,8 +94,18 @@ export default async function CardPage({
       <div className="mt-8 print:hidden">
         <p className="text-xs leading-relaxed text-ink-muted">
           Use your browser&apos;s print dialog (Ctrl/Cmd + P) and choose A5 or
-          fit-to-page.
+          fit-to-page, or download the card as a PNG.
         </p>
+        <div className="mt-4 flex flex-wrap gap-2">
+          <DownloadCardButton
+            title={title}
+            occasionName={occasion?.name}
+            url={url}
+            qrDataUrl={qr}
+            hint={wish.passwordHint}
+            filename={`wishly-card-${wish.wishId}.png`}
+          />
+        </div>
       </div>
     </main>
   );
