@@ -103,3 +103,31 @@ export function contentTypeForKey(key: string): string {
   const extension = key.split(".").pop()?.toLowerCase() ?? "";
   return EXTENSION_TO_TYPE[extension] ?? "application/octet-stream";
 }
+
+export type UploadVerification =
+  | { ok: true; size: number; contentType: string }
+  | { ok: false; reason: "missing" | "type" | "size" };
+
+/**
+ * Shared post-upload check: an object may only be attached once its kind, type
+ * and size match what the key claims. Every MediaStore implementation uses this
+ * so a stored file means the same thing on disk, S3 and R2.
+ */
+export function checkStoredMedia(
+  key: string,
+  size: number,
+  contentType: string | undefined,
+): UploadVerification {
+  const kind = mediaKindFromKey(key);
+  if (!kind) return { ok: false, reason: "type" };
+
+  const limit = MEDIA_LIMITS[kind];
+  const declared = (contentType ?? "").split(";")[0]?.trim().toLowerCase() ?? "";
+  const expected = contentTypeForKey(key);
+
+  if (declared !== expected) return { ok: false, reason: "type" };
+  if (!Number.isFinite(size) || size <= 0) return { ok: false, reason: "size" };
+  if (size > limit.maxBytes) return { ok: false, reason: "size" };
+
+  return { ok: true, size, contentType: declared };
+}

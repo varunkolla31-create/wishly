@@ -1,8 +1,13 @@
 import "server-only";
-import { unlink } from "node:fs/promises";
+import { stat, unlink } from "node:fs/promises";
 import { env } from "@/lib/env";
 import { mediaFilePath } from "@/lib/media/storage";
-import { validateUpload } from "@/lib/media/validate";
+import {
+  checkStoredMedia,
+  contentTypeForKey,
+  validateUpload,
+  type UploadVerification,
+} from "@/lib/media/validate";
 import type {
   MediaStore,
   PresignInput,
@@ -44,6 +49,19 @@ export class FileMediaStore implements MediaStore {
   async createReadUrl(key: string): Promise<string> {
     mediaFilePath(key);
     return routeUrl("/api/media", key, "get");
+  }
+
+  async verifyUpload(key: string): Promise<UploadVerification> {
+    let size: number;
+    try {
+      const stats = await stat(mediaFilePath(key));
+      if (!stats.isFile()) return { ok: false, reason: "missing" };
+      size = stats.size;
+    } catch {
+      return { ok: false, reason: "missing" };
+    }
+
+    return checkStoredMedia(key, size, contentTypeForKey(key));
   }
 
   async delete(key: string): Promise<void> {

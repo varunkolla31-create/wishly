@@ -1,5 +1,5 @@
 import "server-only";
-import { pool } from "@/lib/db/pg";
+import { query } from "@/lib/db/postgres";
 import { toWish, type WishRow } from "@/lib/repos/postgres/mappers";
 import type { NewWish, Wish, WishPatch, WishRepo } from "@/lib/repos/types";
 import { newId } from "@/lib/utils/ids";
@@ -23,10 +23,16 @@ const COLUMNS: Record<string, string> = {
   contributorTokenRevokedAt: "contributor_token_revoked_at",
 };
 
+/** media_keys is jsonb; pg would otherwise encode an array as a PG array. */
+function encode(key: string, value: unknown): unknown {
+  if (key === "mediaKeys" && Array.isArray(value)) return JSON.stringify(value);
+  return value === undefined ? null : value;
+}
+
 export class PostgresWishRepo implements WishRepo {
   async create(input: NewWish): Promise<Wish> {
     const now = new Date().toISOString();
-    const { rows } = await pool().query<WishRow>(
+    const { rows } = await query<WishRow>(
       `INSERT INTO wishes (
          wish_id, owner_id, mode, category, template_id, receiver_name, title,
          created_at, updated_at
@@ -50,7 +56,7 @@ export class PostgresWishRepo implements WishRepo {
   }
 
   async getById(wishId: string): Promise<Wish | null> {
-    const { rows } = await pool().query<WishRow>(
+    const { rows } = await query<WishRow>(
       `SELECT * FROM wishes WHERE wish_id = $1`,
       [wishId],
     );
@@ -58,7 +64,7 @@ export class PostgresWishRepo implements WishRepo {
   }
 
   async getByContributorToken(token: string): Promise<Wish | null> {
-    const { rows } = await pool().query<WishRow>(
+    const { rows } = await query<WishRow>(
       `SELECT * FROM wishes
        WHERE contributor_token = $1 AND contributor_token_revoked_at IS NULL`,
       [token],
@@ -67,7 +73,7 @@ export class PostgresWishRepo implements WishRepo {
   }
 
   async listByOwner(ownerId: string): Promise<Wish[]> {
-    const { rows } = await pool().query<WishRow>(
+    const { rows } = await query<WishRow>(
       `SELECT * FROM wishes WHERE owner_id = $1 ORDER BY updated_at DESC`,
       [ownerId],
     );
@@ -81,15 +87,14 @@ export class PostgresWishRepo implements WishRepo {
 
     for (const [key, column] of Object.entries(COLUMNS)) {
       if (!(key in patch)) continue;
-      const value = (patch as Record<string, unknown>)[key];
-      values.push(value === undefined ? null : value);
+      values.push(encode(key, (patch as Record<string, unknown>)[key]));
       assignments.push(`${column} = $${values.length}`);
     }
 
     values.push(wishId);
     const idParam = `$${values.length}`;
 
-    const { rows } = await pool().query<WishRow>(
+    const { rows } = await query<WishRow>(
       `UPDATE wishes
        SET ${[...assignments, "updated_at = now()"].join(", ")}
        WHERE wish_id = ${idParam}
@@ -101,7 +106,7 @@ export class PostgresWishRepo implements WishRepo {
   }
 
   async delete(wishId: string): Promise<boolean> {
-    const { rowCount } = await pool().query(
+    const { rowCount } = await query(
       `DELETE FROM wishes WHERE wish_id = $1`,
       [wishId],
     );
@@ -111,9 +116,9 @@ export class PostgresWishRepo implements WishRepo {
   async incrementViews(wishId: string, by = 1): Promise<void> {
     const amount = Number.isFinite(by) ? Math.max(0, Math.trunc(by)) : 1;
     // Deliberately leaves updated_at alone so the dashboard order is stable.
-    await pool().query(
-      `UPDATE wishes SET views = views + $2 WHERE wish_id = $1`,
-      [wishId, amount],
-    );
+    await query(`UPDATE wishes SET views = views + $2 WHERE wish_id = $1`, [
+      wishId,
+      amount,
+    ]);
   }
 }

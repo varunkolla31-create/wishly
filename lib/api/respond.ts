@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { ZodError, type ZodType } from "zod";
+import { RepoError } from "@/lib/repos/errors";
 
 export class HttpError extends Error {
   constructor(
@@ -31,6 +32,18 @@ export function route(handler: () => Promise<Response>): Promise<Response> {
   return handler().catch((error: unknown) => {
     if (error instanceof HttpError) {
       return fail(error.status, error.code, error.message);
+    }
+    if (error instanceof RepoError) {
+      const status =
+        error.code === "not_found"
+          ? 404
+          : error.code === "conflict"
+            ? 409
+            : error.code === "invalid"
+              ? 400
+              : 503;
+      // The adapter's message is written for humans and carries no SQL.
+      return fail(status, error.code, error.message);
     }
     if (error instanceof ZodError) {
       return fail(400, "invalid_input", "Some details need another look.");

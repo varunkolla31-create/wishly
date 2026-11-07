@@ -1,8 +1,19 @@
 import "server-only";
-import { DeleteObjectCommand, GetObjectCommand, PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
+import {
+  DeleteObjectCommand,
+  GetObjectCommand,
+  HeadObjectCommand,
+  PutObjectCommand,
+  S3Client,
+} from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { env } from "@/lib/env";
-import { validateUpload } from "@/lib/media/validate";
+import {
+  checkStoredMedia,
+  isValidMediaKey,
+  validateUpload,
+  type UploadVerification,
+} from "@/lib/media/validate";
 import type { MediaStore, PresignInput, UploadTarget } from "@/lib/repos/types";
 import { newId } from "@/lib/utils/ids";
 
@@ -75,7 +86,29 @@ export class S3MediaStore implements MediaStore {
     );
   }
 
+  async verifyUpload(key: string): Promise<UploadVerification> {
+    if (!isValidMediaKey(key)) return { ok: false, reason: "type" };
+
+    try {
+      const head = await s3().send(
+        new HeadObjectCommand({ Bucket: bucket(), Key: key }),
+      );
+      return checkStoredMedia(key, head.ContentLength ?? 0, head.ContentType);
+    } catch (error) {
+      const status = (error as { $metadata?: { httpStatusCode?: number } })
+        .$metadata?.httpStatusCode;
+      const name = (error as { name?: string }).name;
+      if (status === 404 || name === "NotFound" || name === "NoSuchKey") {
+        return { ok: false, reason: "missing" };
+      }
+      throw error;
+    }
+  }
+
   async delete(key: string): Promise<void> {
+    if (!isValidMediaKey(key)) {
+      throw new Error("Invalid media key.");
+    }
     await s3().send(
       new DeleteObjectCommand({ Bucket: bucket(), Key: key }),
     );

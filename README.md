@@ -31,7 +31,10 @@ pnpm typecheck      # tsc --noEmit
 pnpm lint           # eslint
 pnpm test           # Vitest unit tests
 pnpm test:e2e       # Playwright end-to-end (includes axe accessibility checks)
-pnpm music:generate # regenerate bundled royalty-free ambient loops
+pnpm db:check          # connect, tables, indexes, applied migrations
+pnpm r2:check          # R2 presign put/head/get/delete round trip
+pnpm test:r2           # live R2 adapter test (needs R2_TEST_LIVE=1)
+pnpm music:generate    # regenerate bundled royalty-free ambient loops
 pnpm localstack:up  # start DynamoDB + S3 locally (requires Docker)
 pnpm test:aws       # run the AWS adapter contract tests
 ```

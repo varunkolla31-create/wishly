@@ -4,7 +4,8 @@ import { defineConfig } from "vitest/config";
 
 /**
  * Postgres/Neon contract tests. Separate from the default run so `pnpm test`
- * never needs a database; `pnpm test:db` runs these against DATABASE_URL.
+ * never needs a database; `pnpm test:db` runs these against DATABASE_URL_TEST
+ * in a throwaway schema.
  */
 export default defineConfig({
   plugins: [react()],
@@ -21,7 +22,7 @@ export default defineConfig({
   },
   test: {
     environment: "node",
-    include: ["tests/integration/postgres.test.ts"],
+    include: ["tests/integration/contract-postgres.test.ts"],
     setupFiles: ["tests/setup.ts"],
     restoreMocks: true,
     testTimeout: 30_000,

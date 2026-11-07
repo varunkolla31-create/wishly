@@ -26,6 +26,8 @@ export interface WishRow {
   title: string;
   message: string;
   media_keys: string[] | null;
+  /** Reserved for the parked music refactor; unused by the current types. */
+  music: unknown;
   music_id: string | null;
   password_hash: string | null;
   password_hint: string | null;
@@ -72,7 +74,7 @@ export interface ContributionRow {
   media_key: string | null;
   text: string | null;
   status: ContributionStatus;
-  order: number;
+  sort_order: number;
   created_at: Date | string;
 }
 
@@ -85,7 +87,7 @@ export function toContribution(row: ContributionRow): Contribution {
     mediaKey: row.media_key,
     text: row.text,
     status: row.status,
-    order: row.order,
+    order: row.sort_order,
     createdAt: toIso(row.created_at) ?? new Date().toISOString(),
   };
 }

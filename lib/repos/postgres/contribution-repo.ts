@@ -1,5 +1,5 @@
 import "server-only";
-import { pool } from "@/lib/db/pg";
+import { query, withTransaction } from "@/lib/db/postgres";
 import {
   toContribution,
   type ContributionRow,
@@ -14,13 +14,13 @@ import { newId } from "@/lib/utils/ids";
 
 export class PostgresContributionRepo implements ContributionRepo {
   async create(input: NewContribution): Promise<Contribution> {
-    const { rows } = await pool().query<ContributionRow>(
+    const { rows } = await query<ContributionRow>(
       `INSERT INTO contributions (
          wish_id, contribution_id, contributor_name, type, media_key, "text",
-         status, "order"
+         status, sort_order
        ) VALUES (
          $1, $2, $3, $4, $5, $6, $7,
-         COALESCE((SELECT MAX("order") + 1 FROM contributions WHERE wish_id = $1), 0)
+         COALESCE((SELECT MAX(sort_order) + 1 FROM contributions WHERE wish_id = $1), 0)
        )
        RETURNING *`,
       [
@@ -43,7 +43,7 @@ export class PostgresContributionRepo implements ContributionRepo {
     wishId: string,
     contributionId: string,
   ): Promise<Contribution | null> {
-    const { rows } = await pool().query<ContributionRow>(
+    const { rows } = await query<ContributionRow>(
       `SELECT * FROM contributions
        WHERE wish_id = $1 AND contribution_id = $2`,
       [wishId, contributionId],
@@ -56,16 +56,16 @@ export class PostgresContributionRepo implements ContributionRepo {
     status?: ContributionStatus,
   ): Promise<Contribution[]> {
     const { rows } = status
-      ? await pool().query<ContributionRow>(
+      ? await query<ContributionRow>(
           `SELECT * FROM contributions
            WHERE wish_id = $1 AND status = $2
-           ORDER BY "order" ASC, created_at ASC`,
+           ORDER BY sort_order ASC, created_at ASC`,
           [wishId, status],
         )
-      : await pool().query<ContributionRow>(
+      : await query<ContributionRow>(
           `SELECT * FROM contributions
            WHERE wish_id = $1
-           ORDER BY "order" ASC, created_at ASC`,
+           ORDER BY sort_order ASC, created_at ASC`,
           [wishId],
         );
 
@@ -77,7 +77,7 @@ export class PostgresContributionRepo implements ContributionRepo {
     contributionId: string,
     status: ContributionStatus,
   ): Promise<Contribution | null> {
-    const { rows } = await pool().query<ContributionRow>(
+    const { rows } = await query<ContributionRow>(
       `UPDATE contributions SET status = $3
        WHERE wish_id = $1 AND contribution_id = $2
        RETURNING *`,
@@ -89,27 +89,19 @@ export class PostgresContributionRepo implements ContributionRepo {
   async reorder(wishId: string, orderedIds: string[]): Promise<void> {
     if (orderedIds.length === 0) return;
 
-    const client = await pool().connect();
-    try {
-      await client.query("BEGIN");
+    await withTransaction(async (client) => {
       for (const [position, contributionId] of orderedIds.entries()) {
         await client.query(
-          `UPDATE contributions SET "order" = $3
+          `UPDATE contributions SET sort_order = $3
            WHERE wish_id = $1 AND contribution_id = $2`,
           [wishId, contributionId, position],
         );
       }
-      await client.query("COMMIT");
-    } catch (error) {
-      await client.query("ROLLBACK");
-      throw error;
-    } finally {
-      client.release();
-    }
+    });
   }
 
   async delete(wishId: string, contributionId: string): Promise<boolean> {
-    const { rowCount } = await pool().query(
+    const { rowCount } = await query(
       `DELETE FROM contributions WHERE wish_id = $1 AND contribution_id = $2`,
       [wishId, contributionId],
     );
@@ -117,6 +109,6 @@ export class PostgresContributionRepo implements ContributionRepo {
   }
 
   async deleteByWish(wishId: string): Promise<void> {
-    await pool().query(`DELETE FROM contributions WHERE wish_id = $1`, [wishId]);
+    await query(`DELETE FROM contributions WHERE wish_id = $1`, [wishId]);
   }
 }

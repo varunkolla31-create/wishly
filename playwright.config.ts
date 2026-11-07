@@ -33,7 +33,10 @@ export default defineConfig({
       WISHLY_DEV_AUTH_BYPASS: "true",
       WISHLY_DATA_DIR: dataDir,
       // Never let an e2e run touch a real database or bucket, even when
-      // .env.local points at Neon. Explicit process env wins over .env.local.
+      // .env.local points at Neon or R2. DB_DRIVER/MEDIA_DRIVER outrank the
+      // deprecated DATA_ADAPTER/MEDIA_ADAPTER aliases, so set both pairs.
+      DB_DRIVER: "file",
+      MEDIA_DRIVER: "file",
       DATA_ADAPTER: "file",
       MEDIA_ADAPTER: "file",
     },

@@ -55,7 +55,7 @@ const envSchema = z.object({
   ),
   MEDIA_DRIVER: z.preprocess(
     emptyToUndefined,
-    z.enum(["file", "aws"]).optional(),
+    z.enum(["file", "r2", "aws"]).optional(),
   ),
   /** Deprecated aliases, still honoured for existing configs and tests. */
   DATA_ADAPTER: z.preprocess(
@@ -71,6 +71,8 @@ const envSchema = z.object({
 
   /** Pooled connection string used by the app. */
   DATABASE_URL: z.string().optional(),
+  /** Optional schema to pin the session to. Used by the contract tests. */
+  DATABASE_SCHEMA: z.preprocess(emptyToUndefined, z.string().optional()),
   /** Direct connection string; migrations prefer it when present. */
   DATABASE_URL_UNPOOLED: z.string().optional(),
   /** Contract tests only. They create a throwaway schema. */
@@ -86,6 +88,16 @@ const envSchema = z.object({
   /** Legacy single-table name; used as the wishes table when set. */
   DYNAMODB_TABLE: z.string().optional(),
   S3_BUCKET: z.string().optional(),
+
+  /** Cloudflare R2 (S3-compatible). Required when MEDIA_DRIVER=r2. */
+  R2_ACCOUNT_ID: z.string().optional(),
+  R2_ACCESS_KEY_ID: z.string().optional(),
+  R2_SECRET_ACCESS_KEY: z.string().optional(),
+  R2_BUCKET: z.string().optional(),
+  /** Optional; derived from R2_ACCOUNT_ID when absent. */
+  R2_ENDPOINT: z.string().optional(),
+  /** 1 enables the live R2 test. */
+  R2_TEST_LIVE: z.string().optional(),
 });
 
 export type AppEnv = z.infer<typeof envSchema>;
@@ -114,6 +126,7 @@ export function env(): AppEnv {
     MEDIA_ADAPTER: process.env.MEDIA_ADAPTER,
     STORAGE_DRIVER: process.env.STORAGE_DRIVER,
     DATABASE_URL: process.env.DATABASE_URL,
+    DATABASE_SCHEMA: process.env.DATABASE_SCHEMA,
     DATABASE_URL_UNPOOLED: process.env.DATABASE_URL_UNPOOLED,
     DATABASE_URL_TEST: process.env.DATABASE_URL_TEST,
     AWS_REGION: process.env.AWS_REGION,
@@ -125,6 +138,12 @@ export function env(): AppEnv {
     DYNAMODB_REPLIES_TABLE: process.env.DYNAMODB_REPLIES_TABLE,
     DYNAMODB_TABLE: process.env.DYNAMODB_TABLE,
     S3_BUCKET: process.env.S3_BUCKET ?? process.env.S3_BUCKET_MEDIA,
+    R2_ACCOUNT_ID: process.env.R2_ACCOUNT_ID,
+    R2_ACCESS_KEY_ID: process.env.R2_ACCESS_KEY_ID,
+    R2_SECRET_ACCESS_KEY: process.env.R2_SECRET_ACCESS_KEY,
+    R2_BUCKET: process.env.R2_BUCKET,
+    R2_ENDPOINT: process.env.R2_ENDPOINT,
+    R2_TEST_LIVE: process.env.R2_TEST_LIVE,
   });
 
   if (!parsed.success) {
@@ -165,6 +184,22 @@ export function env(): AppEnv {
   if (media === "s3" && !value.AWS_REGION) {
     throw new Error("The S3 adapter requires AWS_REGION.");
   }
+  if (media === "r2") {
+    const missing = [
+      ["R2_ACCOUNT_ID", value.R2_ACCOUNT_ID],
+      ["R2_ACCESS_KEY_ID", value.R2_ACCESS_KEY_ID],
+      ["R2_SECRET_ACCESS_KEY", value.R2_SECRET_ACCESS_KEY],
+      ["R2_BUCKET", value.R2_BUCKET],
+    ]
+      .filter(([, present]) => !present)
+      .map(([name]) => name);
+
+    if (missing.length > 0) {
+      throw new Error(
+        `MEDIA_DRIVER=r2 requires ${missing.join(", ")}.`,
+      );
+    }
+  }
 
   if (value.NODE_ENV === "production") {
     if (value.AUTH_SECRET === DEV_SECRET) {
@@ -184,7 +219,7 @@ export function env(): AppEnv {
 }
 
 export type DbDriver = "file" | "postgres" | "dynamodb";
-export type MediaDriver = "file" | "s3";
+export type MediaDriver = "file" | "r2" | "s3";
 
 /**
  * Precedence: `DB_DRIVER`, then the deprecated `DATA_ADAPTER`, then the coarse
@@ -198,9 +233,20 @@ export function dbDriver(value: AppEnv = env()): DbDriver {
 
 /** Same precedence for media: `MEDIA_DRIVER`, `MEDIA_ADAPTER`, `STORAGE_DRIVER`. */
 export function mediaDriver(value: AppEnv = env()): MediaDriver {
-  if (value.MEDIA_DRIVER) return value.MEDIA_DRIVER === "aws" ? "s3" : value.MEDIA_DRIVER;
+  if (value.MEDIA_DRIVER) {
+    return value.MEDIA_DRIVER === "aws" ? "s3" : value.MEDIA_DRIVER;
+  }
   if (value.MEDIA_ADAPTER) return value.MEDIA_ADAPTER;
   return value.STORAGE_DRIVER === "aws" ? "s3" : "file";
+}
+
+/** R2 endpoint, derived from the account id when not set explicitly. */
+export function r2Endpoint(value: AppEnv = env()): string {
+  if (value.R2_ENDPOINT) return value.R2_ENDPOINT;
+  if (!value.R2_ACCOUNT_ID) {
+    throw new Error("R2_ENDPOINT or R2_ACCOUNT_ID is required for MEDIA_DRIVER=r2.");
+  }
+  return `https://${value.R2_ACCOUNT_ID}.r2.cloudflarestorage.com`;
 }
 
 /** The app always uses the pooled URL. */

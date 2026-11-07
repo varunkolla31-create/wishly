@@ -7,6 +7,7 @@ import { FileContributionRepo } from "@/lib/repos/file/contribution-repo";
 import { FileMediaStore } from "@/lib/repos/file/media-store";
 import { FileReplyRepo } from "@/lib/repos/file/reply-repo";
 import { FileWishRepo } from "@/lib/repos/file/wish-repo";
+import { R2MediaStore } from "@/lib/repos/r2/media-store";
 import { S3MediaStore } from "@/lib/repos/s3/media-store";
 import { PostgresContributionRepo } from "@/lib/repos/postgres/contribution-repo";
 import { PostgresReplyRepo } from "@/lib/repos/postgres/reply-repo";
@@ -57,6 +58,8 @@ export function replyRepo(): ReplyRepo {
 }
 
 export function mediaStore(): MediaStore {
-  if (mediaDriver() === "s3") return new S3MediaStore();
+  const driver = mediaDriver();
+  if (driver === "r2") return new R2MediaStore();
+  if (driver === "s3") return new S3MediaStore();
   return new FileMediaStore();
 }

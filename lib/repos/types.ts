@@ -1,4 +1,4 @@
-import type { MediaKind } from "@/lib/media/validate";
+import type { MediaKind, UploadVerification } from "@/lib/media/validate";
 
 export type WishStatus = "draft" | "collecting" | "published" | "locked";
 export type WishMode = "solo" | "group";
@@ -134,5 +134,7 @@ export interface UploadTarget {
 export interface MediaStore {
   createUpload(input: PresignInput): Promise<UploadTarget>;
   createReadUrl(key: string): Promise<string>;
+  /** Confirms an upload exists, matches its key's type and fits the size cap. */
+  verifyUpload(key: string): Promise<UploadVerification>;
   delete(key: string): Promise<void>;
 }

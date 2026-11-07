@@ -61,7 +61,9 @@ export class FileWishRepo implements WishRepo {
     const items = await this.collection.read();
     return items
       .filter((wish) => wish.ownerId === ownerId)
-      .sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
+      .sort((a, b) => b.updatedAt.localeCompare(a.updatedAt))
+      // Never hand a password hash back to a list view.
+      .map((wish) => ({ ...wish, passwordHash: null }));
   }
 
   async update(wishId: string, patch: WishPatch): Promise<Wish | null> {

@@ -71,19 +71,23 @@ All data access goes through interfaces, so the app runs with no cloud keys.
 | WishRepo | JSON file | DynamoDB or Postgres |
 | ContributionRepo | JSON file | DynamoDB or Postgres |
 | ReplyRepo | JSON file | DynamoDB or Postgres |
-| MediaStore | Local folder with fake signed URLs | S3 presigned URLs |
+| MediaStore | Local folder with fake signed URLs | Cloudflare R2 or S3 presigned URLs |
 | AuthProvider | Dev bypass user (flag) | Clerk |
 
-Select storage with `STORAGE_DRIVER=file|aws`, where `aws` means DynamoDB + S3.
-Finer-grained overrides still win when set: `DATA_ADAPTER=file|dynamodb|postgres`
-and `MEDIA_ADAPTER=file|s3`. Identity uses `AUTH_MODE=dev|clerk`. These are the
-names the code reads (`lib/env.ts`); the file adapter is the default so the app
-runs with no cloud keys. `lib/repos/index.ts` resolves them and is the only place
+Select storage with `DB_DRIVER=file|postgres|aws` and `MEDIA_DRIVER=file|r2|aws`.
+The two are independent, so data can live in Postgres while media lives in R2.
+`STORAGE_DRIVER` remains a coarse fallback (`aws` = DynamoDB + S3), and the older
+`DATA_ADAPTER`/`MEDIA_ADAPTER` names still resolve. Identity uses
+`AUTH_MODE=dev|clerk`. `lib/repos/index.ts` resolves them and is the only place
 that constructs an adapter.
 
-Postgres targets Neon (or any Postgres 15+). `db/schema.sql` is idempotent and
-applied with `pnpm db:push`; `tests/integration/postgres.test.ts` runs the same
-contract as the other adapters via `pnpm test:db`.
+Media drivers are described in [`MEDIA.md`](MEDIA.md); Cloudflare R2 (the
+current target) is set up per [`R2_SETUP.md`](R2_SETUP.md), and the S3 path per
+[`AWS_SETUP.md`](AWS_SETUP.md).
+
+Postgres targets Neon (or any Postgres 15+). Migrations live in `db/migrations/`
+and are applied with `pnpm db:migrate`; `pnpm db:check` verifies the schema, and
+`pnpm test:db` runs the shared contract suite in a throwaway schema.
 
 DynamoDB uses **three tables** — `Wishes`, `Contributions`, `Replies` — not a
 single-table design. The adapters read each table's real key names with
@@ -246,13 +250,21 @@ Full tokens live in `DESIGN.md`.
 ## 11. Environment variables
 
 ```
-STORAGE_DRIVER=file              # file | aws (aws = DynamoDB + S3)
-DATA_ADAPTER=                    # optional override: file | dynamodb | postgres
-MEDIA_ADAPTER=                   # optional override: file | s3
+DB_DRIVER=file                   # file | postgres | aws
+MEDIA_DRIVER=file                # file | r2 | aws
+STORAGE_DRIVER=file              # coarse fallback: aws = DynamoDB + S3
 AUTH_MODE=dev                    # dev | clerk
 WISHLY_DEV_AUTH_BYPASS=true      # dev only
 
-DATABASE_URL=                    # required for DATA_ADAPTER=postgres
+DATABASE_URL=                    # required for DB_DRIVER=postgres (sslmode=require)
+DATABASE_URL_UNPOOLED=           # optional; migrations prefer it
+DATABASE_SCHEMA=                 # optional; used by the contract tests
+
+R2_ACCOUNT_ID=                   # required for MEDIA_DRIVER=r2
+R2_ACCESS_KEY_ID=
+R2_SECRET_ACCESS_KEY=
+R2_BUCKET=
+R2_ENDPOINT=                     # optional; derived from the account id
 
 NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=
 CLERK_SECRET_KEY=

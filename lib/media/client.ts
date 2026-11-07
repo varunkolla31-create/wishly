@@ -82,5 +82,22 @@ export async function uploadMedia(
     throw new Error("That upload didn't finish. Try again.");
   }
 
+  // The object exists in the store now; the server confirms its type and size
+  // before the draft is allowed to reference it.
+  const confirm = await fetch("/api/upload/confirm", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ key: target.key }),
+  });
+
+  if (!confirm.ok) {
+    const failure = (await confirm.json().catch(() => null)) as
+      | { error?: { message?: string } }
+      | null;
+    throw new Error(
+      failure?.error?.message ?? "That upload couldn't be verified.",
+    );
+  }
+
   return { key: target.key, url: target.readUrl, kind };
 }
