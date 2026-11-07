@@ -1,3 +1,5 @@
+import type { MusicBinding } from "@/lib/music/types";
+
 export const WIZARD_STEPS = [
   { id: "occasion", label: "Occasion" },
   { id: "template", label: "Template" },
@@ -18,6 +20,7 @@ export interface DraftValues {
   reelTemplateId: string;
   mediaKeys: string[];
   musicId: string | null;
+  music: MusicBinding | null;
   unlockAt: string;
 }
 

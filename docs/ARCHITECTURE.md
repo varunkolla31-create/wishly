@@ -245,6 +245,24 @@ Warm like Airbnb, immersive like Spotify, calm and premium like Oura. Style insp
 
 Full tokens live in `DESIGN.md`.
 
+### 10.4 YouTube music picker
+
+The sender's Music section is a YouTube Top 10 + search + paste picker. The
+server calls `videos.list` and `search.list` with a server-only API key and
+returns only `videoId`, `title`, `channel`, `thumbnailUrl`, `durationSeconds`.
+The Top 10 is cached in `music_search_cache` for `YOUTUBE_TOP_CACHE_HOURS`
+(default 6) and falls back to the last cached list, then to clearly labelled
+"Wishly picks". Search results are cached for 24 h and are limited by
+`music_quota` + `YOUTUBE_DAILY_SEARCH_LIMIT`; cache hits do not spend quota.
+`YOUTUBE_REGION_CODE` selects the chart region (Wishly uses `IN`).
+
+One song per wish: `wish.music` (`MusicBinding | null`) is replaced as a whole,
+including `startAtSeconds`; `musicId` remains only for legacy bundled tracks and
+is never set together with `music`. The picker uses the official IFrame player
+(visible, `youtube-nocookie.com`, no autoplay) with one preview instance.
+Thumbnails are allowed only from `i.ytimg.com`; frames only from
+`youtube-nocookie.com` / `youtube.com`. See `docs/MUSIC.md`.
+
 ---
 
 ## 11. Environment variables

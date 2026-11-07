@@ -4,8 +4,9 @@ import Link from "next/link";
 import type { UseFormReturn } from "react-hook-form";
 import { AiIdeaPanel } from "@/components/wizard/ai-idea-panel";
 import { MediaUploader } from "@/components/wizard/media-uploader";
-import { MusicPicker } from "@/components/wizard/music-picker";
 import type { DraftValues } from "@/components/wizard/types";
+import { YouTubeMusicPicker } from "@/components/music/youtube-music-picker";
+import { getMusicTrack } from "@/lib/catalog/music";
 import {
   defaultMemoryTemplateId,
   SAMPLE_PHOTOS,
@@ -219,16 +220,19 @@ export function ContentStep({
         </div>
 
         <div className="rounded-card border border-hairline bg-surface p-5">
-          <h2 className="text-sm font-medium text-ink">Music</h2>
+          <h2 className="text-sm font-medium text-ink">Music from YouTube</h2>
           <p className="mt-1 text-xs leading-relaxed text-ink-muted">
-            A looping track that plays while they read.
+            The Top 10 plays while they read. Pick one song — choosing another
+            replaces it.
           </p>
           <div className="mt-4">
-            <MusicPicker
-              value={values.musicId}
-              onChange={(musicId) =>
-                form.setValue("musicId", musicId, { shouldDirty: true })
-              }
+            <YouTubeMusicPicker
+              value={values.music}
+              legacyTrack={getMusicTrack(values.musicId)}
+              onChange={(music) => {
+                form.setValue("music", music, { shouldDirty: true });
+                form.setValue("musicId", null, { shouldDirty: true });
+              }}
             />
           </div>
         </div>

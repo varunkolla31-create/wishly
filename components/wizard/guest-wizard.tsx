@@ -7,7 +7,9 @@ import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { OccasionStep } from "@/components/wizard/occasion-step";
 import { TemplateStep } from "@/components/wizard/template-step";
-import { MusicPicker } from "@/components/wizard/music-picker";
+import { YouTubeMusicPicker } from "@/components/music/youtube-music-picker";
+import { getMusicTrack } from "@/lib/catalog/music";
+import type { MusicBinding } from "@/lib/music/types";
 import {
   defaultMemoryTemplateId,
   SAMPLE_PHOTOS,
@@ -32,6 +34,7 @@ interface GuestDraft {
   bonusNote: string;
   reelTemplateId: string;
   musicId: string | null;
+  music: MusicBinding | null;
   password: string;
   hint: string;
   unlockAt: string;
@@ -46,6 +49,7 @@ const EMPTY_DRAFT: GuestDraft = {
   bonusNote: "",
   reelTemplateId: defaultMemoryTemplateId("birthday"),
   musicId: "warm-glow",
+  music: null,
   password: "",
   hint: "",
   unlockAt: "",
@@ -164,7 +168,8 @@ export function GuestWizard({
           bonusNote: draft.bonusNote.trim() ? draft.bonusNote.trim() : null,
           reelTemplateId: draft.reelTemplateId || null,
           mediaKeys: [],
-          musicId: draft.musicId,
+          musicId: draft.music ? null : draft.musicId,
+          music: draft.music,
           unlockAt: fromLocalDateTimeInput(draft.unlockAt),
         }),
       });
@@ -379,11 +384,18 @@ export function GuestWizard({
               </div>
 
               <div>
-                <span className={labelClass}>Music</span>
+                <span className={labelClass}>Music from YouTube</span>
                 <div className="mt-2">
-                  <MusicPicker
-                    value={draft.musicId}
-                    onChange={(musicId) => update("musicId", musicId)}
+                  <YouTubeMusicPicker
+                    value={draft.music}
+                    legacyTrack={getMusicTrack(draft.musicId)}
+                    onChange={(music) =>
+                      setDraft((current) => ({
+                        ...current,
+                        music,
+                        musicId: null,
+                      }))
+                    }
                   />
                 </div>
               </div>

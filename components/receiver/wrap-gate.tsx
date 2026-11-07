@@ -69,6 +69,7 @@ export function WrapGate({ content }: { content: PublicWishContent }) {
             bonusNote: content.bonusNote,
             template,
             music,
+            youtubeMusic: content.music,
             media: content.media,
             contributions: content.contributions,
           }}

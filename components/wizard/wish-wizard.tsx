@@ -39,11 +39,13 @@ function initialValues(wish: SenderWish): DraftValues {
     reelTemplateId: wish.reelTemplateId ?? defaultMemoryTemplateId(wish.category),
     mediaKeys: wish.mediaKeys,
     musicId: wish.musicId,
+    music: wish.music ?? null,
     unlockAt: toLocalDateTimeInput(wish.unlockAt),
   };
 }
 
 function toPatch(values: DraftValues) {
+  const music = values.music ?? null;
   return {
     category: values.category,
     templateId: values.templateId,
@@ -54,7 +56,8 @@ function toPatch(values: DraftValues) {
     bonusNote: values.bonusNote.trim() ? values.bonusNote.trim() : null,
     reelTemplateId: values.reelTemplateId || null,
     mediaKeys: values.mediaKeys,
-    musicId: values.musicId,
+    musicId: music ? null : values.musicId,
+    music,
     unlockAt: fromLocalDateTimeInput(values.unlockAt),
   };
 }

@@ -41,6 +41,7 @@ export function PreviewStep({
             bonusNote: values.bonusNote,
             template,
             music,
+            youtubeMusic: values.music,
             media: visibleMedia,
           }}
         />

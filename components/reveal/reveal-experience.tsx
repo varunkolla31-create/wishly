@@ -5,11 +5,13 @@ import { MusicMiniPlayer } from "@/components/reveal/music-mini-player";
 import { RevealGallery } from "@/components/reveal/reveal-gallery";
 import { ScratchCard } from "@/components/reveal/scratch-card";
 import { TypedMessage } from "@/components/reveal/typed-message";
+import { YouTubeMusicCard } from "@/components/reveal/youtube-music-card";
 import type {
   MusicTrack,
   TemplateDefinition,
 } from "@/lib/catalog/types";
 import type { MediaItem } from "@/lib/media/types";
+import type { MusicBinding } from "@/lib/music/types";
 import type { PublicContribution } from "@/lib/wishes/public";
 import { cn } from "@/lib/utils/cn";
 
@@ -20,6 +22,7 @@ export interface RevealContent {
   bonusNote?: string | null;
   template: TemplateDefinition;
   music: MusicTrack | null;
+  youtubeMusic?: MusicBinding | null;
   media: MediaItem[];
   contributions?: PublicContribution[];
 }
@@ -68,6 +71,10 @@ export function RevealExperience({
         text={content.message || "Your message will appear here."}
         className="mt-8"
       />
+
+      {content.youtubeMusic ? (
+        <YouTubeMusicCard music={content.youtubeMusic} palette={palette} />
+      ) : null}
     </>
   );
 
@@ -114,7 +121,9 @@ export function RevealExperience({
         </div>
       )}
 
-      {music ? <MusicMiniPlayer track={music} palette={palette} /> : null}
+      {!content.youtubeMusic && music ? (
+        <MusicMiniPlayer track={music} palette={palette} />
+      ) : null}
     </div>
   );
 }
