@@ -23,6 +23,7 @@ interface GuestDraft {
   receiverName: string;
   title: string;
   message: string;
+  bonusNote: string;
   musicId: string | null;
   password: string;
   hint: string;
@@ -35,6 +36,7 @@ const EMPTY_DRAFT: GuestDraft = {
   receiverName: "",
   title: "",
   message: "",
+  bonusNote: "",
   musicId: "warm-glow",
   password: "",
   hint: "",
@@ -148,6 +150,7 @@ export function GuestWizard({
           receiverName: draft.receiverName,
           title: draft.title,
           message: draft.message,
+          bonusNote: draft.bonusNote.trim() ? draft.bonusNote.trim() : null,
           mediaKeys: [],
           musicId: draft.musicId,
           unlockAt: fromLocalDateTimeInput(draft.unlockAt),
@@ -325,6 +328,23 @@ export function GuestWizard({
                   <p className={hintClass}>Line breaks are kept.</p>
                   <span className="text-xs text-ink-muted">{draft.message.length}/4000</span>
                 </div>
+              </div>
+
+              <div>
+                <label htmlFor="guest-bonus" className={labelClass}>
+                  Secret bonus note or gift code (optional)
+                </label>
+                <textarea
+                  id="guest-bonus"
+                  value={draft.bonusNote}
+                  onChange={(event) => update("bonusNote", event.target.value.slice(0, 300))}
+                  rows={3}
+                  placeholder="Something they scratch to reveal."
+                  className="mt-1 w-full rounded-card border border-hairline bg-canvas px-4 py-3 text-sm leading-relaxed text-ink placeholder:text-ink-muted/70"
+                />
+                <p className={hintClass}>
+                  Hidden behind gold foil on the reveal page.
+                </p>
               </div>
 
               <div>

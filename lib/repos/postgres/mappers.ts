@@ -25,6 +25,7 @@ export interface WishRow {
   receiver_name: string;
   title: string;
   message: string;
+  bonus_note: string | null;
   media_keys: string[] | null;
   /** Reserved for the parked music refactor; unused by the current types. */
   music: unknown;
@@ -51,6 +52,7 @@ export function toWish(row: WishRow): Wish {
     receiverName: row.receiver_name,
     title: row.title,
     message: row.message,
+    bonusNote: row.bonus_note,
     mediaKeys: row.media_keys ?? [],
     musicId: row.music_id,
     passwordHash: row.password_hash,

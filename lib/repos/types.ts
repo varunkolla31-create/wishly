@@ -12,6 +12,8 @@ export interface Wish {
   receiverName: string;
   title: string;
   message: string;
+  /** Optional scratch-to-reveal note or gift code. */
+  bonusNote: string | null;
   /** Random keys under `wishes/<wishId>/<kind>/...`; kind is the path segment. */
   mediaKeys: string[];
   musicId: string | null;

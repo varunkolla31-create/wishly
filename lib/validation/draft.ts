@@ -13,6 +13,7 @@ export const draftPatchSchema = z.object({
   receiverName: z.string().trim().max(80).optional(),
   title: z.string().trim().max(120).optional(),
   message: z.string().max(4000).optional(),
+  bonusNote: z.string().trim().max(300).nullable().optional(),
   mediaKeys: z
     .array(z.string().refine(isValidMediaKey, "Invalid media key"))
     .max(30)

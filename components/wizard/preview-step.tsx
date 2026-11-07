@@ -37,6 +37,7 @@ export function PreviewStep({
             receiverName: values.receiverName,
             title: values.title,
             message: values.message,
+            bonusNote: values.bonusNote,
             template,
             music,
             media: visibleMedia,

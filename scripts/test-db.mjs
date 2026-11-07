@@ -24,7 +24,7 @@ if (!/[?&]sslmode=(require|verify-ca|verify-full)\b/.test(testUrl)) {
 const child = spawn(
   process.platform === "win32" ? "pnpm.cmd" : "pnpm",
   ["exec", "vitest", "run", "--config", "vitest.db.config.mts"],
-  { stdio: "inherit", env: { ...process.env, NODE_ENV: "test" }, shell: false },
+  { stdio: "inherit", env: { ...process.env, NODE_ENV: "test" }, shell: process.platform === "win32" },
 );
 
 child.on("exit", (code) => {

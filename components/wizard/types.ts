@@ -14,6 +14,7 @@ export interface DraftValues {
   receiverName: string;
   title: string;
   message: string;
+  bonusNote: string;
   mediaKeys: string[];
   musicId: string | null;
   unlockAt: string;

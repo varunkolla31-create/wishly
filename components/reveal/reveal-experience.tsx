@@ -3,6 +3,7 @@
 import { MemoryWall } from "@/components/reveal/memory-wall";
 import { MusicMiniPlayer } from "@/components/reveal/music-mini-player";
 import { RevealGallery } from "@/components/reveal/reveal-gallery";
+import { ScratchCard } from "@/components/reveal/scratch-card";
 import { TypedMessage } from "@/components/reveal/typed-message";
 import type {
   MusicTrack,
@@ -16,6 +17,7 @@ export interface RevealContent {
   receiverName: string;
   title: string;
   message: string;
+  bonusNote?: string | null;
   template: TemplateDefinition;
   music: MusicTrack | null;
   media: MediaItem[];
@@ -88,6 +90,9 @@ export function RevealExperience({
             <div className="lg:sticky lg:top-10 lg:self-start">{letter}</div>
             <RevealGallery media={media} template={template} />
           </div>
+          {content.bonusNote ? (
+            <ScratchCard message={content.bonusNote} palette={palette} />
+          ) : null}
           <MemoryWall
             contributions={content.contributions ?? []}
             palette={palette}
@@ -98,6 +103,9 @@ export function RevealExperience({
         <div className="relative z-10 mx-auto w-full max-w-2xl flex-1 px-5 pb-24 pt-12 sm:px-8 sm:pt-16">
           {letter}
           <RevealGallery media={media} template={template} />
+          {content.bonusNote ? (
+            <ScratchCard message={content.bonusNote} palette={palette} />
+          ) : null}
           <MemoryWall
             contributions={content.contributions ?? []}
             palette={palette}

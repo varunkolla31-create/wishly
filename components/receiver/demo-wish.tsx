@@ -60,6 +60,7 @@ export function DemoWish({ wish }: { wish: DemoWishData }) {
             receiverName: wish.receiverName,
             title: wish.title,
             message: wish.message,
+            bonusNote: wish.bonusNote,
             template,
             music,
             media: [],

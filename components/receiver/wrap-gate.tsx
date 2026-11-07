@@ -51,6 +51,7 @@ export function WrapGate({ content }: { content: PublicWishContent }) {
             receiverName: content.receiverName,
             title: content.title,
             message: content.message,
+            bonusNote: content.bonusNote,
             template,
             music,
             media: content.media,

@@ -110,6 +110,28 @@ export function ContentStep({
           </div>
 
           <div className="mt-5">
+            <label htmlFor="bonusNote" className={labelClass}>
+              Secret bonus note or gift code (optional)
+            </label>
+            <textarea
+              id="bonusNote"
+              {...form.register("bonusNote")}
+              rows={3}
+              maxLength={300}
+              placeholder="A hidden message or a gift code they scratch to reveal."
+              className="mt-1 w-full rounded-card border border-hairline bg-canvas px-4 py-3 text-sm leading-relaxed text-ink placeholder:text-ink-muted/70"
+            />
+            <div className="mt-1 flex items-center justify-between gap-3">
+              <p className={hintClass}>
+                Hidden behind gold foil on the reveal page.
+              </p>
+              <span className="text-xs text-ink-muted">
+                {values.bonusNote.length}/300
+              </span>
+            </div>
+          </div>
+
+          <div className="mt-5">
             <label htmlFor="unlockAt" className={labelClass}>
               Open it on a certain day (optional)
             </label>
