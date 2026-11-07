@@ -568,7 +568,7 @@ export function VideoStudio({ template }: { template: CanvaVideoTemplate }) {
       </div>
 
       <div className="mt-8 grid gap-8 lg:grid-cols-[1.4fr_1fr]">
-        <div className="rounded-card border border-hairline bg-sand p-4 sm:p-6">
+        <div className="self-start rounded-card border border-hairline bg-sand p-4 sm:p-6">
           <div className="flex items-center justify-center">
             <canvas
               ref={canvasRef}
