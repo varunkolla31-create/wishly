@@ -8,6 +8,7 @@ import type {
   WishMode,
   WishStatus,
 } from "@/lib/repos/types";
+import type { MusicBinding } from "@/lib/music/types";
 
 function toIso(value: unknown): string | null {
   if (value === null || value === undefined) return null;
@@ -55,6 +56,7 @@ export function toWish(row: WishRow): Wish {
     message: row.message,
     bonusNote: row.bonus_note,
     reelTemplateId: row.reel_template_id,
+    music: (row.music as MusicBinding | null) ?? null,
     mediaKeys: row.media_keys ?? [],
     musicId: row.music_id,
     passwordHash: row.password_hash,

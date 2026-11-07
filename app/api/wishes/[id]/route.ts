@@ -32,6 +32,16 @@ export function PATCH(
       throw new HttpError(400, "invalid_music", "Pick a supported track.");
     }
 
+    // One song only: YouTube music replaces the bundled track and vice versa.
+    if (patch.music) {
+      patch.musicId = null;
+    } else if (patch.music === null) {
+      patch.musicId = null;
+    }
+    if (patch.musicId) {
+      patch.music = null;
+    }
+
     if (patch.mediaKeys) {
       const prefix = mediaKeyPrefix(id);
       for (const key of patch.mediaKeys) {

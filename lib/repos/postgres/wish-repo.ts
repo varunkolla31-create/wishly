@@ -14,6 +14,7 @@ const COLUMNS: Record<string, string> = {
   message: "message",
   bonusNote: "bonus_note",
   reelTemplateId: "reel_template_id",
+  music: "music",
   mediaKeys: "media_keys",
   musicId: "music_id",
   passwordHash: "password_hash",
@@ -25,9 +26,12 @@ const COLUMNS: Record<string, string> = {
   contributorTokenRevokedAt: "contributor_token_revoked_at",
 };
 
-/** media_keys is jsonb; pg would otherwise encode an array as a PG array. */
+/** media_keys and music are jsonb; pg would otherwise mis-encode them. */
 function encode(key: string, value: unknown): unknown {
   if (key === "mediaKeys" && Array.isArray(value)) return JSON.stringify(value);
+  if (key === "music" && value !== null && typeof value === "object") {
+    return JSON.stringify(value);
+  }
   return value === undefined ? null : value;
 }
 

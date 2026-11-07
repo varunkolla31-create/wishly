@@ -19,6 +19,7 @@ const FIXTURES: MusicCandidate[] = [
     channel: "Mock Records",
     thumbnailUrl: "https://i.ytimg.com/vi/dQw4w9WgXcQ/mqdefault.jpg",
     sourceUrl: canonicalWatchUrl("dQw4w9WgXcQ"),
+    durationSeconds: 180,
   },
   {
     provider: "youtube",
@@ -27,6 +28,7 @@ const FIXTURES: MusicCandidate[] = [
     channel: "Mock Records",
     thumbnailUrl: "https://i.ytimg.com/vi/9bZkp7q19f0/mqdefault.jpg",
     sourceUrl: canonicalWatchUrl("9bZkp7q19f0"),
+    durationSeconds: 240,
   },
 ];
 
@@ -37,6 +39,13 @@ const FIXTURES: MusicCandidate[] = [
  */
 export class MockMusicProvider implements MusicProvider {
   constructor(readonly searchEnabled = false) {}
+
+  async top(): Promise<MusicCandidate[]> {
+    if (!this.searchEnabled) {
+      throw new MusicError("search_disabled", "Search isn't configured.");
+    }
+    return FIXTURES;
+  }
 
   async search(query: string): Promise<MusicCandidate[]> {
     if (!this.searchEnabled) {
@@ -65,6 +74,7 @@ export class MockMusicProvider implements MusicProvider {
       channel: "Mock Records",
       thumbnailUrl: `https://i.ytimg.com/vi/${parsed.videoId}/mqdefault.jpg`,
       sourceUrl: canonicalWatchUrl(parsed.videoId),
+      durationSeconds: 0,
     };
   }
 

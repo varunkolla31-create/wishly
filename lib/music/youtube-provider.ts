@@ -18,6 +18,8 @@ const DATA_API = "https://www.googleapis.com/youtube/v3";
 const TIMEOUT_MS = 8_000;
 const SEARCH_RESULTS = 10;
 const MUSIC_CATEGORY_ID = "10";
+const THUMBNAIL_FIELDS =
+  "snippet(title,channelTitle,thumbnails/medium/url,thumbnails/default/url)";
 
 interface OEmbedResponse {
   title?: string;
@@ -25,19 +27,45 @@ interface OEmbedResponse {
   thumbnail_url?: string;
 }
 
+interface SearchItem {
+  id?: { videoId?: string };
+  snippet?: {
+    title?: string;
+    channelTitle?: string;
+    thumbnails?: { medium?: { url?: string }; default?: { url?: string } };
+  };
+}
+
 interface SearchResponse {
-  items?: {
-    id?: { videoId?: string };
-    snippet?: {
-      title?: string;
-      channelTitle?: string;
-      thumbnails?: { medium?: { url?: string }; default?: { url?: string } };
-    };
-  }[];
+  items?: SearchItem[];
+}
+
+interface VideoItem {
+  id?: string;
+  snippet?: {
+    title?: string;
+    channelTitle?: string;
+    thumbnails?: { medium?: { url?: string }; default?: { url?: string } };
+  };
+  contentDetails?: { duration?: string };
+  status?: { embeddable?: boolean; madeForKids?: boolean };
 }
 
 interface VideosResponse {
-  items?: { id?: string; status?: { madeForKids?: boolean } }[];
+  items?: VideoItem[];
+}
+
+function parseIsoDuration(value: string | undefined): number {
+  if (!value) return 0;
+  const match = /^P(?:(\d+)D)?(?:T(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?)?$/.exec(
+    value,
+  );
+  if (!match) return 0;
+  const days = Number(match[1] ?? 0);
+  const hours = Number(match[2] ?? 0);
+  const minutes = Number(match[3] ?? 0);
+  const seconds = Number(match[4] ?? 0);
+  return Math.min(86_400, days * 86_400 + hours * 3_600 + minutes * 60 + seconds);
 }
 
 async function getJson<T>(url: string): Promise<T> {
@@ -48,11 +76,31 @@ async function getJson<T>(url: string): Promise<T> {
   });
 
   if (!response.ok) {
+    let reason = "";
+    try {
+      const body = (await response.json()) as {
+        error?: { errors?: { reason?: string }[]; status?: string };
+      };
+      reason = body.error?.errors?.[0]?.reason ?? body.error?.status ?? "";
+    } catch {
+      reason = "";
+    }
+
+    if (response.status === 404) {
+      throw new MusicError("not_found", "That video isn't available.");
+    }
+    if (
+      response.status === 429 ||
+      (response.status === 403 && /quota|rateLimit|dailyLimit/i.test(reason))
+    ) {
+      throw new MusicError(
+        "quota",
+        "Search is busy right now. Pick from the Top 10 or paste a link.",
+      );
+    }
     throw new MusicError(
-      response.status === 404 ? "not_found" : "upstream",
-      response.status === 404
-        ? "That video isn't available."
-        : "YouTube didn't answer just now. Try again.",
+      response.status >= 500 ? "unavailable" : "upstream",
+      "YouTube didn't answer just now. Try again.",
     );
   }
 
@@ -69,14 +117,163 @@ function thumbnailFor(candidate: Partial<MusicCandidate>, videoId: string): stri
   return `https://i.ytimg.com/vi/${videoId}/mqdefault.jpg`;
 }
 
+function mapVideo(
+  item: VideoItem,
+  fallback?: SearchItem["snippet"],
+): MusicCandidate | null {
+  const videoId = item.id ?? "";
+  if (!VIDEO_ID_PATTERN.test(videoId)) return null;
+  const snippet = item.snippet ?? fallback;
+  const title = snippet?.title?.trim();
+  if (!title) return null;
+
+  return {
+    provider: "youtube",
+    videoId,
+    title: title.slice(0, 200),
+    channel: (snippet?.channelTitle ?? "").trim().slice(0, 120),
+    thumbnailUrl: thumbnailFor(
+      {
+        thumbnailUrl:
+          snippet?.thumbnails?.medium?.url ??
+          snippet?.thumbnails?.default?.url,
+      },
+      videoId,
+    ),
+    sourceUrl: canonicalWatchUrl(videoId),
+    durationSeconds: parseIsoDuration(item.contentDetails?.duration),
+    embeddable: item.status?.embeddable,
+    madeForKids: item.status?.madeForKids,
+  };
+}
+
+function dedupe(items: MusicCandidate[]): MusicCandidate[] {
+  const seen = new Set<string>();
+  const out: MusicCandidate[] = [];
+  for (const item of items) {
+    if (seen.has(item.videoId)) continue;
+    seen.add(item.videoId);
+    out.push(item);
+  }
+  return out;
+}
+
 export class YouTubeProvider implements MusicProvider {
   get searchEnabled(): boolean {
     return Boolean(env().YOUTUBE_API_KEY);
   }
 
+  private requireKey(): string {
+    const key = env().YOUTUBE_API_KEY;
+    if (!key) {
+      throw new MusicError("search_disabled", "Search isn't configured.");
+    }
+    return key;
+  }
+
+  private videosFields(): string {
+    return `items(id,${THUMBNAIL_FIELDS},contentDetails/duration,status/embeddable,status/madeForKids)`;
+  }
+
+  private async videoDetails(
+    ids: string[],
+  ): Promise<Map<string, VideoItem>> {
+    const key = this.requireKey();
+    const params = new URLSearchParams({
+      part: "snippet,contentDetails,status",
+      id: ids.join(","),
+      key,
+      fields: this.videosFields(),
+    });
+    const data = await getJson<VideosResponse>(
+      `${DATA_API}/videos?${params.toString()}`,
+    );
+    const map = new Map<string, VideoItem>();
+    for (const item of data.items ?? []) {
+      if (item.id) map.set(item.id, item);
+    }
+    return map;
+  }
+
+  /** Top 10 chart for a region. Filters non-embeddable videos. */
+  async top(region: string): Promise<MusicCandidate[]> {
+    const key = this.requireKey();
+
+    const fetchChart = async (maxResults: number) => {
+      const params = new URLSearchParams({
+        part: "snippet,contentDetails,status",
+        chart: "mostPopular",
+        videoCategoryId: MUSIC_CATEGORY_ID,
+        regionCode: region,
+        maxResults: String(maxResults),
+        key,
+        fields: this.videosFields(),
+      });
+      const data = await getJson<VideosResponse>(
+        `${DATA_API}/videos?${params.toString()}`,
+      );
+      return (data.items ?? [])
+        .map((item) => mapVideo(item))
+        .filter((item): item is MusicCandidate => item !== null);
+    };
+
+    let items = (await fetchChart(SEARCH_RESULTS)).filter(
+      (item) => item.embeddable !== false,
+    );
+    if (items.length < SEARCH_RESULTS) {
+      const more = (await fetchChart(50)).filter(
+        (item) => item.embeddable !== false,
+      );
+      items = dedupe([...items, ...more]);
+    }
+    return dedupe(items).slice(0, SEARCH_RESULTS);
+  }
+
+  async search(query: string): Promise<MusicCandidate[]> {
+    this.requireKey();
+
+    const params = new URLSearchParams({
+      part: "snippet",
+      type: "video",
+      videoEmbeddable: "true",
+      videoCategoryId: MUSIC_CATEGORY_ID,
+      maxResults: String(SEARCH_RESULTS),
+      safeSearch: "moderate",
+      q: query,
+      key: this.requireKey(),
+      fields: `items(id/videoId,${THUMBNAIL_FIELDS})`,
+    });
+
+    const data = await getJson<SearchResponse>(
+      `${DATA_API}/search?${params.toString()}`,
+    );
+
+    const base = (data.items ?? [])
+      .map((item) => ({
+        videoId: item.id?.videoId ?? "",
+        snippet: item.snippet,
+      }))
+      .filter(
+        (item) => VIDEO_ID_PATTERN.test(item.videoId) && item.snippet?.title,
+      );
+    if (base.length === 0) return [];
+
+    const details = await this.videoDetails(base.map((item) => item.videoId));
+    const results: MusicCandidate[] = [];
+    for (const item of base) {
+      const detail = details.get(item.videoId);
+      if (!detail) continue;
+      const candidate = mapVideo(detail, item.snippet);
+      if (!candidate) continue;
+      if (candidate.embeddable === false) continue;
+      results.push(candidate);
+    }
+    return results.slice(0, SEARCH_RESULTS);
+  }
+
   /**
-   * oEmbed needs no API key, so pasting a link works with zero configuration.
-   * Embeddability is not knowable here; the player reports it via onError.
+   * oEmbed needs no key, so pasting a link works with zero configuration.
+   * When a key exists we enrich duration and embeddability.
    */
   async resolveFromUrl(url: string): Promise<MusicCandidate> {
     const parsed = parseYouTubeUrl(url);
@@ -85,10 +282,6 @@ export class YouTubeProvider implements MusicProvider {
         "invalid_url",
         "Paste a YouTube video link (youtube.com/watch, youtu.be or /shorts).",
       );
-    }
-
-    if (!VIDEO_ID_PATTERN.test(parsed.videoId)) {
-      throw new MusicError("invalid_url", "That video id doesn't look right.");
     }
 
     const endpoint = `${OEMBED_ENDPOINT}?url=${encodeURIComponent(
@@ -101,6 +294,23 @@ export class YouTubeProvider implements MusicProvider {
       throw new MusicError("not_found", "That video isn't available.");
     }
 
+    let detail: VideoItem | undefined;
+    if (env().YOUTUBE_API_KEY) {
+      try {
+        const details = await this.videoDetails([parsed.videoId]);
+        detail = details.get(parsed.videoId);
+      } catch {
+        // Enrichment is best-effort; a broken API must not block a paste.
+        detail = undefined;
+      }
+      if (detail?.status?.embeddable === false) {
+        throw new MusicError(
+          "unavailable",
+          "That video can't be played in an embedded player.",
+        );
+      }
+    }
+
     return {
       provider: "youtube",
       videoId: parsed.videoId,
@@ -111,75 +321,10 @@ export class YouTubeProvider implements MusicProvider {
         parsed.videoId,
       ),
       sourceUrl: canonicalWatchUrl(parsed.videoId),
-      madeForKids: await this.madeForKids(parsed.videoId),
+      durationSeconds: parseIsoDuration(detail?.contentDetails?.duration),
+      embeddable: detail?.status?.embeddable,
+      madeForKids: detail?.status?.madeForKids,
     };
-  }
-
-  /**
-   * Optional policy lookup (Developer Policies III.E.4.b.11). Costs 1 quota and
-   * fails soft: an unknown status must never block resolving a link.
-   */
-  private async madeForKids(videoId: string): Promise<boolean | undefined> {
-    const key = env().YOUTUBE_API_KEY;
-    if (!key) return undefined;
-
-    try {
-      const data = await getJson<VideosResponse>(
-        `${DATA_API}/videos?part=status&id=${videoId}&key=${encodeURIComponent(key)}`,
-      );
-      return data.items?.[0]?.status?.madeForKids;
-    } catch {
-      return undefined;
-    }
-  }
-
-  async search(query: string): Promise<MusicCandidate[]> {
-    const key = env().YOUTUBE_API_KEY;
-    if (!key) {
-      throw new MusicError("search_disabled", "Search isn't configured.");
-    }
-
-    const params = new URLSearchParams({
-      part: "snippet",
-      type: "video",
-      videoEmbeddable: "true",
-      videoCategoryId: MUSIC_CATEGORY_ID,
-      maxResults: String(SEARCH_RESULTS),
-      safeSearch: "moderate",
-      q: query,
-      key,
-      fields:
-        "items(id/videoId,snippet(title,channelTitle,thumbnails/medium/url))",
-    });
-
-    const data = await getJson<SearchResponse>(
-      `${DATA_API}/search?${params.toString()}`,
-    );
-
-    const results: MusicCandidate[] = [];
-    for (const item of data.items ?? []) {
-      const videoId = item.id?.videoId ?? "";
-      const title = item.snippet?.title?.trim();
-      if (!VIDEO_ID_PATTERN.test(videoId) || !title) continue;
-
-      results.push({
-        provider: "youtube",
-        videoId,
-        title: title.slice(0, 200),
-        channel: (item.snippet?.channelTitle ?? "").trim().slice(0, 120),
-        thumbnailUrl: thumbnailFor(
-          {
-            thumbnailUrl:
-              item.snippet?.thumbnails?.medium?.url ??
-              item.snippet?.thumbnails?.default?.url,
-          },
-          videoId,
-        ),
-        sourceUrl: canonicalWatchUrl(videoId),
-      });
-    }
-
-    return results;
   }
 
   getEmbed(binding: {

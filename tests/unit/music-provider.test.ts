@@ -147,22 +147,55 @@ describe("YouTubeProvider", () => {
   it("maps search results and drops malformed ids", async () => {
     process.env.YOUTUBE_API_KEY = "test-key";
 
-    const fetchMock = vi.fn(async (_input: RequestInfo | URL) =>
-      jsonResponse({
+    const fetchMock = vi.fn(async (input: RequestInfo | URL) => {
+      const url = String(input);
+      if (url.includes("/search?")) {
+        return jsonResponse({
+          items: [
+            {
+              id: { videoId: ID },
+              snippet: {
+                title: "  Golden Hour  ",
+                channelTitle: " Kacey Musgraves ",
+                thumbnails: {
+                  medium: { url: "https://i.ytimg.com/vi/x/mqdefault.jpg" },
+                },
+              },
+            },
+            { id: { videoId: "too-short" }, snippet: { title: "Broken" } },
+            { id: { videoId: "9bZkp7q19f0" }, snippet: { title: "Second" } },
+          ],
+        });
+      }
+      return jsonResponse({
         items: [
           {
-            id: { videoId: ID },
+            id: ID,
             snippet: {
-              title: "  Golden Hour  ",
-              channelTitle: " Kacey Musgraves ",
-              thumbnails: { medium: { url: "https://i.ytimg.com/vi/x/mqdefault.jpg" } },
+              title: "Golden Hour",
+              channelTitle: "Kacey Musgraves",
+              thumbnails: {
+                medium: { url: "https://i.ytimg.com/vi/x/mqdefault.jpg" },
+              },
             },
+            contentDetails: { duration: "PT3M30S" },
+            status: { embeddable: true },
           },
-          { id: { videoId: "too-short" }, snippet: { title: "Broken" } },
-          { id: { videoId: "9bZkp7q19f0" }, snippet: { title: "Second" } },
+          {
+            id: "9bZkp7q19f0",
+            snippet: {
+              title: "Second",
+              channelTitle: "Artist",
+              thumbnails: {
+                medium: { url: "https://i.ytimg.com/vi/y/mqdefault.jpg" },
+              },
+            },
+            contentDetails: { duration: "PT4M" },
+            status: { embeddable: true },
+          },
         ],
-      }),
-    );
+      });
+    });
     vi.stubGlobal("fetch", fetchMock);
 
     const results = await new YouTubeProvider().search("  golden   hour ");

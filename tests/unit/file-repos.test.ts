@@ -32,6 +32,7 @@ describe("file repositories", () => {
     expect(wish.mode).toBe("solo");
     expect(wish.passwordHash).toBeNull();
     expect(wish.bonusNote).toBeNull();
+    expect(wish.music).toBeNull();
     expect(wish.views).toBe(0);
     expect(wish.wishId).toHaveLength(21);
     expect(wish.mediaKeys).toEqual([]);

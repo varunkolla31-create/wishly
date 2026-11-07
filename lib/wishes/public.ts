@@ -2,6 +2,7 @@ import "server-only";
 import { getOccasion } from "@/lib/catalog/occasions";
 import { mediaKindFromKey } from "@/lib/media/validate";
 import type { MediaItem } from "@/lib/media/types";
+import type { MusicBinding } from "@/lib/music/types";
 import { contributionRepo, mediaStore } from "@/lib/repos/index";
 import type { ContributionType, Wish } from "@/lib/repos/types";
 
@@ -36,6 +37,7 @@ export interface PublicWishContent {
   templateId: string;
   category: string;
   musicId: string | null;
+  music: MusicBinding | null;
   unlockAt: string | null;
   media: MediaItem[];
   contributions: PublicContribution[];
@@ -110,6 +112,7 @@ export async function buildWishContent(
     templateId: wish.templateId,
     category: wish.category,
     musicId: wish.musicId,
+    music: wish.music,
     unlockAt: wish.unlockAt,
     media,
     contributions,

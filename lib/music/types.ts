@@ -13,6 +13,8 @@ export interface MusicCandidate {
   channel: string;
   thumbnailUrl: string;
   sourceUrl: string;
+  durationSeconds: number;
+  embeddable?: boolean;
   madeForKids?: boolean;
 }
 
@@ -30,6 +32,7 @@ export interface MusicEmbed {
 export interface MusicProvider {
   /** False when no Data API key is configured; the UI hides search. */
   readonly searchEnabled: boolean;
+  top(region: string): Promise<MusicCandidate[]>;
   search(query: string): Promise<MusicCandidate[]>;
   resolveFromUrl(url: string): Promise<MusicCandidate>;
   getEmbed(binding: {

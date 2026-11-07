@@ -20,6 +20,7 @@ export class FileWishRepo implements WishRepo {
       message: "",
       bonusNote: null,
       reelTemplateId: null,
+      music: null,
       mediaKeys: [],
       musicId: null,
       passwordHash: null,

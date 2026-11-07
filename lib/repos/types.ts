@@ -1,4 +1,5 @@
 import type { MediaKind, UploadVerification } from "@/lib/media/validate";
+import type { MusicBinding } from "@/lib/music/types";
 
 export type WishStatus = "draft" | "collecting" | "published" | "locked";
 export type WishMode = "solo" | "group";
@@ -16,6 +17,8 @@ export interface Wish {
   bonusNote: string | null;
   /** Native 3D memory reel template id. */
   reelTemplateId: string | null;
+  /** YouTube music binding. Never both this and musicId. */
+  music: MusicBinding | null;
   /** Random keys under `wishes/<wishId>/<kind>/...`; kind is the path segment. */
   mediaKeys: string[];
   musicId: string | null;

@@ -43,6 +43,7 @@ export function wishlyContract(
         expect(wish.message).toBe("");
         expect(wish.bonusNote).toBeNull();
         expect(wish.reelTemplateId).toBeNull();
+        expect(wish.music).toBeNull();
         expect(wish.mediaKeys).toEqual([]);
         expect(wish.musicId).toBeNull();
         expect(wish.passwordHash).toBeNull();
@@ -98,6 +99,27 @@ export function wishlyContract(
         expect(updated?.status).toBe("published");
 
         expect(await wishRepo.update("doesnotexist123456789", { title: "x" })).toBeNull();
+
+        // ---- YouTube music binding replaces the legacy track id -------
+        const music = {
+          provider: "youtube" as const,
+          videoId: "dQw4w9WgXcQ",
+          title: "A song",
+          channel: "An artist",
+          thumbnailUrl: "https://i.ytimg.com/vi/dQw4w9WgXcQ/mqdefault.jpg",
+          sourceUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+          durationSeconds: 200,
+          startAtSeconds: 30,
+        };
+        const withMusic = await wishRepo.update(wishId, {
+          music,
+          musicId: null,
+        });
+        expect(withMusic?.music?.videoId).toBe("dQw4w9WgXcQ");
+        expect(withMusic?.music?.startAtSeconds).toBe(30);
+        expect(withMusic?.musicId).toBeNull();
+        await wishRepo.update(wishId, { music: null });
+        expect((await wishRepo.getById(wishId))?.music).toBeNull();
 
         // ---- nulling a field clears it -------------------------------
         await wishRepo.update(wishId, { musicId: null, unlockAt: null, bonusNote: null, reelTemplateId: null });

@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { isValidMediaKey } from "@/lib/media/validate";
+import { musicBindingSchema } from "@/lib/validation/music";
 
 const isoDate = z.string().refine(
   (value) => !Number.isNaN(Date.parse(value)),
@@ -15,6 +16,8 @@ export const draftPatchSchema = z.object({
   message: z.string().max(4000).optional(),
   bonusNote: z.string().trim().max(300).nullable().optional(),
   reelTemplateId: z.string().max(60).nullable().optional(),
+  /** YouTube music binding. Never both this and musicId. */
+  music: musicBindingSchema.nullable().optional(),
   mediaKeys: z
     .array(z.string().refine(isValidMediaKey, "Invalid media key"))
     .max(30)

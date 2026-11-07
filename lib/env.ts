@@ -41,6 +41,14 @@ const envSchema = z.object({
 
   YOUTUBE_API_KEY: z.string().optional(),
   YOUTUBE_DAILY_SEARCH_LIMIT: intFromEnv(80, 1, 100),
+  YOUTUBE_REGION_CODE: z.preprocess(
+    (value) => (typeof value === "string" ? value.trim().toUpperCase() : value),
+    z
+      .string()
+      .regex(/^[A-Z]{2}$/, "Use an ISO 3166-1 alpha-2 code such as IN or US.")
+      .default("US"),
+  ),
+  YOUTUBE_TOP_CACHE_HOURS: intFromEnv(6, 1, 168),
 
   AUTH_SECRET: z.string().min(16).default(DEV_SECRET),
   WISH_UNLOCK_SECRET: z.string().min(16).default(DEV_SECRET),
@@ -116,6 +124,8 @@ export function env(): AppEnv {
     GEMINI_MODEL: process.env.GEMINI_MODEL,
     YOUTUBE_API_KEY: process.env.YOUTUBE_API_KEY,
     YOUTUBE_DAILY_SEARCH_LIMIT: process.env.YOUTUBE_DAILY_SEARCH_LIMIT,
+    YOUTUBE_REGION_CODE: process.env.YOUTUBE_REGION_CODE,
+    YOUTUBE_TOP_CACHE_HOURS: process.env.YOUTUBE_TOP_CACHE_HOURS,
     AUTH_SECRET: process.env.AUTH_SECRET,
     WISH_UNLOCK_SECRET: process.env.WISH_UNLOCK_SECRET,
     FEATURE_BILLING: process.env.FEATURE_BILLING,
