@@ -2,7 +2,7 @@ import { createReadStream } from "node:fs";
 import { stat } from "node:fs/promises";
 import { Readable } from "node:stream";
 import { fail } from "@/lib/api/respond";
-import { env } from "@/lib/env";
+import { mediaAdapter } from "@/lib/env";
 import { mediaFilePath } from "@/lib/media/storage";
 import { contentTypeForKey } from "@/lib/media/validate";
 import { verifyMediaToken } from "@/lib/security/media-token";
@@ -38,7 +38,7 @@ export async function GET(
   request: Request,
   context: { params: Promise<{ key: string[] }> },
 ) {
-  if (env().MEDIA_ADAPTER !== "file") {
+  if (mediaAdapter() !== "file") {
     return fail(404, "not_found", "Not found.");
   }
 

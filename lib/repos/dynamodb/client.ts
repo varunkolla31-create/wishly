@@ -1,13 +1,14 @@
 import "server-only";
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { DynamoDBDocumentClient } from "@aws-sdk/lib-dynamodb";
-import { env } from "@/lib/env";
+import { dynamoTables, env } from "@/lib/env";
 
 let cached: DynamoDBDocumentClient | null = null;
 
 /**
- * One document client per process. `AWS_ENDPOINT_URL` points the same client at
- * LocalStack; unset it and the SDK resolves the real regional endpoint.
+ * One document client per process. Static keys are used when present; without
+ * them the SDK falls back to its default chain, so an IAM role works in
+ * production and nothing is ever hard-coded.
  */
 export function ddb(): DynamoDBDocumentClient {
   if (cached) return cached;
@@ -31,22 +32,9 @@ export function ddb(): DynamoDBDocumentClient {
   return cached;
 }
 
-export function tableName(): string {
-  const name = env().DYNAMODB_TABLE;
-  if (!name) throw new Error("DYNAMODB_TABLE is required for DATA_ADAPTER=dynamodb.");
-  return name;
+export function tables() {
+  return dynamoTables();
 }
 
-/** Single-table key builders, matching docs/DATA_MODEL.md. */
-export const keys = {
-  wishPk: (wishId: string) => `WISH#${wishId}`,
-  meta: () => "META",
-  contribution: (contributionId: string) => `CONTRIB#${contributionId}`,
-  reply: (replyId: string) => `REPLY#${replyId}`,
-  ownerGsi1Pk: (ownerId: string) => `OWNER#${ownerId}`,
-  ownerUpdatedGsi1Sk: (updatedAt: string) => `UPDATED#${updatedAt}`,
-  ownerReplyGsi2Pk: (ownerId: string) => `OWNER#${ownerId}`,
-  replyGsi2Sk: (createdAt: string) => `REPLY#${createdAt}`,
-  tokenGsi3Pk: (token: string) => `CONTRIB_TOKEN#${token}`,
-  metaGsi3Sk: () => "META",
-};
+/** Upper bound on pages we will read in one list call. */
+export const MAX_PAGES = 10;

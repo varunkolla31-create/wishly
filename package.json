@@ -18,6 +18,8 @@
     "localstack:up": "docker compose -f docker-compose.localstack.yml up -d",
     "localstack:down": "docker compose -f docker-compose.localstack.yml down -v",
     "localstack:init": "node scripts/localstack-init.mjs",
+    "aws:check": "node scripts/aws-check.mjs",
+    "aws:check:write": "node scripts/aws-check.mjs --write",
     "pretest:e2e": "node scripts/clean-next.mjs",
     "test:e2e": "playwright test",
     "music:generate": "node scripts/generate-music.mjs",

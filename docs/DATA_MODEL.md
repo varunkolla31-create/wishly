@@ -64,22 +64,30 @@ Production uses a single DynamoDB table designed for the same records (M5). Shap
 
 No table. `ADD views :one` on the wish item. No IP address, user agent, or per-visitor record is stored.
 
-## DynamoDB design (M5)
+## DynamoDB design
 
-Single table, on-demand capacity.
+Three tables, on-demand capacity. See [`AWS_SETUP.md`](AWS_SETUP.md) for the
+console steps, IAM policy and bucket CORS.
 
-- `PK = WISH#<wishId>`, `SK = META` → wish item
-- `PK = WISH#<wishId>`, `SK = CONTRIB#<contributionId>` → contribution
-- `PK = WISH#<wishId>`, `SK = REPLY#<replyId>` → reply
-- `GSI1`: `GSI1PK = OWNER#<ownerId>`, `GSI1SK = UPDATED#<updatedAt>` → dashboard list
-- `GSI2`: `GSI2PK = OWNER#<ownerId>`, `GSI2SK = REPLY#<createdAt>` → reply inbox
-- `GSI3`: `GSI3PK = CONTRIB_TOKEN#<contributorToken>`, `GSI3SK = META` → contributor link lookup.
-  Only written while the token is active; revoking removes the attribute so the GSI entry disappears.
-- Contributions wall: `Query PK = WISH#<wishId>` with `begins_with(SK, "CONTRIB#")` then filter status/order, or store approved contributions under `SK = CONTRIB#APPROVED#<order>#<id>` for direct ordered reads.
+**Wishes** — partition key `wishId` (S)
+- `OwnerIndex`: `ownerId` (HASH) + `updatedAt` (RANGE) → dashboard list, newest first
+- `ContributorTokenIndex`: `contributorToken` (HASH) → group invite lookup. Sparse:
+  items without a live token are absent from the index, so a revoked link 404s.
+
+**Contributions** — partition key `wishId` (S), sort key `contributionId` (S)
+- The wall is a single `Query` on `wishId`, filtered by `status` and sorted by `order`.
+
+**Replies** — partition key `wishId` (S), sort key `replyId` (S)
+- `OwnerIndex`: `ownerId` (HASH) + `createdAt` (RANGE) → the sender's inbox.
+
+The adapters call `DescribeTable` once per process and use whatever key names the
+table actually has. A missing GSI is not fatal: the lookup falls back to `Scan`
+and logs one warning. `Contributions` and `Replies` **do** require a sort key,
+because they hold many records per wish.
 
 Projection rules:
 
-- Dashboard/list queries **never** project `passwordHash`.
+- Dashboard/list queries **never** carry `passwordHash` (the adapter blanks it).
 - Public meta uses an explicit projection of the allowed lock-screen fields.
 - Media keys are never returned before unlock.
 
@@ -87,14 +95,15 @@ Projection rules:
 
 | Use | Operation |
 |---|---|
-| Dashboard list | GSI1 query by owner, newest first |
-| Open wish (sender) | GetItem `WISH#<id>` with ownership check |
-| Public lock screen | GetItem with strict projection |
-| Unlock | GetItem including `passwordHash` (server only) |
-| Reveal content | GetItem + presigned media reads |
-| Contributor wall | Query contributions, approved, ordered |
-| Contributor link | GSI3 by token; a miss means revoked or never existed |
-| Reply inbox | GSI2 query by owner |
+| Dashboard list | `OwnerIndex` query by owner |
+| Open wish (sender) | `GetItem` by `wishId` with ownership check |
+| Public lock screen | `GetItem`, strict projection |
+| Unlock | `GetItem` including `passwordHash` (server only) |
+| Reveal content | `GetItem` + presigned media reads |
+| Contributor wall | `Query` contributions by `wishId`, approved, ordered |
+| Contributor link | `ContributorTokenIndex`; a miss means revoked or never existed |
+| Reply inbox | `Replies` `OwnerIndex` query by owner |
+| Views | `UpdateItem` `ADD views :n` (never touches `updatedAt`) |
 
 ## Deletion
 

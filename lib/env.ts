@@ -22,6 +22,10 @@ function intFromEnv(fallback: number, min: number, max: number) {
   );
 }
 
+/** Treats an empty value (as in .env.example) as "not set". */
+const emptyToUndefined = (value: unknown) =>
+  value === "" || value === null ? undefined : value;
+
 const envSchema = z.object({
   NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
   APP_URL: z.string().min(1).default("http://localhost:3000"),
@@ -44,8 +48,16 @@ const envSchema = z.object({
   FEATURE_BILLING: boolFromEnv(false),
   FEATURE_GROUP_MODE: boolFromEnv(true),
 
-  DATA_ADAPTER: z.enum(["file", "dynamodb", "postgres"]).default("file"),
-  MEDIA_ADAPTER: z.enum(["file", "s3"]).default("file"),
+  DATA_ADAPTER: z.preprocess(
+    emptyToUndefined,
+    z.enum(["file", "dynamodb", "postgres"]).optional(),
+  ),
+  MEDIA_ADAPTER: z.preprocess(
+    emptyToUndefined,
+    z.enum(["file", "s3"]).optional(),
+  ),
+  /** Coarse switch: aws means dynamodb + s3 unless the finer vars are set. */
+  STORAGE_DRIVER: z.enum(["file", "aws"]).default("file"),
 
   DATABASE_URL: z.string().optional(),
 
@@ -53,6 +65,10 @@ const envSchema = z.object({
   AWS_ENDPOINT_URL: z.string().optional(),
   AWS_ACCESS_KEY_ID: z.string().optional(),
   AWS_SECRET_ACCESS_KEY: z.string().optional(),
+  DYNAMODB_WISHES_TABLE: z.string().min(1).default("Wishes"),
+  DYNAMODB_CONTRIBUTIONS_TABLE: z.string().min(1).default("Contributions"),
+  DYNAMODB_REPLIES_TABLE: z.string().min(1).default("Replies"),
+  /** Legacy single-table name; used as the wishes table when set. */
   DYNAMODB_TABLE: z.string().optional(),
   S3_BUCKET: z.string().optional(),
 });
@@ -79,11 +95,15 @@ export function env(): AppEnv {
     FEATURE_GROUP_MODE: process.env.FEATURE_GROUP_MODE,
     DATA_ADAPTER: process.env.DATA_ADAPTER,
     MEDIA_ADAPTER: process.env.MEDIA_ADAPTER,
+    STORAGE_DRIVER: process.env.STORAGE_DRIVER,
     DATABASE_URL: process.env.DATABASE_URL,
     AWS_REGION: process.env.AWS_REGION,
     AWS_ENDPOINT_URL: process.env.AWS_ENDPOINT_URL,
     AWS_ACCESS_KEY_ID: process.env.AWS_ACCESS_KEY_ID,
     AWS_SECRET_ACCESS_KEY: process.env.AWS_SECRET_ACCESS_KEY,
+    DYNAMODB_WISHES_TABLE: process.env.DYNAMODB_WISHES_TABLE,
+    DYNAMODB_CONTRIBUTIONS_TABLE: process.env.DYNAMODB_CONTRIBUTIONS_TABLE,
+    DYNAMODB_REPLIES_TABLE: process.env.DYNAMODB_REPLIES_TABLE,
     DYNAMODB_TABLE: process.env.DYNAMODB_TABLE,
     S3_BUCKET: process.env.S3_BUCKET,
   });
@@ -96,17 +116,24 @@ export function env(): AppEnv {
   }
 
   const value = parsed.data;
+  const data = dataAdapter(value);
+  const media = mediaAdapter(value);
 
-  if (value.DATA_ADAPTER === "postgres" && !value.DATABASE_URL) {
+  if (data === "postgres" && !value.DATABASE_URL) {
     throw new Error("DATA_ADAPTER=postgres requires DATABASE_URL.");
   }
-  if (value.DATA_ADAPTER === "dynamodb" && (!value.AWS_REGION || !value.DYNAMODB_TABLE)) {
+  if (data === "dynamodb" && !value.AWS_REGION) {
     throw new Error(
-      "DATA_ADAPTER=dynamodb requires AWS_REGION and DYNAMODB_TABLE.",
+      "The DynamoDB adapter requires AWS_REGION (set STORAGE_DRIVER=aws or DATA_ADAPTER=dynamodb).",
     );
   }
-  if (value.MEDIA_ADAPTER === "s3" && (!value.AWS_REGION || !value.S3_BUCKET)) {
-    throw new Error("MEDIA_ADAPTER=s3 requires AWS_REGION and S3_BUCKET.");
+  if (media === "s3" && !value.S3_BUCKET) {
+    throw new Error(
+      "The S3 adapter requires S3_BUCKET (set STORAGE_DRIVER=aws or MEDIA_ADAPTER=s3).",
+    );
+  }
+  if (media === "s3" && !value.AWS_REGION) {
+    throw new Error("The S3 adapter requires AWS_REGION.");
   }
 
   if (value.NODE_ENV === "production") {
@@ -124,4 +151,37 @@ export function env(): AppEnv {
   }
 
   return value;
+}
+
+export type DataAdapter = "file" | "dynamodb" | "postgres";
+export type MediaAdapter = "file" | "s3";
+
+/**
+ * `DATA_ADAPTER` wins when set; otherwise `STORAGE_DRIVER=aws` selects
+ * DynamoDB. Keeps older configs working while giving the coarse switch.
+ */
+export function dataAdapter(value: AppEnv = env()): DataAdapter {
+  if (value.DATA_ADAPTER) return value.DATA_ADAPTER;
+  return value.STORAGE_DRIVER === "aws" ? "dynamodb" : "file";
+}
+
+/** Same precedence for media: explicit `MEDIA_ADAPTER` beats `STORAGE_DRIVER`. */
+export function mediaAdapter(value: AppEnv = env()): MediaAdapter {
+  if (value.MEDIA_ADAPTER) return value.MEDIA_ADAPTER;
+  return value.STORAGE_DRIVER === "aws" ? "s3" : "file";
+}
+
+export interface DynamoTables {
+  wishes: string;
+  contributions: string;
+  replies: string;
+}
+
+export function dynamoTables(value: AppEnv = env()): DynamoTables {
+  return {
+    // DYNAMODB_TABLE is the legacy single-table name; honour it for wishes.
+    wishes: value.DYNAMODB_TABLE ?? value.DYNAMODB_WISHES_TABLE,
+    contributions: value.DYNAMODB_CONTRIBUTIONS_TABLE,
+    replies: value.DYNAMODB_REPLIES_TABLE,
+  };
 }

@@ -23,13 +23,18 @@ async function createGroupWish(request: APIRequestContext): Promise<{
   };
   const wishId = createdPayload.data.wishId;
 
-  const patched = await request.patch(`/api/wishes/${wishId}`, {
-    data: {
-      receiverName: "Amma",
-      title: "Fifty years of you two",
-      message: "A small thing from everyone who loves you.",
-    },
-  });
+  const draft = {
+    receiverName: "Amma",
+    title: "Fifty years of you two",
+    message: "A small thing from everyone who loves you.",
+  };
+
+  // The first hit on a route in `next dev` can fail while it compiles, so a
+  // single retry keeps this about behaviour rather than server warm-up.
+  let patched = await request.patch(`/api/wishes/${wishId}`, { data: draft });
+  if (!patched.ok()) {
+    patched = await request.patch(`/api/wishes/${wishId}`, { data: draft });
+  }
   expect(patched.ok()).toBeTruthy();
 
   const password = await request.post(`/api/wishes/${wishId}/password`, {

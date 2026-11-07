@@ -1,11 +1,25 @@
 import "server-only";
-import { GetCommand, PutCommand, QueryCommand, UpdateCommand, DeleteCommand } from "@aws-sdk/lib-dynamodb";
-import { ddb, keys, tableName } from "@/lib/repos/dynamodb/client";
+import {
+  DeleteCommand,
+  GetCommand,
+  PutCommand,
+  QueryCommand,
+  ScanCommand,
+  UpdateCommand,
+} from "@aws-sdk/lib-dynamodb";
+import { ddb, tables } from "@/lib/repos/dynamodb/client";
 import { toWish } from "@/lib/repos/dynamodb/mappers";
+import { drain, isConditionalFailure } from "@/lib/repos/dynamodb/pagination";
+import {
+  findIndexByHash,
+  tableInfo,
+  warnScanOnce,
+  type TableInfo,
+} from "@/lib/repos/dynamodb/schema";
 import type { NewWish, Wish, WishPatch, WishRepo } from "@/lib/repos/types";
 import { newId } from "@/lib/utils/ids";
 
-/** Fields that may be written through `update`, with their storage attribute. */
+/** Every field a caller may write through `update`. */
 const PATCHABLE = [
   "mode",
   "category",
@@ -24,7 +38,15 @@ const PATCHABLE = [
   "contributorTokenRevokedAt",
 ] as const satisfies readonly (keyof WishPatch)[];
 
+function toItem(wish: Wish, info: TableInfo): Record<string, unknown> {
+  return { ...wish, [info.hashKey]: wish.wishId };
+}
+
 export class DynamoWishRepo implements WishRepo {
+  private info(): Promise<TableInfo> {
+    return tableInfo(tables().wishes);
+  }
+
   async create(input: NewWish): Promise<Wish> {
     const now = new Date().toISOString();
     const wish: Wish = {
@@ -50,24 +72,13 @@ export class DynamoWishRepo implements WishRepo {
       updatedAt: now,
     };
 
-    const item: Record<string, unknown> = {
-      ...wish,
-      PK: keys.wishPk(wish.wishId),
-      SK: keys.meta(),
-      GSI1PK: keys.ownerGsi1Pk(wish.ownerId),
-      GSI1SK: keys.ownerUpdatedGsi1Sk(wish.updatedAt),
-    };
-
-    if (wish.contributorToken && !wish.contributorTokenRevokedAt) {
-      item.GSI3PK = keys.tokenGsi3Pk(wish.contributorToken);
-      item.GSI3SK = keys.metaGsi3Sk();
-    }
-
+    const info = await this.info();
     await ddb().send(
       new PutCommand({
-        TableName: tableName(),
-        Item: item,
-        ConditionExpression: "attribute_not_exists(PK)",
+        TableName: info.name,
+        Item: toItem(wish, info),
+        ConditionExpression: "attribute_not_exists(#hash)",
+        ExpressionAttributeNames: { "#hash": info.hashKey },
       }),
     );
 
@@ -75,113 +86,104 @@ export class DynamoWishRepo implements WishRepo {
   }
 
   async getById(wishId: string): Promise<Wish | null> {
+    const info = await this.info();
     const result = await ddb().send(
       new GetCommand({
-        TableName: tableName(),
-        Key: { PK: keys.wishPk(wishId), SK: keys.meta() },
+        TableName: info.name,
+        Key: { [info.hashKey]: wishId },
       }),
     );
-    return result.Item ? toWish(result.Item) : null;
+    return result.Item ? toWish(result.Item, info) : null;
   }
 
   async getByContributorToken(token: string): Promise<Wish | null> {
-    const result = await ddb().send(
-      new QueryCommand({
-        TableName: tableName(),
-        IndexName: "GSI3",
-        KeyConditionExpression: "GSI3PK = :pk",
-        ExpressionAttributeValues: { ":pk": keys.tokenGsi3Pk(token) },
-        Limit: 1,
-      }),
-    );
+    const info = await this.info();
+    const index = findIndexByHash(info, "contributorToken");
 
-    const item = result.Items?.[0];
-    if (!item) return null;
+    const items = index
+      ? await drain(async (startKey) => {
+          const result = await ddb().send(
+            new QueryCommand({
+              TableName: info.name,
+              IndexName: index.name,
+              KeyConditionExpression: "#token = :token",
+              ExpressionAttributeNames: { "#token": index.hashKey },
+              ExpressionAttributeValues: { ":token": token },
+              ExclusiveStartKey: startKey,
+              Limit: 20,
+            }),
+          );
+          return { items: result.Items ?? [], lastKey: result.LastEvaluatedKey };
+        })
+      : await this.scanBy(info, "contributorToken", token);
 
-    const wish = toWish(item);
-    // The index entry is removed on revoke, but guard anyway.
-    if (wish.contributorToken !== token || wish.contributorTokenRevokedAt) {
-      return null;
-    }
-    return wish;
+    const wish = items
+      .map((item) => toWish(item, info))
+      .find(
+        (candidate) =>
+          candidate.contributorToken === token &&
+          candidate.contributorTokenRevokedAt === null,
+      );
+
+    return wish ?? null;
   }
 
   async listByOwner(ownerId: string): Promise<Wish[]> {
-    const result = await ddb().send(
-      new QueryCommand({
-        TableName: tableName(),
-        IndexName: "GSI1",
-        KeyConditionExpression: "GSI1PK = :pk",
-        ExpressionAttributeValues: { ":pk": keys.ownerGsi1Pk(ownerId) },
-        ScanIndexForward: false,
-      }),
-    );
+    const info = await this.info();
+    const index = findIndexByHash(info, "ownerId");
 
-    // Never project the password hash into list results.
-    return (result.Items ?? []).map((item) => {
-      const wish = toWish(item);
-      return { ...wish, passwordHash: null };
-    });
+    const items = index
+      ? await drain(async (startKey) => {
+          const result = await ddb().send(
+            new QueryCommand({
+              TableName: info.name,
+              IndexName: index.name,
+              KeyConditionExpression: "#owner = :owner",
+              ExpressionAttributeNames: { "#owner": index.hashKey },
+              ExpressionAttributeValues: { ":owner": ownerId },
+              ExclusiveStartKey: startKey,
+            }),
+          );
+          return { items: result.Items ?? [], lastKey: result.LastEvaluatedKey };
+        })
+      : await this.scanBy(info, "ownerId", ownerId);
+
+    // Lists never carry the password hash, and are newest-updated first.
+    return items
+      .map((item) => ({ ...toWish(item, info), passwordHash: null }))
+      .sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
   }
 
   async update(wishId: string, patch: WishPatch): Promise<Wish | null> {
-    const sets = new Map<string, string>();
-    const removals = new Set<string>();
-    const names: Record<string, string> = {};
+    const info = await this.info();
+    const names: Record<string, string> = { "#hash": info.hashKey };
     const values: Record<string, unknown> = {};
-
-    const name = (field: string) => {
-      names[`#${field}`] = field;
-      return `#${field}`;
-    };
+    const sets: string[] = [];
+    const removes: string[] = [];
 
     for (const field of PATCHABLE) {
       if (!(field in patch)) continue;
-      const value = patch[field];
-      const attr = name(field);
+      const value = (patch as Record<string, unknown>)[field];
+      const placeholder = `#f_${field}`;
+      names[placeholder] = field;
 
       if (value === null || value === undefined) {
-        removals.add(attr);
-        sets.delete(attr);
+        removes.push(placeholder);
       } else {
+        sets.push(`${placeholder} = :${field}`);
         values[`:${field}`] = value;
-        sets.set(attr, `:${field}`);
-        removals.delete(attr);
       }
-    }
-
-    // Keep the contributor-token index in sync with the stored token.
-    const token = patch.contributorToken;
-    const revokedAt = patch.contributorTokenRevokedAt;
-
-    names["#GSI3PK"] = "GSI3PK";
-    names["#GSI3SK"] = "GSI3SK";
-
-    if (typeof token === "string" && token.length > 0 && !revokedAt) {
-      values[":gsi3pk"] = keys.tokenGsi3Pk(token);
-      values[":gsi3sk"] = keys.metaGsi3Sk();
-      sets.set("#GSI3PK", ":gsi3pk");
-      sets.set("#GSI3SK", ":gsi3sk");
-      removals.delete("#GSI3PK");
-      removals.delete("#GSI3SK");
-    } else if ("contributorToken" in patch || "contributorTokenRevokedAt" in patch) {
-      sets.delete("#GSI3PK");
-      sets.delete("#GSI3SK");
-      removals.add("#GSI3PK");
-      removals.add("#GSI3SK");
     }
 
     const now = new Date().toISOString();
     names["#updatedAt"] = "updatedAt";
-    names["#GSI1SK"] = "GSI1SK";
+    sets.push("#updatedAt = :updatedAt");
     values[":updatedAt"] = now;
-    values[":gsi1sk"] = keys.ownerUpdatedGsi1Sk(now);
-    sets.set("#updatedAt", ":updatedAt");
-    sets.set("#GSI1SK", ":gsi1sk");
+    values[":hash"] = wishId;
 
     const expression = [
-      sets.size ? `SET ${[...sets].map(([attr, value]) => `${attr} = ${value}`).join(", ")}` : "",
-      removals.size ? `REMOVE ${[...removals].join(", ")}` : "",
+      sets.length ? `SET ${sets.join(", ")}` : "",
+      removes.length ? `REMOVE ${removes.join(", ")}` : "",
     ]
       .filter(Boolean)
       .join(" ");
@@ -189,29 +191,28 @@ export class DynamoWishRepo implements WishRepo {
     try {
       const result = await ddb().send(
         new UpdateCommand({
-          TableName: tableName(),
-          Key: { PK: keys.wishPk(wishId), SK: keys.meta() },
+          TableName: info.name,
+          Key: { [info.hashKey]: wishId },
           UpdateExpression: expression,
-          ConditionExpression: "attribute_exists(PK)",
+          ConditionExpression: "attribute_exists(#hash)",
           ExpressionAttributeNames: names,
           ExpressionAttributeValues: values,
           ReturnValues: "ALL_NEW",
         }),
       );
-      return result.Attributes ? toWish(result.Attributes) : null;
+      return result.Attributes ? toWish(result.Attributes, info) : null;
     } catch (error) {
-      if ((error as { name?: string }).name === "ConditionalCheckFailedException") {
-        return null;
-      }
+      if (isConditionalFailure(error)) return null;
       throw error;
     }
   }
 
   async delete(wishId: string): Promise<boolean> {
+    const info = await this.info();
     const result = await ddb().send(
       new DeleteCommand({
-        TableName: tableName(),
-        Key: { PK: keys.wishPk(wishId), SK: keys.meta() },
+        TableName: info.name,
+        Key: { [info.hashKey]: wishId },
         ReturnValues: "ALL_OLD",
       }),
     );
@@ -219,18 +220,46 @@ export class DynamoWishRepo implements WishRepo {
   }
 
   async incrementViews(wishId: string, by = 1): Promise<void> {
+    const info = await this.info();
     const amount = Number.isFinite(by) ? Math.max(0, Math.trunc(by)) : 1;
 
-    await ddb().send(
-      new UpdateCommand({
-        TableName: tableName(),
-        Key: { PK: keys.wishPk(wishId), SK: keys.meta() },
-        // Deliberately does not touch updatedAt or GSI1SK.
-        UpdateExpression: "ADD #views :amount",
-        ConditionExpression: "attribute_exists(PK)",
-        ExpressionAttributeNames: { "#views": "views" },
-        ExpressionAttributeValues: { ":amount": amount },
-      }),
-    );
+    try {
+      await ddb().send(
+        new UpdateCommand({
+          TableName: info.name,
+          Key: { [info.hashKey]: wishId },
+          // Deliberately does not touch updatedAt.
+          UpdateExpression: "ADD #views :amount",
+          ConditionExpression: "attribute_exists(#hash)",
+          ExpressionAttributeNames: {
+            "#views": "views",
+            "#hash": info.hashKey,
+          },
+          ExpressionAttributeValues: { ":amount": amount },
+        }),
+      );
+    } catch (error) {
+      if (!isConditionalFailure(error)) throw error;
+    }
+  }
+
+  private async scanBy(
+    info: TableInfo,
+    attribute: string,
+    value: string,
+  ): Promise<Record<string, unknown>[]> {
+    warnScanOnce(info.name, `"${attribute}"`);
+    return drain(async (startKey) => {
+      const result = await ddb().send(
+        new ScanCommand({
+          TableName: info.name,
+          FilterExpression: "#attr = :value",
+          ExpressionAttributeNames: { "#attr": attribute },
+          ExpressionAttributeValues: { ":value": value },
+          ExclusiveStartKey: startKey,
+        }),
+      );
+      return { items: result.Items ?? [], lastKey: result.LastEvaluatedKey };
+    });
   }
 }

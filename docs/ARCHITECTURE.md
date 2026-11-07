@@ -74,15 +74,23 @@ All data access goes through interfaces, so the app runs with no cloud keys.
 | MediaStore | Local folder with fake signed URLs | S3 presigned URLs |
 | AuthProvider | Dev bypass user (flag) | Clerk |
 
-Select adapters with `DATA_ADAPTER=file|dynamodb|postgres` and
-`MEDIA_ADAPTER=file|s3`, and identity with `AUTH_MODE=dev|clerk`. These are the
+Select storage with `STORAGE_DRIVER=file|aws`, where `aws` means DynamoDB + S3.
+Finer-grained overrides still win when set: `DATA_ADAPTER=file|dynamodb|postgres`
+and `MEDIA_ADAPTER=file|s3`. Identity uses `AUTH_MODE=dev|clerk`. These are the
 names the code reads (`lib/env.ts`); the file adapter is the default so the app
-runs with no cloud keys. `lib/repos/index.ts` branches on those values and is the
-only place that constructs an adapter.
+runs with no cloud keys. `lib/repos/index.ts` resolves them and is the only place
+that constructs an adapter.
 
 Postgres targets Neon (or any Postgres 15+). `db/schema.sql` is idempotent and
 applied with `pnpm db:push`; `tests/integration/postgres.test.ts` runs the same
 contract as the other adapters via `pnpm test:db`.
+
+DynamoDB uses **three tables** — `Wishes`, `Contributions`, `Replies` — not a
+single-table design. The adapters read each table's real key names with
+`DescribeTable` (cached per process), so a differently named partition key still
+works; a missing secondary index falls back to `Scan` with a one-time warning.
+`pnpm aws:check` verifies the account, and `docs/AWS_SETUP.md` documents the
+table shapes, bucket CORS and least-privilege IAM policy.
 
 The local upload/serve routes (`/api/uploads/*`, `/api/media/*`) are gated to `MEDIA_ADAPTER=file`;
 with S3 the browser uploads and reads straight from presigned URLs.
@@ -146,25 +154,29 @@ All inputs are validated with Zod. Errors are generic on the unlock route.
 
 ---
 
-## 7. Data model (DynamoDB)
+## 7. Data model (DynamoDB: three tables)
 
-**Wishes**
-`wishId` (PK), `ownerId`, `mode` (solo|group), `category`, `templateId`, `receiverName`, `title`, `message`, `mediaKeys[]`, `musicId`, `passwordHash`, `passwordHint`, `unlockAt`, `status` (draft|collecting|published|locked), `contributorToken`, `views`, `createdAt`, `updatedAt`
-GSI: `ownerId` + `createdAt` (dashboard list)
+**Wishes** — table `Wishes`
+`wishId` (partition key), `ownerId`, `mode` (solo|group), `category`, `templateId`, `receiverName`, `title`, `message`, `mediaKeys[]`, `musicId`, `passwordHash`, `passwordHint`, `unlockAt`, `status` (draft|collecting|published|locked), `contributorToken`, `views`, `createdAt`, `updatedAt`
+Indexes: `OwnerIndex` (`ownerId` + `updatedAt`, dashboard list) and
+`ContributorTokenIndex` (`contributorToken`, group invite links).
 
-**Contributions**
-`wishId` (PK), `contributionId` (SK), `contributorName`, `type` (photo|video|voice|text), `mediaKey`, `text`, `status` (pending|approved|hidden), `order`, `createdAt`
+**Contributions** — table `Contributions`
+`wishId` (partition key), `contributionId` (sort key), `contributorName`, `type` (photo|video|voice|text), `mediaKey`, `text`, `status` (pending|approved|hidden), `order`, `createdAt`
 
-**Replies**
-`wishId` (PK), `replyId` (SK), `message`, `emoji`, `createdAt`
+**Replies** — table `Replies`
+`wishId` (partition key), `replyId` (sort key), `ownerId`, `message`, `emoji`, `createdAt`
+Index `OwnerIndex` (`ownerId` + `createdAt`, replies inbox).
 
 **Views**
-Aggregated counter on the wish item only. No personal data.
+Aggregated counter on the wish item only (`ADD views :n`). No personal data.
 
 **S3 key layout**
 `wishes/{wishId}/{kind}/{random-id}.{ext}` in a private bucket (block public access ON), where
 `kind` is `photo | video | voice`. The kind segment is what lets rendering code derive the media
 type from the key alone.
+
+Full setup, IAM policy and bucket CORS live in [`AWS_SETUP.md`](AWS_SETUP.md).
 
 ---
 
@@ -234,8 +246,9 @@ Full tokens live in `DESIGN.md`.
 ## 11. Environment variables
 
 ```
-DATA_ADAPTER=file                # file | dynamodb | postgres
-MEDIA_ADAPTER=file               # file | s3
+STORAGE_DRIVER=file              # file | aws (aws = DynamoDB + S3)
+DATA_ADAPTER=                    # optional override: file | dynamodb | postgres
+MEDIA_ADAPTER=                   # optional override: file | s3
 AUTH_MODE=dev                    # dev | clerk
 WISHLY_DEV_AUTH_BYPASS=true      # dev only
 
@@ -245,10 +258,12 @@ NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=
 CLERK_SECRET_KEY=
 
 AWS_REGION=
-AWS_ENDPOINT_URL=                # optional; set to LocalStack for local AWS
+AWS_ENDPOINT_URL=                # optional; LocalStack or a VPC endpoint
 AWS_ACCESS_KEY_ID=
 AWS_SECRET_ACCESS_KEY=
-DYNAMODB_TABLE=
+DYNAMODB_WISHES_TABLE=Wishes
+DYNAMODB_CONTRIBUTIONS_TABLE=Contributions
+DYNAMODB_REPLIES_TABLE=Replies
 S3_BUCKET=
 
 GEMINI_API_KEY=

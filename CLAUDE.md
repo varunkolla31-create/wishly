@@ -13,6 +13,10 @@ pnpm lint           # eslint .
 pnpm test           # vitest unit tests
 pnpm test:watch     # vitest in watch mode
 pnpm test:e2e       # playwright (starts the dev server)
+pnpm test:db        # Postgres/Neon repository contract (needs DATABASE_URL)
+pnpm test:aws       # AWS contract test (needs AWS_TEST_WRITE=1 and credentials)
+pnpm aws:check      # read-only DynamoDB/S3 connection check
+pnpm db:push        # apply db/schema.sql to the configured database
 pnpm music:generate # regenerate bundled ambient loops
 ```
 
@@ -24,7 +28,8 @@ No keys are required locally: `.env.example` documents defaults, the sender is a
 - `app/api/**` route handlers — the only place HTTP is parsed.
 - `components/ui` primitives, `components/marketing`, `components/wizard`, `components/reveal`, `components/dashboard`.
 - `lib/catalog` single source of truth for occasions, templates, music.
-- `lib/repos` interfaces plus adapters; `lib/security` hashing, tokens, rate limits; `lib/ai` Gemini and fallback.
+- `lib/repos` interfaces plus adapters (file, DynamoDB, Postgres) and the S3 media store; `STORAGE_DRIVER=aws` selects DynamoDB + S3.
+- `lib/security` hashing, tokens, rate limits; `lib/ai` Gemini and fallback; `lib/music` YouTube provider.
 - `docs/` architecture and data model, `DESIGN.md` tokens, `CLAUDE.md` this file.
 
 ## Rules

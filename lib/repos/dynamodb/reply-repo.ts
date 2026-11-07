@@ -3,16 +3,35 @@ import {
   BatchWriteCommand,
   PutCommand,
   QueryCommand,
+  ScanCommand,
 } from "@aws-sdk/lib-dynamodb";
-import { ddb, keys, tableName } from "@/lib/repos/dynamodb/client";
+import { ddb, tables } from "@/lib/repos/dynamodb/client";
 import { toReply } from "@/lib/repos/dynamodb/mappers";
+import { drain, keyedBy } from "@/lib/repos/dynamodb/pagination";
+import {
+  findIndexByHash,
+  requireRangeKey,
+  tableInfo,
+  warnScanOnce,
+  type TableInfo,
+} from "@/lib/repos/dynamodb/schema";
 import type { NewReply, Reply, ReplyRepo } from "@/lib/repos/types";
 import { newId } from "@/lib/utils/ids";
 
-const REPLY_PREFIX = "REPLY#";
-
 export class DynamoReplyRepo implements ReplyRepo {
+  private info(): Promise<TableInfo> {
+    return tableInfo(tables().replies);
+  }
+
+  private key(info: TableInfo, wishId: string, replyId: string) {
+    const range = requireRangeKey(info, "DYNAMODB_REPLIES_TABLE");
+    return { [info.hashKey]: wishId, [range]: replyId };
+  }
+
   async create(input: NewReply): Promise<Reply> {
+    const info = await this.info();
+    const range = requireRangeKey(info, "DYNAMODB_REPLIES_TABLE");
+
     const reply: Reply = {
       wishId: input.wishId,
       replyId: newId(),
@@ -24,15 +43,10 @@ export class DynamoReplyRepo implements ReplyRepo {
 
     await ddb().send(
       new PutCommand({
-        TableName: tableName(),
-        Item: {
-          ...reply,
-          PK: keys.wishPk(reply.wishId),
-          SK: keys.reply(reply.replyId),
-          GSI2PK: keys.ownerReplyGsi2Pk(reply.ownerId),
-          GSI2SK: keys.replyGsi2Sk(reply.createdAt),
-        },
-        ConditionExpression: "attribute_not_exists(PK)",
+        TableName: info.name,
+        Item: { ...reply, ...this.key(info, reply.wishId, reply.replyId) },
+        ConditionExpression: "attribute_not_exists(#range)",
+        ExpressionAttributeNames: { "#range": range },
       }),
     );
 
@@ -40,37 +54,84 @@ export class DynamoReplyRepo implements ReplyRepo {
   }
 
   async listByWish(wishId: string): Promise<Reply[]> {
-    const result = await ddb().send(
-      new QueryCommand({
-        TableName: tableName(),
-        KeyConditionExpression: "PK = :pk AND begins_with(SK, :prefix)",
-        ExpressionAttributeValues: {
-          ":pk": keys.wishPk(wishId),
-          ":prefix": REPLY_PREFIX,
-        },
-      }),
-    );
+    const info = await this.info();
 
-    return (result.Items ?? [])
-      .map(toReply)
+    let items: Record<string, unknown>[];
+    if (keyedBy(info, "wishId")) {
+      items = await drain(async (startKey) => {
+        const result = await ddb().send(
+          new QueryCommand({
+            TableName: info.name,
+            KeyConditionExpression: "#hash = :wish",
+            ExpressionAttributeNames: { "#hash": info.hashKey },
+            ExpressionAttributeValues: { ":wish": wishId },
+            ExclusiveStartKey: startKey,
+          }),
+        );
+        return { items: result.Items ?? [], lastKey: result.LastEvaluatedKey };
+      });
+    } else {
+      warnScanOnce(info.name, "wishId");
+      items = await drain(async (startKey) => {
+        const result = await ddb().send(
+          new ScanCommand({
+            TableName: info.name,
+            FilterExpression: "#wish = :wish",
+            ExpressionAttributeNames: { "#wish": "wishId" },
+            ExpressionAttributeValues: { ":wish": wishId },
+            ExclusiveStartKey: startKey,
+          }),
+        );
+        return { items: result.Items ?? [], lastKey: result.LastEvaluatedKey };
+      });
+    }
+
+    return items
+      .map((item) => toReply(item, info))
       .sort((a, b) => a.createdAt.localeCompare(b.createdAt));
   }
 
   async listByOwner(ownerId: string): Promise<Reply[]> {
-    const result = await ddb().send(
-      new QueryCommand({
-        TableName: tableName(),
-        IndexName: "GSI2",
-        KeyConditionExpression: "GSI2PK = :pk",
-        ExpressionAttributeValues: { ":pk": keys.ownerReplyGsi2Pk(ownerId) },
-        ScanIndexForward: false,
-      }),
-    );
+    const info = await this.info();
+    const index = findIndexByHash(info, "ownerId");
 
-    return (result.Items ?? []).map(toReply);
+    const items = index
+      ? await drain(async (startKey) => {
+          const result = await ddb().send(
+            new QueryCommand({
+              TableName: info.name,
+              IndexName: index.name,
+              KeyConditionExpression: "#owner = :owner",
+              ExpressionAttributeNames: { "#owner": index.hashKey },
+              ExpressionAttributeValues: { ":owner": ownerId },
+              ExclusiveStartKey: startKey,
+            }),
+          );
+          return { items: result.Items ?? [], lastKey: result.LastEvaluatedKey };
+        })
+      : await (async () => {
+          warnScanOnce(info.name, "ownerId");
+          return drain(async (startKey) => {
+            const result = await ddb().send(
+              new ScanCommand({
+                TableName: info.name,
+                FilterExpression: "#owner = :owner",
+                ExpressionAttributeNames: { "#owner": "ownerId" },
+                ExpressionAttributeValues: { ":owner": ownerId },
+                ExclusiveStartKey: startKey,
+              }),
+            );
+            return { items: result.Items ?? [], lastKey: result.LastEvaluatedKey };
+          });
+        })();
+
+    return items
+      .map((item) => toReply(item, info))
+      .sort((a, b) => b.createdAt.localeCompare(a.createdAt));
   }
 
   async deleteByWish(wishId: string): Promise<void> {
+    const info = await this.info();
     const replies = await this.listByWish(wishId);
 
     for (let index = 0; index < replies.length; index += 25) {
@@ -80,13 +141,8 @@ export class DynamoReplyRepo implements ReplyRepo {
       await ddb().send(
         new BatchWriteCommand({
           RequestItems: {
-            [tableName()]: chunk.map((reply) => ({
-              DeleteRequest: {
-                Key: {
-                  PK: keys.wishPk(reply.wishId),
-                  SK: keys.reply(reply.replyId),
-                },
-              },
+            [info.name]: chunk.map((reply) => ({
+              DeleteRequest: { Key: this.key(info, reply.wishId, reply.replyId) },
             })),
           },
         }),

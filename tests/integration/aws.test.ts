@@ -1,201 +1,232 @@
+import { readFileSync } from "node:fs";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
-import { GetObjectCommand, PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
-import { DeleteObjectCommand } from "@aws-sdk/client-s3";
-import { contributionRepo, mediaStore, replyRepo, wishRepo } from "@/lib/repos/index";
-
-const ENDPOINT = process.env.AWS_ENDPOINT_URL;
 
 /**
- * Probes the endpoint before deciding whether to run. When LocalStack is not
- * up, the suite reports as skipped rather than failing — so CI without Docker
- * stays green.
+ * Contract test against a real AWS account. Opt-in, because it writes:
+ *
+ *   AWS_TEST_WRITE=1 pnpm test:aws
+ *
+ * It creates records under a unique `test_<timestamp>` owner and deletes them
+ * afterwards. Without the flag (or credentials) the suite reports as skipped,
+ * so `pnpm test` and CI never touch live data.
  */
-async function endpointReachable(): Promise<boolean> {
-  if (!ENDPOINT) return false;
+function loadEnvLocal(): Record<string, string> {
+  const found: Record<string, string> = {};
   try {
-    const response = await fetch(`${ENDPOINT}/_localstack/health`, {
-      signal: AbortSignal.timeout(1500),
-    });
-    return response.ok;
+    for (const line of readFileSync(".env.local", "utf8").split(/\r?\n/)) {
+      const m = /^\s*([A-Za-z0-9_]+)\s*=\s*(.*)$/.exec(line);
+      if (!m) continue;
+      const name = m[1];
+      if (!name) continue;
+      found[name] = (m[2] ?? "").trim().replace(/^["']|["']$/g, "");
+    }
   } catch {
-    return false;
+    // No .env.local; fall back to the real environment.
   }
+  return found;
 }
 
-const reachable = await endpointReachable();
+const local = loadEnvLocal();
+const pick = (name: string) => process.env[name] ?? local[name];
 
-describe.skipIf(!reachable)("AWS adapter contract (LocalStack)", () => {
+const enabled =
+  process.env.AWS_TEST_WRITE === "1" &&
+  Boolean(pick("AWS_REGION")) &&
+  Boolean(pick("S3_BUCKET"));
+
+describe.skipIf(!enabled)("AWS adapters (real account)", () => {
+  const ownerId = `test_${Date.now()}`;
   let wishId = "";
+  let repos: typeof import("@/lib/repos/index");
 
-  beforeAll(() => {
+  beforeAll(async () => {
     process.env.DATA_ADAPTER = "dynamodb";
     process.env.MEDIA_ADAPTER = "s3";
-    process.env.AWS_REGION = process.env.AWS_REGION ?? "us-east-1";
-    process.env.DYNAMODB_TABLE = process.env.DYNAMODB_TABLE ?? "wishly";
-    process.env.S3_BUCKET = process.env.S3_BUCKET ?? "wishly-media";
-    process.env.AWS_ACCESS_KEY_ID = process.env.AWS_ACCESS_KEY_ID ?? "test";
-    process.env.AWS_SECRET_ACCESS_KEY = process.env.AWS_SECRET_ACCESS_KEY ?? "test";
-    process.env.AUTH_SECRET = process.env.AUTH_SECRET ?? "localstack-test-secret";
+    process.env.AWS_REGION = pick("AWS_REGION");
+    process.env.S3_BUCKET = pick("S3_BUCKET");
+    process.env.DYNAMODB_WISHES_TABLE =
+      pick("DYNAMODB_WISHES_TABLE") ?? pick("DYNAMODB_TABLE") ?? "Wishes";
+    process.env.DYNAMODB_CONTRIBUTIONS_TABLE =
+      pick("DYNAMODB_CONTRIBUTIONS_TABLE") ?? "Contributions";
+    process.env.DYNAMODB_REPLIES_TABLE =
+      pick("DYNAMODB_REPLIES_TABLE") ?? "Replies";
+    process.env.AWS_ACCESS_KEY_ID = pick("AWS_ACCESS_KEY_ID");
+    process.env.AWS_SECRET_ACCESS_KEY = pick("AWS_SECRET_ACCESS_KEY");
+    process.env.AWS_ENDPOINT_URL = pick("AWS_ENDPOINT_URL");
+    process.env.AUTH_SECRET =
+      process.env.AUTH_SECRET ?? "aws-contract-secret-value";
     process.env.WISH_UNLOCK_SECRET =
-      process.env.WISH_UNLOCK_SECRET ?? "localstack-test-secret";
+      process.env.WISH_UNLOCK_SECRET ?? "aws-contract-secret-value";
+
+    repos = await import("@/lib/repos/index");
   });
 
   afterAll(async () => {
-    delete process.env.DATA_ADAPTER;
-    delete process.env.MEDIA_ADAPTER;
+    if (wishId) {
+      try {
+        await repos.contributionRepo().deleteByWish(wishId);
+        await repos.replyRepo().deleteByWish(wishId);
+        await repos.wishRepo().delete(wishId);
+      } catch {
+        // Best effort: a leftover test_ row is harmless.
+      }
+    }
+
+    for (const name of [
+      "DATA_ADAPTER",
+      "MEDIA_ADAPTER",
+      "DYNAMODB_WISHES_TABLE",
+      "DYNAMODB_CONTRIBUTIONS_TABLE",
+      "DYNAMODB_REPLIES_TABLE",
+      "AWS_ENDPOINT_URL",
+    ]) {
+      delete process.env[name];
+    }
   });
 
   it("creates, reads and lists a wish", async () => {
-    const wish = await wishRepo().create({
-      ownerId: "aws_owner",
+    const wish = await repos.wishRepo().create({
+      ownerId,
       category: "birthday",
       templateId: "clean-white",
+      receiverName: "Contract",
     });
     wishId = wish.wishId;
 
-    const fetched = await wishRepo().getById(wishId);
-    expect(fetched?.wishId).toBe(wishId);
+    expect((await repos.wishRepo().getById(wishId))?.ownerId).toBe(ownerId);
 
-    const listed = await wishRepo().listByOwner("aws_owner");
+    const listed = await repos.wishRepo().listByOwner(ownerId);
     expect(listed.some((item) => item.wishId === wishId)).toBe(true);
+    expect(listed.every((item) => item.passwordHash === null)).toBe(true);
   });
 
-  it("updates fields and keeps the owner list index in sync", async () => {
-    const updated = await wishRepo().update(wishId, {
-      title: "For Amma",
-      message: "A letter",
-      status: "published",
+  it("updates fields and returns the merged record", async () => {
+    const updated = await repos.wishRepo().update(wishId, {
+      title: "Contract title",
+      message: "Contract message",
+      mediaKeys: ["wishes/x/photo/a.png"],
     });
 
-    expect(updated?.title).toBe("For Amma");
-    expect(updated?.status).toBe("published");
+    expect(updated?.title).toBe("Contract title");
+    expect(updated?.mediaKeys).toEqual(["wishes/x/photo/a.png"]);
 
-    const fetched = await wishRepo().getById(wishId);
-    expect(fetched?.message).toBe("A letter");
+    const fetched = await repos.wishRepo().getById(wishId);
+    expect(fetched?.message).toBe("Contract message");
   });
 
   it("finds a wish by contributor token and drops it on revoke", async () => {
-    const token = "A".repeat(32);
-    await wishRepo().update(wishId, {
+    const token = `T${Date.now()}`.padEnd(32, "x").slice(0, 32);
+
+    await repos.wishRepo().update(wishId, {
       mode: "group",
       contributorToken: token,
       contributorTokenRevokedAt: null,
       status: "collecting",
     });
+    expect(
+      (await repos.wishRepo().getByContributorToken(token))?.wishId,
+    ).toBe(wishId);
 
-    const found = await wishRepo().getByContributorToken(token);
-    expect(found?.wishId).toBe(wishId);
-
-    await wishRepo().update(wishId, {
+    await repos.wishRepo().update(wishId, {
       contributorToken: null,
       contributorTokenRevokedAt: new Date().toISOString(),
     });
-
-    const afterRevoke = await wishRepo().getByContributorToken(token);
-    expect(afterRevoke).toBeNull();
+    expect(await repos.wishRepo().getByContributorToken(token)).toBeNull();
   });
 
-  it("increments views without moving the wish", async () => {
-    const before = await wishRepo().getById(wishId);
-    await wishRepo().incrementViews(wishId, 3);
-    const after = await wishRepo().getById(wishId);
+  it("increments views without moving updatedAt", async () => {
+    const before = await repos.wishRepo().getById(wishId);
+    await repos.wishRepo().incrementViews(wishId, 2);
+    const after = await repos.wishRepo().getById(wishId);
 
-    expect(after?.views).toBe((before?.views ?? 0) + 3);
+    expect(after?.views).toBe((before?.views ?? 0) + 2);
     expect(after?.updatedAt).toBe(before?.updatedAt);
   });
 
   it("stores, orders and moderates contributions", async () => {
-    const first = await contributionRepo().create({
+    const first = await repos.contributionRepo().create({
       wishId,
-      contributorName: "Ravi",
+      contributorName: "Contract A",
       type: "text",
-      text: "First",
+      text: "first",
     });
-    const second = await contributionRepo().create({
+    const second = await repos.contributionRepo().create({
       wishId,
-      contributorName: "Meera",
+      contributorName: "Contract B",
       type: "text",
-      text: "Second",
+      text: "second",
     });
 
     expect(second.order).toBe(first.order + 1);
 
-    await contributionRepo().reorder(wishId, [second.contributionId, first.contributionId]);
-    const ordered = await contributionRepo().listByWish(wishId);
+    await repos.contributionRepo().reorder(wishId, [
+      second.contributionId,
+      first.contributionId,
+    ]);
+    const ordered = await repos.contributionRepo().listByWish(wishId);
     expect(ordered[0]?.contributionId).toBe(second.contributionId);
 
-    await contributionRepo().updateStatus(wishId, first.contributionId, "approved");
-    const approved = await contributionRepo().listByWish(wishId, "approved");
-    expect(approved).toHaveLength(1);
+    const approved = await repos.contributionRepo().updateStatus(
+      wishId,
+      first.contributionId,
+      "approved",
+    );
+    expect(approved?.status).toBe("approved");
+    expect(
+      await repos.contributionRepo().listByWish(wishId, "approved"),
+    ).toHaveLength(1);
 
-    expect(await contributionRepo().delete(wishId, second.contributionId)).toBe(true);
+    expect(
+      await repos.contributionRepo().delete(wishId, second.contributionId),
+    ).toBe(true);
   });
 
   it("stores replies and indexes them by owner", async () => {
-    await replyRepo().create({
+    await repos.replyRepo().create({
       wishId,
-      ownerId: "aws_owner",
-      message: "Thank you",
+      ownerId,
+      message: "contract reply",
       emoji: "❤️",
     });
 
-    const byWish = await replyRepo().listByWish(wishId);
-    expect(byWish).toHaveLength(1);
-
-    const byOwner = await replyRepo().listByOwner("aws_owner");
-    expect(byOwner.some((reply) => reply.wishId === wishId)).toBe(true);
+    expect(await repos.replyRepo().listByWish(wishId)).toHaveLength(1);
+    expect(
+      (await repos.replyRepo().listByOwner(ownerId)).some(
+        (reply) => reply.wishId === wishId,
+      ),
+    ).toBe(true);
   });
 
-  it("presigns uploads and serves reads from S3", async () => {
-    const target = await mediaStore().createUpload({
+  it("round-trips a presigned upload and read", async () => {
+    const target = await repos.mediaStore().createUpload({
       wishId,
       kind: "photo",
       contentType: "image/png",
       size: 64,
     });
 
-    expect(target.uploadUrl).toContain("X-Amz-Signature");
-
-    const s3 = new S3Client({
-      endpoint: ENDPOINT,
-      region: process.env.AWS_REGION,
-      forcePathStyle: true,
-      credentials: {
-        accessKeyId: process.env.AWS_ACCESS_KEY_ID ?? "test",
-        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY ?? "test",
-      },
+    const put = await fetch(target.uploadUrl, {
+      method: target.method,
+      headers: target.headers,
+      body: Buffer.alloc(64),
     });
+    expect(put.ok).toBe(true);
 
-    await s3.send(
-      new PutObjectCommand({
-        Bucket: process.env.S3_BUCKET,
-        Key: target.key,
-        Body: Buffer.alloc(64),
-        ContentType: "image/png",
-      }),
-    );
+    const readUrl = await repos.mediaStore().createReadUrl(target.key);
+    const got = await fetch(readUrl);
+    expect(got.status).toBe(200);
 
-    const head = await s3.send(
-      new GetObjectCommand({ Bucket: process.env.S3_BUCKET, Key: target.key }),
-    );
-    expect(head.$metadata.httpStatusCode).toBe(200);
-
-    const readUrl = await mediaStore().createReadUrl(target.key);
-    expect(readUrl).toContain("X-Amz-Signature");
-
-    await s3.send(
-      new DeleteObjectCommand({ Bucket: process.env.S3_BUCKET, Key: target.key }),
-    );
-    await mediaStore().delete(target.key);
+    await repos.mediaStore().delete(target.key);
   });
 
-  it("cascades deletes for contributions and replies", async () => {
-    await contributionRepo().deleteByWish(wishId);
-    await replyRepo().deleteByWish(wishId);
-    await wishRepo().delete(wishId);
+  it("cascades deletes", async () => {
+    await repos.contributionRepo().deleteByWish(wishId);
+    await repos.replyRepo().deleteByWish(wishId);
+    expect(await repos.wishRepo().delete(wishId)).toBe(true);
 
-    expect(await wishRepo().getById(wishId)).toBeNull();
-    expect(await contributionRepo().listByWish(wishId)).toEqual([]);
-    expect(await replyRepo().listByWish(wishId)).toEqual([]);
+    expect(await repos.wishRepo().getById(wishId)).toBeNull();
+    expect(await repos.contributionRepo().listByWish(wishId)).toEqual([]);
+    expect(await repos.replyRepo().listByWish(wishId)).toEqual([]);
+    wishId = "";
   });
 });

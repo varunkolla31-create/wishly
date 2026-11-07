@@ -65,9 +65,9 @@ All eight milestones are built.
 
 | Goal | Env |
 |---|---|
-| Local, no keys | `AUTH_MODE=dev`, `DATA_ADAPTER=file`, `MEDIA_ADAPTER=file` |
-| Local against real AWS | same adapters as production, plus the AWS block below |
-| Production | `AUTH_MODE=clerk`, `DATA_ADAPTER=dynamodb`, `MEDIA_ADAPTER=s3` |
+| Local, no keys | `STORAGE_DRIVER=file` (the default) |
+| Local against real AWS | `STORAGE_DRIVER=aws` + the AWS block below |
+| Production | `AUTH_MODE=clerk`, `STORAGE_DRIVER=aws` |
 
 Production also requires that `AUTH_SECRET` and `WISH_UNLOCK_SECRET` are **not** the
 dev default (`dev-only-change-me`); `lib/env.ts` refuses to boot otherwise.
@@ -78,12 +78,13 @@ AUTH_MODE=clerk
 NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=
 CLERK_SECRET_KEY=
 
-DATA_ADAPTER=dynamodb
-MEDIA_ADAPTER=s3
+STORAGE_DRIVER=aws
 AWS_REGION=
 AWS_ACCESS_KEY_ID=
 AWS_SECRET_ACCESS_KEY=
-DYNAMODB_TABLE=
+DYNAMODB_WISHES_TABLE=Wishes
+DYNAMODB_CONTRIBUTIONS_TABLE=Contributions
+DYNAMODB_REPLIES_TABLE=Replies
 S3_BUCKET=
 
 GEMINI_API_KEY=            # optional; curated fallback otherwise
@@ -106,28 +107,29 @@ Same environment variables. Amplify's Node 20+ runtime is required for `@node-rs
 
 ### DynamoDB + S3 provisioning
 
-- One on-demand table named by `DYNAMODB_TABLE`, with:
-  - `PK` (partition) and `SK` (sort) — string
-  - `GSI1` (`GSI1PK`, `GSI1SK`) — owner dashboard list
-  - `GSI2` (`GSI2PK`, `GSI2SK`) — reply inbox
-  - `GSI3` (`GSI3PK`, `GSI3SK`) — contributor token lookup
-  Full key layout in [`docs/DATA_MODEL.md`](docs/DATA_MODEL.md).
-- One private S3 bucket named by `S3_BUCKET`, public access blocked, CORS allowing
-  `PUT` and `GET` from the app origin.
-- Least-privilege IAM: `dynamodb:GetItem/PutItem/UpdateItem/DeleteItem/Query` on the
-  table and its indexes, plus `s3:PutObject/GetObject/DeleteObject` on
-  `arn:aws:s3:::<bucket>/wishes/*`.
+- Three on-demand tables — `Wishes`, `Contributions`, `Replies` — with the keys and
+  indexes in [`docs/DATA_MODEL.md`](docs/DATA_MODEL.md). Check them with
+  `pnpm aws:check`; full steps, bucket CORS and the least-privilege IAM policy are in
+  [`docs/AWS_SETUP.md`](docs/AWS_SETUP.md).
+- A private S3 bucket named by `S3_BUCKET`, public access blocked, CORS allowing
+  `PUT`/`GET`/`HEAD` from the app origin.
+
+### Connection check
+
+```bash
+pnpm aws:check          # read-only: tables, indexes, bucket
+pnpm aws:check:write    # temporary put/head/delete under _healthcheck/
+```
 
 ### Local AWS loop (LocalStack)
 
 ```bash
-pnpm localstack:up     # docker compose: DynamoDB on 4566, S3 on 4566
-pnpm localstack:init   # create the table, GSIs and bucket
-pnpm test:aws          # adapter contract tests against LocalStack
+pnpm localstack:up     # docker compose: DynamoDB + S3 on 4566
+pnpm localstack:init   # creates the three tables, indexes and bucket
 ```
 
-Set `AWS_ENDPOINT_URL=http://localhost:4566` for these runs. The tests skip
-cleanly when that endpoint is unreachable, so `pnpm test` never needs Docker.
+Point at it with `AWS_ENDPOINT_URL=http://localhost:4566`. Optional — the app runs
+without Docker on the file adapter.
 
 ### Verified vs unverified
 
@@ -136,8 +138,8 @@ cleanly when that endpoint is unreachable, so `pnpm test` never needs Docker.
 | File adapter, local media, whole app flow | Yes — unit + Playwright + production build |
 | Marketing, dashboard, wizard, group mode, reveal | Yes — 27 Playwright specs |
 | Accessibility (WCAG A/AA via axe) | Yes — public pages, dashboard, keyboard pass |
-| DynamoDB + S3 adapters | **No** — written and covered by contract tests, but this machine has no Docker/Java, so LocalStack could not run |
-| Real AWS deployment | No — no credentials used |
+| DynamoDB + S3 adapters | Code verified by typecheck + unit tests; live-account contract test is opt-in (`AWS_TEST_WRITE=1 pnpm test:aws`) |
+| Real AWS deployment | Not run here — no credentials were available in this environment |
 
 ## Stack
 
