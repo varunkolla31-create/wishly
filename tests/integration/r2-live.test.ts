@@ -1,3 +1,5 @@
+import { readFileSync } from "node:fs";
+import path from "node:path";
 import { describe, expect, it } from "vitest";
 
 /**
@@ -6,11 +8,41 @@ import { describe, expect, it } from "vitest";
  */
 const live = process.env.R2_TEST_LIVE === "1";
 
+function loadEnvFiles(): Record<string, string> {
+  const values: Record<string, string> = {};
+  for (const file of [".env", ".env.local"]) {
+    try {
+      const raw = readFileSync(path.join(process.cwd(), file), "utf8");
+      for (const line of raw.split(/\r?\n/)) {
+        const m = /^\s*([A-Za-z0-9_]+)\s*=\s*(.*)$/.exec(line);
+        if (!m) continue;
+        const name = m[1];
+        if (!name) continue;
+        values[name] = (m[2] ?? "").trim().replace(/^["']|["']$/g, "");
+      }
+    } catch {
+      // File absent.
+    }
+  }
+  return values;
+}
+
 describe.skipIf(!live)("R2 media store (live)", () => {
   const wishId = `tmp-test-${Date.now().toString(36)}`;
 
   it("uploads, verifies, reads back and deletes an object", async () => {
+    const fileEnv = loadEnvFiles();
+    for (const name of [
+      "R2_ACCOUNT_ID",
+      "R2_ACCESS_KEY_ID",
+      "R2_SECRET_ACCESS_KEY",
+      "R2_BUCKET",
+      "R2_ENDPOINT",
+    ]) {
+      process.env[name] = process.env[name] ?? fileEnv[name];
+    }
     process.env.MEDIA_DRIVER = "r2";
+
     const { R2MediaStore } = await import("@/lib/repos/r2/media-store");
     const store = new R2MediaStore();
 
