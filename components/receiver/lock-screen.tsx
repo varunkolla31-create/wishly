@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState, type FormEvent } from "react";
 import { Button } from "@/components/ui/button";
+import { t } from "@/lib/i18n";
 import type { PublicWishMeta } from "@/lib/wishes/public";
 
 const RADIUS = 104;
@@ -98,21 +99,21 @@ export function LockScreen({ wish }: { wish: PublicWishMeta }) {
       if (response.status === 429) {
         const retry = Number(response.headers.get("retry-after") ?? "60");
         setCooldown(Number.isFinite(retry) && retry > 0 ? retry : 60);
-        setError("Too many tries. Wait a moment, then try again.");
+        setError(t("lock.error.rateLimited"));
         shake();
         return;
       }
 
       if (response.status === 403) {
-        setError("This wish still has a little time left.");
+        setError(t("lock.error.notYet"));
         return;
       }
 
       setAttempts((value) => value + 1);
-      setError("That password didn't match. Try again.");
+      setError(t("lock.error.mismatch"));
       shake();
     } catch {
-      setError("Something went wrong. Try once more.");
+      setError(t("lock.error.generic"));
     } finally {
       setSubmitting(false);
     }
@@ -131,7 +132,7 @@ export function LockScreen({ wish }: { wish: PublicWishMeta }) {
 
       <div className="relative w-full max-w-md text-center">
         <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-ink-muted">
-          A wish for
+          {t("lock.overline")}
         </p>
         <p className="mt-1 font-serif text-2xl italic text-gold">
           {wish.receiverName || "you"}
@@ -189,11 +190,13 @@ export function LockScreen({ wish }: { wish: PublicWishMeta }) {
         </div>
 
         <h1 className="mt-8 font-serif text-4xl italic leading-[1.05] text-ink sm:text-5xl">
-          Someone made something for you.
+          {t("lock.heading")}
         </h1>
 
         {wish.hint ? (
-          <p className="mt-3 text-sm text-ink-muted">Hint: {wish.hint}</p>
+          <p className="mt-3 text-sm text-ink-muted">
+            {t("lock.hint")}: {wish.hint}
+          </p>
         ) : null}
 
         <motion.form
@@ -214,7 +217,7 @@ export function LockScreen({ wish }: { wish: PublicWishMeta }) {
               maxLength={128}
               aria-invalid={Boolean(error)}
               aria-describedby={error ? "unlock-error" : undefined}
-              placeholder="Enter the password"
+              placeholder={t("lock.placeholder")}
               className="min-h-14 w-full rounded-full border border-hairline bg-surface px-5 pr-14 text-base text-ink placeholder:text-ink-muted/70"
             />
             <button
@@ -248,8 +251,8 @@ export function LockScreen({ wish }: { wish: PublicWishMeta }) {
             {cooldown > 0
               ? `Try again in ${cooldown}s`
               : submitting
-                ? "Unlocking…"
-                : "Unlock"}
+                ? t("lock.unlocking")
+                : t("lock.action")}
           </Button>
 
           {attempts >= 3 && cooldown === 0 ? (

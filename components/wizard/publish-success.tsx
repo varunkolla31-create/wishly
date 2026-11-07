@@ -6,19 +6,6 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Button, ButtonLink } from "@/components/ui/button";
 
-function escapeHtml(value: string): string {
-  return value.replace(/[&<>"']/g, (character) => {
-    const map: Record<string, string> = {
-      "&": "&amp;",
-      "<": "&lt;",
-      ">": "&gt;",
-      '"': "&quot;",
-      "'": "&#39;",
-    };
-    return map[character] ?? character;
-  });
-}
-
 const shareClass =
   "inline-flex min-h-12 items-center gap-2 rounded-full border border-hairline bg-canvas px-5 text-sm font-medium text-ink transition-colors hover:bg-hover";
 
@@ -80,62 +67,6 @@ export function PublishSuccess({
     }
 
     await copy(url, "link");
-  }
-
-  function printCard() {
-    if (!qr) {
-      toast.error("The QR code isn't ready yet.");
-      return;
-    }
-
-    const win = window.open("", "_blank", "width=760,height=980");
-    if (!win) {
-      toast.error("Allow pop-ups to print the card.");
-      return;
-    }
-
-    const safeTitle = escapeHtml(shareTitle);
-    const safeUrl = escapeHtml(url);
-    const passwordRow = password
-      ? `<p class="password"><span>Password</span><strong>${escapeHtml(password)}</strong></p>`
-      : `<p class="password"><span>Password</span><strong>the one you set</strong></p>`;
-
-    win.document.write(`<!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8" />
-<title>${safeTitle} · Wishly</title>
-<style>
-  @page { size: A5 portrait; margin: 12mm; }
-  * { box-sizing: border-box; }
-  body { margin: 0; font-family: Inter, Arial, sans-serif; color: #1C1B1A; display: flex; justify-content: center; }
-  .card { width: 120mm; border: 1px solid #EBE5DA; border-radius: 24px; padding: 16mm 12mm; text-align: center; }
-  .mark { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: #6B6762; }
-  .dot { width: 8px; height: 8px; border-radius: 999px; background: #FF385C; }
-  h1 { font-family: Georgia, serif; font-style: italic; font-size: 30px; line-height: 1.1; margin: 18px 0 6px; }
-  p { margin: 0; color: #6B6762; font-size: 13px; line-height: 1.5; }
-  img { width: 62mm; height: 62mm; margin: 18px auto 10px; display: block; border: 1px solid #EBE5DA; border-radius: 12px; }
-  .url { font-size: 11px; word-break: break-all; }
-  .password { margin-top: 14px; padding: 10px 14px; border-radius: 999px; background: #F7F1E8; }
-  .password span { display: block; font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; }
-  .password strong { display: block; margin-top: 2px; color: #1C1B1A; font-size: 15px; }
-</style>
-</head>
-<body>
-  <div class="card">
-    <span class="mark"><span class="dot"></span>Wishly</span>
-    <h1>${safeTitle}</h1>
-    <p>Scan to open your wish.</p>
-    <img src="${qr}" alt="QR code" />
-    <p class="url">${safeUrl}</p>
-    ${passwordRow}
-    <p style="margin-top:14px;">Open the link, then enter the password.</p>
-  </div>
-</body>
-</html>`);
-    win.document.close();
-    win.focus();
-    win.setTimeout(() => win.print(), 250);
   }
 
   const shareText = password
@@ -254,10 +185,13 @@ export function PublishSuccess({
             <Share2 aria-hidden="true" className="size-4" />
             Share
           </button>
-          <button type="button" onClick={printCard} className={shareClass}>
+          <a
+            href={`/dashboard/wishes/${wishId}/card`}
+            className={shareClass}
+          >
             <Printer aria-hidden="true" className="size-4" />
             Print card
-          </button>
+          </a>
         </div>
 
         <div className="mt-8 flex items-center gap-4 rounded-media border border-hairline p-4">

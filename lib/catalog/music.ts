@@ -29,6 +29,30 @@ export const MUSIC_TRACKS: MusicTrack[] = [
     mood: "Festive bells",
     file: "/music/soft-bells.wav",
   },
+  {
+    id: "acoustic-glow",
+    title: "Acoustic Glow",
+    mood: "Acoustic glow",
+    file: "/music/acoustic-glow.wav",
+  },
+  {
+    id: "ambient-air",
+    title: "Ambient Air",
+    mood: "Ambient air",
+    file: "/music/ambient-air.wav",
+  },
+  {
+    id: "bright-pop",
+    title: "Bright Pop",
+    mood: "Bright pop",
+    file: "/music/bright-pop.wav",
+  },
+  {
+    id: "slow-guitar",
+    title: "Slow Guitar",
+    mood: "Slow guitar",
+    file: "/music/slow-guitar.wav",
+  },
 ];
 
 const MUSIC_MAP = new Map(MUSIC_TRACKS.map((track) => [track.id, track]));

@@ -60,10 +60,13 @@ describe("group mode", () => {
       mode: "group",
     });
 
-    return wishRepo().update(wish.wishId, {
+    const updated = await wishRepo().update(wish.wishId, {
       contributorToken: newContributorToken(),
       status: "collecting",
     });
+
+    if (!updated) throw new Error("group wish update failed");
+    return updated;
   }
 
   it("mints a contributor token and moves a draft into collecting", async () => {

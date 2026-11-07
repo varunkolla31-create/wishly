@@ -45,6 +45,34 @@ const TRACKS = [
     tremolo: 0.3,
     brightness: 0.55,
   },
+  {
+    file: "acoustic-glow.wav",
+    notes: [196.0, 246.94, 293.66, 392.0],
+    gain: 0.12,
+    tremolo: 0.2,
+    brightness: 0.35,
+  },
+  {
+    file: "ambient-air.wav",
+    notes: [174.61, 220.0, 261.63, 349.23],
+    gain: 0.08,
+    tremolo: 0.06,
+    brightness: 0.25,
+  },
+  {
+    file: "bright-pop.wav",
+    notes: [293.66, 369.99, 440.0, 587.33],
+    gain: 0.12,
+    tremolo: 0.32,
+    brightness: 0.6,
+  },
+  {
+    file: "slow-guitar.wav",
+    notes: [196.0, 220.0, 293.66, 329.63],
+    gain: 0.11,
+    tremolo: 0.16,
+    brightness: 0.4,
+  },
 ];
 
 function quantizeFrequency(frequency, loopSeconds) {

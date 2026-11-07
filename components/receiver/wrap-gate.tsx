@@ -8,6 +8,7 @@ import { RevealExperience } from "@/components/reveal/reveal-experience";
 import { Button } from "@/components/ui/button";
 import { getMusicTrack } from "@/lib/catalog/music";
 import { getTemplateOrDefault } from "@/lib/catalog/templates";
+import { t } from "@/lib/i18n";
 import type { PublicWishContent } from "@/lib/wishes/public";
 
 export function WrapGate({ content }: { content: PublicWishContent }) {
@@ -88,7 +89,7 @@ export function WrapGate({ content }: { content: PublicWishContent }) {
 
       <div className="relative">
         <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-ink-muted">
-          A little something
+          {t("reveal.overline")}
         </p>
 
         <div className="relative mx-auto mt-8 size-32">
@@ -108,17 +109,17 @@ export function WrapGate({ content }: { content: PublicWishContent }) {
         </div>
 
         <h1 className="mt-12 font-serif text-4xl italic leading-[1.05] text-ink sm:text-5xl">
-          For {content.receiverName || "you"}.
+          {t("reveal.heading", { name: content.receiverName || "you" })}
         </h1>
         <p className="mx-auto mt-3 max-w-sm text-sm leading-relaxed text-ink-muted">
-          Wrapped, sealed, and waiting. There&apos;s no rush.
+          {t("reveal.subheading")}
         </p>
 
         <Button size="lg" className="mt-8" onClick={() => setUnwrapped(true)}>
-          Unwrap it
+          {t("reveal.action")}
         </Button>
 
-        <p className="mt-12 text-xs text-ink-muted">Made with Wishly</p>
+        <p className="mt-12 text-xs text-ink-muted">{t("common.madeWith")}</p>
       </div>
     </main>
   );

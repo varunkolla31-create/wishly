@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import type { TemplatePalette } from "@/lib/catalog/types";
+import { t } from "@/lib/i18n";
 
 const REACTIONS = ["❤️", "🥹", "💛", "🎉", "🙏", "😊"] as const;
 
@@ -53,7 +54,9 @@ export function ReplyForm({
         <p aria-hidden="true" className="text-3xl">
           {emoji}
         </p>
-        <h2 className="mt-2 font-serif text-2xl italic">Sent.</h2>
+        <h2 className="mt-2 font-serif text-2xl italic">
+          {t("reveal.replySent")}
+        </h2>
         <p className="mt-1 text-sm" style={{ color: palette.muted }}>
           They&apos;ll see it in their replies inbox.
         </p>
@@ -70,9 +73,11 @@ export function ReplyForm({
         color: palette.text,
       }}
     >
-      <h2 className="font-serif text-2xl italic">Send something back</h2>
+      <h2 className="font-serif text-2xl italic">
+        {t("reveal.replyTitle")}
+      </h2>
       <p className="mt-1 text-sm" style={{ color: palette.muted }}>
-        A thank-you, a reaction, anything. It goes to the person who made this.
+        {t("reveal.replyHint")}
       </p>
 
       <div
@@ -130,7 +135,7 @@ export function ReplyForm({
         className="mt-3 min-h-12 rounded-full px-6 text-sm font-medium transition-opacity disabled:opacity-50"
         style={{ backgroundColor: palette.accent, color: palette.background }}
       >
-        {sending ? "Sending…" : "Send reply"}
+        {sending ? "Sending…" : t("reveal.replyAction")}
       </button>
     </section>
   );

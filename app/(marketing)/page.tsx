@@ -6,6 +6,7 @@ import { ButtonLink } from "@/components/ui/button";
 import { OCCASIONS } from "@/lib/catalog/occasions";
 import { getTemplate } from "@/lib/catalog/templates";
 import type { TemplateDefinition } from "@/lib/catalog/types";
+import { t } from "@/lib/i18n";
 
 function requireTemplate(id: string): TemplateDefinition {
   const template = getTemplate(id);
@@ -54,19 +55,17 @@ export default function LandingPage() {
               Wish pages, unlocked
             </p>
             <h1 className="mt-4 font-serif text-5xl italic leading-[1.03] text-ink sm:text-6xl lg:text-7xl">
-              Some things deserve more than a message.
+              {t("marketing.hero.title")}
             </h1>
             <p className="mt-5 text-lg leading-relaxed text-ink-muted">
-              Build a wish page for someone you love — photos, music, a letter,
-              even notes from their friends. Send a link and a password. They
-              unlock it like a gift.
+              {t("marketing.hero.subtitle")}
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <ButtonLink href="/dashboard" size="lg">
-                Create a wish
+                {t("marketing.hero.cta")}
               </ButtonLink>
               <ButtonLink href="/templates" variant="outline" size="lg">
-                See the templates
+                {t("marketing.hero.secondary")}
               </ButtonLink>
             </div>
             <p className="mt-5 text-sm text-ink-muted">

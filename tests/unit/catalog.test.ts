@@ -74,4 +74,16 @@ describe("music catalog", () => {
     }
     expect(getMusicTrack(null)).toBeNull();
   });
+
+  it("ships the eight promised tracks", () => {
+    expect(MUSIC_TRACKS).toHaveLength(8);
+  });
+
+  it("has a track for every template music mood", () => {
+    const moods = new Set(MUSIC_TRACKS.map((track) => track.mood));
+
+    for (const template of TEMPLATES) {
+      expect(moods.has(template.musicMood), template.id).toBe(true);
+    }
+  });
 });
