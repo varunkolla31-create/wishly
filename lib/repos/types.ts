@@ -14,6 +14,8 @@ export interface Wish {
   message: string;
   /** Optional scratch-to-reveal note or gift code. */
   bonusNote: string | null;
+  /** Native 3D memory reel template id. */
+  reelTemplateId: string | null;
   /** Random keys under `wishes/<wishId>/<kind>/...`; kind is the path segment. */
   mediaKeys: string[];
   musicId: string | null;

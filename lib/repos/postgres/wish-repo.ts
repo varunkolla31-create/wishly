@@ -13,6 +13,7 @@ const COLUMNS: Record<string, string> = {
   title: "title",
   message: "message",
   bonusNote: "bonus_note",
+  reelTemplateId: "reel_template_id",
   mediaKeys: "media_keys",
   musicId: "music_id",
   passwordHash: "password_hash",

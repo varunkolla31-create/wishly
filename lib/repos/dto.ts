@@ -19,6 +19,7 @@ export function toSenderWish(wish: Wish): SenderWish {
     title: wish.title,
     message: wish.message,
     bonusNote: wish.bonusNote,
+    reelTemplateId: wish.reelTemplateId,
     mediaKeys: wish.mediaKeys,
     musicId: wish.musicId,
     passwordHint: wish.passwordHint,

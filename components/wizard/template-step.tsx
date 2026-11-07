@@ -1,6 +1,7 @@
 "use client";
 
-import { Video } from "lucide-react";
+import { MemoryTemplatePicker } from "@/src/components/three-memory/memory-template-picker";
+import type { MemoryTemplate } from "@/src/components/three-memory/catalog";
 import { TemplatePreview } from "@/components/marketing/template-preview";
 import { getTemplateOrDefault, TEMPLATES } from "@/lib/catalog/templates";
 import type { TemplateDefinition } from "@/lib/catalog/types";
@@ -8,12 +9,18 @@ import { cn } from "@/lib/utils/cn";
 
 export function TemplateStep({
   selected,
+  category,
+  reelTemplateId,
   title,
   onSelect,
+  onReelSelect,
 }: {
   selected: string;
+  category: string;
+  reelTemplateId: string;
   title: string;
   onSelect: (template: TemplateDefinition) => void;
+  onReelSelect: (template: MemoryTemplate) => void;
 }) {
   const selectedTemplate = getTemplateOrDefault(selected);
 
@@ -79,22 +86,11 @@ export function TemplateStep({
       </div>
 
       <div className="mt-8 rounded-card border border-hairline bg-surface p-5">
-        <p className="text-sm font-medium text-ink">
-          Want this look in motion?
-        </p>
-        <p className="mt-1 max-w-lg text-sm leading-relaxed text-ink-muted">
-          Make a six-second video with the same colors and type, add your own
-          words and photo, then download it. It renders in your browser.
-        </p>
-        <a
-          href={`/studio/${selectedTemplate.id}`}
-          target="_blank"
-          rel="noreferrer"
-          className="mt-3 inline-flex min-h-12 items-center gap-2 rounded-full bg-ink px-5 text-sm font-medium text-canvas transition-opacity hover:opacity-90"
-        >
-          <Video aria-hidden="true" className="size-4" />
-          Create a video for “{selectedTemplate.name}”
-        </a>
+        <MemoryTemplatePicker
+          category={category}
+          value={reelTemplateId}
+          onChange={onReelSelect}
+        />
       </div>
     </div>
   );

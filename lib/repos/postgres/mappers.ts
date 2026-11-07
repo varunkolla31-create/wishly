@@ -26,6 +26,7 @@ export interface WishRow {
   title: string;
   message: string;
   bonus_note: string | null;
+  reel_template_id: string | null;
   media_keys: string[] | null;
   /** Reserved for the parked music refactor; unused by the current types. */
   music: unknown;
@@ -53,6 +54,7 @@ export function toWish(row: WishRow): Wish {
     title: row.title,
     message: row.message,
     bonusNote: row.bonus_note,
+    reelTemplateId: row.reel_template_id,
     mediaKeys: row.media_keys ?? [],
     musicId: row.music_id,
     passwordHash: row.password_hash,

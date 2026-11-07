@@ -21,6 +21,7 @@ import {
 } from "@/components/wizard/types";
 import { Button } from "@/components/ui/button";
 import { getOccasion } from "@/lib/catalog/occasions";
+import { defaultMemoryTemplateId } from "@/src/components/three-memory/catalog";
 import type { MediaItem } from "@/lib/media/types";
 import type { SenderWish } from "@/lib/repos/dto";
 
@@ -35,6 +36,7 @@ function initialValues(wish: SenderWish): DraftValues {
     title: wish.title,
     message: wish.message,
     bonusNote: wish.bonusNote ?? "",
+    reelTemplateId: wish.reelTemplateId ?? defaultMemoryTemplateId(wish.category),
     mediaKeys: wish.mediaKeys,
     musicId: wish.musicId,
     unlockAt: toLocalDateTimeInput(wish.unlockAt),
@@ -50,6 +52,7 @@ function toPatch(values: DraftValues) {
     title: values.title,
     message: values.message,
     bonusNote: values.bonusNote.trim() ? values.bonusNote.trim() : null,
+    reelTemplateId: values.reelTemplateId || null,
     mediaKeys: values.mediaKeys,
     musicId: values.musicId,
     unlockAt: fromLocalDateTimeInput(values.unlockAt),
@@ -221,7 +224,6 @@ export function WishWizard({
     return (
       <PublishSuccess
         wishId={wish.wishId}
-        templateId={values.templateId}
         title={values.title || values.receiverName}
         password={savedPassword}
         occasionName={occasion?.name}
@@ -273,6 +275,11 @@ export function WishWizard({
               form.setValue("musicId", selected.defaultMusicId, {
                 shouldDirty: true,
               });
+              form.setValue(
+                "reelTemplateId",
+                defaultMemoryTemplateId(selected.slug),
+                { shouldDirty: true },
+              );
             }}
           />
         ) : null}
@@ -280,9 +287,16 @@ export function WishWizard({
         {stepIndex === 1 ? (
           <TemplateStep
             selected={values.templateId}
+            category={values.category}
+            reelTemplateId={values.reelTemplateId}
             title={values.title || values.receiverName}
             onSelect={(template) =>
               form.setValue("templateId", template.id, { shouldDirty: true })
+            }
+            onReelSelect={(template) =>
+              form.setValue("reelTemplateId", template.id, {
+                shouldDirty: true,
+              })
             }
           />
         ) : null}

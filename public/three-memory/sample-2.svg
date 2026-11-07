@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1000" width="800" height="1000">
+  <defs>
+    <linearGradient id="sky2" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#20303C"/>
+      <stop offset="0.55" stop-color="#5C6E73"/>
+      <stop offset="1" stop-color="#D9C7AE"/>
+    </linearGradient>
+    <linearGradient id="hill" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2E3E44"/>
+      <stop offset="1" stop-color="#182226"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="1000" fill="url(#sky2)"/>
+  <circle cx="620" cy="250" r="70" fill="#F5E6CE" opacity="0.85"/>
+  <path d="M0 720 L 180 470 L 340 650 L 470 520 L 660 720 L 800 600 L 800 1000 L 0 1000 Z" fill="url(#hill)"/>
+  <path d="M0 820 L 220 660 L 420 790 L 610 690 L 800 820 L 800 1000 L 0 1000 Z" fill="#0E1618" opacity="0.85"/>
+  <text x="400" y="930" text-anchor="middle" font-family="Georgia, serif" font-style="italic" font-size="34" fill="#EFE3D2" opacity="0.8">the long drive home</text>
+</svg>

@@ -14,6 +14,7 @@ export const draftPatchSchema = z.object({
   title: z.string().trim().max(120).optional(),
   message: z.string().max(4000).optional(),
   bonusNote: z.string().trim().max(300).nullable().optional(),
+  reelTemplateId: z.string().max(60).nullable().optional(),
   mediaKeys: z
     .array(z.string().refine(isValidMediaKey, "Invalid media key"))
     .max(30)

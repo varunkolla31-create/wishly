@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1000" width="800" height="1000">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#F7B2A0"/>
+      <stop offset="0.5" stop-color="#E87461"/>
+      <stop offset="1" stop-color="#7C2D3A"/>
+    </linearGradient>
+    <linearGradient id="sea" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#F3C9A8"/>
+      <stop offset="1" stop-color="#4A3045"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="1000" fill="url(#sky)"/>
+  <circle cx="400" cy="470" r="130" fill="#FFE3B8" opacity="0.9"/>
+  <rect y="560" width="800" height="440" fill="url(#sea)"/>
+  <path d="M0 640 Q 200 600 400 640 T 800 640" stroke="#FFD9B0" stroke-width="10" fill="none" opacity="0.55"/>
+  <path d="M0 720 Q 200 680 400 720 T 800 720" stroke="#FFD9B0" stroke-width="8" fill="none" opacity="0.35"/>
+  <path d="M0 810 Q 200 770 400 810 T 800 810" stroke="#FFD9B0" stroke-width="6" fill="none" opacity="0.2"/>
+  <text x="400" y="910" text-anchor="middle" font-family="Georgia, serif" font-style="italic" font-size="34" fill="#FFF3E6" opacity="0.8">the coast, that summer</text>
+</svg>

@@ -3,6 +3,7 @@ import { StatusChip } from "@/components/dashboard/status-chip";
 import { WishActions } from "@/components/dashboard/wish-actions";
 import { getOccasion } from "@/lib/catalog/occasions";
 import { getTemplateOrDefault } from "@/lib/catalog/templates";
+import { defaultMemoryTemplateId } from "@/src/components/three-memory/catalog";
 import type { Wish } from "@/lib/repos/types";
 import { formatRelative } from "@/lib/utils/format";
 
@@ -47,7 +48,9 @@ export function WishCard({
       <div className="flex items-center justify-between border-t border-hairline px-2 py-1">
         <WishActions
           wishId={wish.wishId}
-          templateId={wish.templateId}
+          reelTemplateId={
+            wish.reelTemplateId ?? defaultMemoryTemplateId(wish.category)
+          }
           status={wish.status}
           mode={wish.mode}
         />

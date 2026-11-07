@@ -2,6 +2,7 @@
 
 import { Video } from "lucide-react";
 import { RevealExperience } from "@/components/reveal/reveal-experience";
+import { defaultMemoryTemplateId } from "@/src/components/three-memory/catalog";
 import type { DraftValues } from "@/components/wizard/types";
 import { getMusicTrack } from "@/lib/catalog/music";
 import { getTemplateOrDefault } from "@/lib/catalog/templates";
@@ -50,13 +51,13 @@ export function PreviewStep({
           Want this in motion? Build a short video with the same look.
         </p>
         <a
-          href={`/studio/${template.id}`}
+          href={`/studio/${defaultMemoryTemplateId(values.category)}`}
           target="_blank"
           rel="noreferrer"
           className="inline-flex min-h-11 items-center gap-2 rounded-full bg-ink px-5 text-sm font-medium text-canvas transition-opacity hover:opacity-90"
         >
           <Video aria-hidden="true" className="size-4" />
-          Create a video
+          Create a 3D reel
         </a>
       </div>
     </div>

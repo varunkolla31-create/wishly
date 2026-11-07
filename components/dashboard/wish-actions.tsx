@@ -14,12 +14,12 @@ const actionClass =
 
 interface WishActionsProps {
   wishId: string;
-  templateId: string;
+  reelTemplateId: string;
   status: WishStatus;
   mode: "solo" | "group";
 }
 
-export function WishActions({ wishId, templateId, status, mode }: WishActionsProps) {
+export function WishActions({ wishId, reelTemplateId, status, mode }: WishActionsProps) {
   const router = useRouter();
   const [qrOpen, setQrOpen] = useState(false);
   const [qrData, setQrData] = useState<string | null>(null);
@@ -101,10 +101,10 @@ export function WishActions({ wishId, templateId, status, mode }: WishActionsPro
       </Link>
 
       <Link
-        href={`/studio/${templateId}`}
+        href={`/studio/${reelTemplateId}`}
         className={actionClass}
-        aria-label="Create a video with this wish's look"
-        title="Create video"
+        aria-label="Open this wish's 3D memory reel"
+        title="3D reel"
       >
         <Video aria-hidden="true" className="size-[18px]" />
       </Link>

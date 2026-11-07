@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1000" width="800" height="1000">
+  <defs>
+    <linearGradient id="calm" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#0B1418"/>
+      <stop offset="0.65" stop-color="#12232A"/>
+      <stop offset="1" stop-color="#071013"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.5" cy="0.35" r="0.5">
+      <stop offset="0" stop-color="#D6C283" stop-opacity="0.28"/>
+      <stop offset="1" stop-color="#D6C283" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="800" height="1000" fill="url(#calm)"/>
+  <rect width="800" height="1000" fill="url(#glow)"/>
+  <path d="M300 620 Q 400 520 500 620 Q 560 680 500 720 L 300 720 Q 240 680 300 620 Z" fill="#E9D6A5" opacity="0.75"/>
+  <rect x="385" y="700" width="30" height="120" fill="#D6C283" opacity="0.6"/>
+  <ellipse cx="400" cy="850" rx="210" ry="42" fill="#D6C283" opacity="0.12"/>
+  <text x="400" y="930" text-anchor="middle" font-family="Georgia, serif" font-style="italic" font-size="34" fill="#E9E1CF" opacity="0.85">thinking of you, quietly</text>
+</svg>

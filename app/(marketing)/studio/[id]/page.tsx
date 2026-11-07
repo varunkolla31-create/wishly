@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { VideoStudio } from "@/components/studio/video-studio";
-import { getStudioTemplate } from "@/lib/catalog/studio-templates";
+import { MemoryStudio } from "@/src/components/three-memory/memory-studio";
+import { getMemoryTemplate } from "@/src/components/three-memory/catalog";
 import { pageMetadata } from "@/lib/seo";
 
 export async function generateMetadata({
@@ -10,31 +10,24 @@ export async function generateMetadata({
   params: Promise<{ id: string }>;
 }): Promise<Metadata> {
   const { id } = await params;
-  const template = getStudioTemplate(id);
-  if (!template) {
-    return pageMetadata({
-      title: "Video studio",
-      description:
-        "Make a short occasion video inside Wishly — edit the words, add a photo and download it.",
-      path: "/templates",
-    });
-  }
-
+  const template = getMemoryTemplate(id);
   return pageMetadata({
-    title: "Video studio",
-    description: `Make your own video with the "${template.title}" look in Wishly. Add your words and a photo, preview it, then download the video.`,
-    path: `/studio/${template.id}`,
+    title: template ? `${template.name} studio` : "3D memory studio",
+    description: template
+      ? `${template.tagline} Add 3–10 photos and download a 9:16 memory reel.`
+      : "Make a native 3D memory reel from your photos.",
+    path: template ? `/studio/${template.id}` : "/studio",
   });
 }
 
-export default async function StudioPage({
+export default async function MemoryStudioPage({
   params,
 }: {
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const template = getStudioTemplate(id);
+  const template = getMemoryTemplate(id);
   if (!template) notFound();
 
-  return <VideoStudio template={template} />;
+  return <MemoryStudio template={template} />;
 }

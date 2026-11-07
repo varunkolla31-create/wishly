@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1000" width="800" height="1000">
+  <defs>
+    <linearGradient id="room" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#F4E3D3"/>
+      <stop offset="1" stop-color="#D7B7A3"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="1000" fill="url(#room)"/>
+  <rect x="120" y="120" width="560" height="700" fill="#FBF6EF" opacity="0.8"/>
+  <circle cx="400" cy="380" r="110" fill="#C98F73"/>
+  <path d="M210 720 Q 400 460 590 720 Z" fill="#8E5F49"/>
+  <path d="M250 250 Q 400 120 550 250" stroke="#B98E72" stroke-width="14" fill="none" opacity="0.6"/>
+  <text x="400" y="910" text-anchor="middle" font-family="Georgia, serif" font-style="italic" font-size="34" fill="#5A4237" opacity="0.8">the kitchen, always</text>
+</svg>

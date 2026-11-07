@@ -8,6 +8,12 @@ import { toast } from "sonner";
 import { OccasionStep } from "@/components/wizard/occasion-step";
 import { TemplateStep } from "@/components/wizard/template-step";
 import { MusicPicker } from "@/components/wizard/music-picker";
+import {
+  defaultMemoryTemplateId,
+  SAMPLE_PHOTOS,
+  type MemoryTemplate,
+} from "@/src/components/three-memory/catalog";
+import { MemoryPreview } from "@/src/components/three-memory/memory-preview";
 import { Button } from "@/components/ui/button";
 import { getOccasion } from "@/lib/catalog/occasions";
 import { getTemplateOrDefault } from "@/lib/catalog/templates";
@@ -24,6 +30,7 @@ interface GuestDraft {
   title: string;
   message: string;
   bonusNote: string;
+  reelTemplateId: string;
   musicId: string | null;
   password: string;
   hint: string;
@@ -37,6 +44,7 @@ const EMPTY_DRAFT: GuestDraft = {
   title: "",
   message: "",
   bonusNote: "",
+  reelTemplateId: defaultMemoryTemplateId("birthday"),
   musicId: "warm-glow",
   password: "",
   hint: "",
@@ -50,11 +58,13 @@ const hintClass = "mt-1 text-xs leading-relaxed text-ink-muted";
 
 export function GuestWizard({
   initialTemplateId,
+  initialReelId,
   authenticated,
   authEnabled,
   resuming,
 }: {
   initialTemplateId: string | null;
+  initialReelId?: string | null;
   authenticated: boolean;
   authEnabled: boolean;
   resuming: boolean;
@@ -77,9 +87,10 @@ export function GuestWizard({
       ...current,
       ...stored,
       ...(initialTemplateId ? { templateId: initialTemplateId } : {}),
+      ...(initialReelId ? { reelTemplateId: initialReelId } : {}),
     }));
     setLoaded(true);
-  }, [initialTemplateId]);
+  }, [initialTemplateId, initialReelId]);
 
   useEffect(() => {
     if (!loaded) return;
@@ -151,6 +162,7 @@ export function GuestWizard({
           title: draft.title,
           message: draft.message,
           bonusNote: draft.bonusNote.trim() ? draft.bonusNote.trim() : null,
+          reelTemplateId: draft.reelTemplateId || null,
           mediaKeys: [],
           musicId: draft.musicId,
           unlockAt: fromLocalDateTimeInput(draft.unlockAt),
@@ -262,6 +274,7 @@ export function GuestWizard({
                 category: selected.slug,
                 templateId: selected.defaultTemplateId,
                 musicId: selected.defaultMusicId,
+                reelTemplateId: defaultMemoryTemplateId(selected.slug),
               }));
             }}
           />
@@ -270,8 +283,13 @@ export function GuestWizard({
         {step === 1 ? (
           <TemplateStep
             selected={draft.templateId}
+            category={draft.category}
+            reelTemplateId={draft.reelTemplateId}
             title={draft.title || draft.receiverName}
             onSelect={(selected) => update("templateId", selected.id)}
+            onReelSelect={(selected: MemoryTemplate) =>
+              update("reelTemplateId", selected.id)
+            }
           />
         ) : null}
 
@@ -375,6 +393,26 @@ export function GuestWizard({
                 need a private place to live. Everything you&apos;ve written here
                 is kept.
               </p>
+
+              <div className="rounded-card border border-hairline bg-canvas p-3">
+                <p className="text-xs font-semibold uppercase tracking-[0.12em] text-ink-muted">
+                  3D memory reel preview
+                </p>
+                <div className="mt-3 grid gap-3 sm:grid-cols-[150px_1fr] sm:items-start">
+                  <MemoryPreview
+                    input={{
+                      templateId: draft.reelTemplateId,
+                      photos: SAMPLE_PHOTOS,
+                      title: draft.title || "A memory for you",
+                      receiverName: draft.receiverName,
+                    }}
+                  />
+                  <p className="text-xs leading-relaxed text-ink-muted">
+                    Sample photos for now. After you sign in, your own photos
+                    replace them and the reel downloads as a silent 9:16 video.
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
         ) : null}

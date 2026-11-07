@@ -9,15 +9,6 @@ const nextConfig: NextConfig = {
   serverExternalPackages: ["@node-rs/argon2", "pg"],
   poweredByHeader: false,
   outputFileTracingRoot: projectRoot,
-  async redirects() {
-    return [
-      {
-        source: "/video-templates",
-        destination: "/templates#video-templates",
-        permanent: false,
-      },
-    ];
-  },
   async headers() {
     return [
       {

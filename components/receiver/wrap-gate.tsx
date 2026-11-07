@@ -5,6 +5,12 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { ReplyForm } from "@/components/receiver/reply-form";
 import { RevealExperience } from "@/components/reveal/reveal-experience";
+import { DownloadReelButton } from "@/src/components/three-memory/download-reel-button";
+import { MemoryPreview } from "@/src/components/three-memory/memory-preview";
+import {
+  defaultMemoryTemplateId,
+  SAMPLE_PHOTOS,
+} from "@/src/components/three-memory/catalog";
 import { Button } from "@/components/ui/button";
 import { getMusicTrack } from "@/lib/catalog/music";
 import { getTemplateOrDefault } from "@/lib/catalog/templates";
@@ -17,6 +23,15 @@ export function WrapGate({ content }: { content: PublicWishContent }) {
   const template = getTemplateOrDefault(content.templateId);
   const music = getMusicTrack(content.musicId);
   const palette = template.palette;
+  const reelPhotos = content.media
+    .filter((item) => item.kind === "photo")
+    .map((item) => item.url);
+  const reelInput = {
+    templateId: content.reelTemplateId ?? defaultMemoryTemplateId(content.category),
+    photos: reelPhotos.length >= 3 ? reelPhotos : SAMPLE_PHOTOS,
+    title: content.title,
+    receiverName: content.receiverName,
+  };
 
   useEffect(() => {
     if (!unwrapped || reduceMotion || template.confetti === "none") return;
@@ -58,6 +73,27 @@ export function WrapGate({ content }: { content: PublicWishContent }) {
             contributions: content.contributions,
           }}
         >
+          <section className="mt-12">
+            <p
+              className="text-xs font-semibold uppercase tracking-[0.12em]"
+              style={{ color: palette.muted }}
+            >
+              3D memory reel
+            </p>
+            <h2
+              className="mt-2 font-serif text-3xl italic leading-tight sm:text-4xl"
+              style={{ color: palette.text }}
+            >
+              Move through the memory.
+            </h2>
+            <div className="mt-4 grid gap-4 sm:grid-cols-[minmax(0,260px)_1fr] sm:items-start">
+              <MemoryPreview input={reelInput} />
+              <div className="rounded-card bg-black/35 p-4">
+                <DownloadReelButton input={reelInput} />
+              </div>
+            </div>
+          </section>
+
           <ReplyForm wishId={content.id} palette={palette} />
           <p
             className="mt-8 text-center text-xs"

@@ -5,6 +5,12 @@ import { Eye, EyeOff, Lock } from "lucide-react";
 import Link from "next/link";
 import { useState, type FormEvent } from "react";
 import { RevealExperience } from "@/components/reveal/reveal-experience";
+import { DownloadReelButton } from "@/src/components/three-memory/download-reel-button";
+import { MemoryPreview } from "@/src/components/three-memory/memory-preview";
+import {
+  defaultMemoryTemplateId,
+  SAMPLE_PHOTOS,
+} from "@/src/components/three-memory/catalog";
 import { Button } from "@/components/ui/button";
 import { getMusicTrack } from "@/lib/catalog/music";
 import { getTemplateOrDefault } from "@/lib/catalog/templates";
@@ -89,6 +95,45 @@ export function DemoWish({ wish }: { wish: DemoWishData }) {
               Create your own
             </Link>
           </div>
+
+          <section className="mt-12">
+            <p
+              className="text-xs font-semibold uppercase tracking-[0.12em]"
+              style={{ color: palette.muted }}
+            >
+              3D memory reel
+            </p>
+            <h2
+              className="mt-2 font-serif text-3xl italic leading-tight sm:text-4xl"
+              style={{ color: palette.text }}
+            >
+              Move through the memory.
+            </h2>
+            <div className="mt-4 grid gap-4 sm:grid-cols-[minmax(0,260px)_1fr] sm:items-start">
+              <MemoryPreview
+                input={{
+                  templateId: defaultMemoryTemplateId(wish.category),
+                  photos: SAMPLE_PHOTOS,
+                  title: wish.title,
+                  receiverName: wish.receiverName,
+                }}
+              />
+              <div className="rounded-card bg-black/35 p-4">
+                <p className="mb-3 text-xs leading-relaxed text-white/70">
+                  This demo uses sample photos. A real wish uses the sender&apos;s
+                  photos and downloads the same silent 9:16 reel.
+                </p>
+                <DownloadReelButton
+                  input={{
+                    templateId: defaultMemoryTemplateId(wish.category),
+                    photos: SAMPLE_PHOTOS,
+                    title: wish.title,
+                    receiverName: wish.receiverName,
+                  }}
+                />
+              </div>
+            </div>
+          </section>
         </RevealExperience>
       </motion.div>
     );

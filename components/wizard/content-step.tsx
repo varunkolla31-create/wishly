@@ -1,10 +1,16 @@
 "use client";
 
+import Link from "next/link";
 import type { UseFormReturn } from "react-hook-form";
 import { AiIdeaPanel } from "@/components/wizard/ai-idea-panel";
 import { MediaUploader } from "@/components/wizard/media-uploader";
 import { MusicPicker } from "@/components/wizard/music-picker";
 import type { DraftValues } from "@/components/wizard/types";
+import {
+  defaultMemoryTemplateId,
+  SAMPLE_PHOTOS,
+} from "@/src/components/three-memory/catalog";
+import { MemoryPreview } from "@/src/components/three-memory/memory-preview";
 import { getOccasion } from "@/lib/catalog/occasions";
 import type { MediaItem } from "@/lib/media/types";
 
@@ -32,6 +38,14 @@ export function ContentStep({
   const values = form.watch();
   const occasion = getOccasion(values.category);
   const tone = occasion?.tone ?? "fun";
+  const photos = media
+    .filter((item) => item.kind === "photo")
+    .map((item) => item.url);
+  const reelId = values.reelTemplateId || defaultMemoryTemplateId(values.category);
+  const reelPhotos =
+    photos.length >= 3
+      ? photos.slice(0, 10)
+      : [...photos, ...SAMPLE_PHOTOS].slice(0, 6);
 
   function appendIdea(idea: string) {
     const current = form.getValues("message").trim();
@@ -159,6 +173,48 @@ export function ContentStep({
               onAdd={onAddMedia}
               onRemove={onRemoveMedia}
             />
+          </div>
+        </div>
+
+        <div className="rounded-card border border-hairline bg-surface p-5">
+          <div className="flex flex-wrap items-baseline justify-between gap-2">
+            <div>
+              <h2 className="text-sm font-medium text-ink">3D memory reel</h2>
+              <p className="mt-1 text-xs leading-relaxed text-ink-muted">
+                The reel uses your photos. Drag the preview to explore it.
+              </p>
+            </div>
+            <Link
+              href={`/studio/${reelId}`}
+              className="text-xs font-medium text-coral-strong hover:text-coral-hover"
+            >
+              Open full studio →
+            </Link>
+          </div>
+          <div className="mt-4 grid gap-4 sm:grid-cols-[200px_1fr] sm:items-start">
+            <MemoryPreview
+              input={{
+                templateId: reelId,
+                photos: reelPhotos,
+                title: values.title || "A memory for you",
+                receiverName: values.receiverName,
+              }}
+            />
+            <div className="space-y-3 text-xs leading-relaxed text-ink-muted">
+              <p>
+                {photos.length >= 3
+                  ? `${photos.length} photo${photos.length === 1 ? "" : "s"} in the reel.`
+                  : `Add ${3 - photos.length} more photo${3 - photos.length === 1 ? "" : "s"} to fill it; samples are showing for now.`}
+              </p>
+              <p>
+                The download is a silent 9:16 video for Stories, Reels and
+                WhatsApp Status. No Spotify or YouTube audio is included.
+              </p>
+              <p>
+                The receiver can open the same 3D scene and download their own
+                copy after unlocking.
+              </p>
+            </div>
           </div>
         </div>
 

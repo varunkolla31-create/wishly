@@ -1,18 +1,15 @@
 import type { Metadata } from "next";
-import { CanvaVideoGallery } from "@/components/marketing/canva-video-gallery";
 import { InteractiveTemplateCard } from "@/components/marketing/interactive-template-card";
+import { MemoryTemplateCard } from "@/src/components/three-memory/memory-template-card";
+import { MEMORY_TEMPLATES } from "@/src/components/three-memory/catalog";
 import { ButtonLink } from "@/components/ui/button";
-import {
-  CANVA_VIDEO_CATEGORIES,
-  CANVA_VIDEO_TEMPLATES,
-} from "@/lib/catalog/canva-videos";
 import { TEMPLATES } from "@/lib/catalog/templates";
 import { pageMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = pageMetadata({
   title: "Templates",
   description:
-    "Eight wish page templates plus 212 Canva video templates for birthdays, weddings, Diwali, anniversaries and reels. Preview every template in the app.",
+    "Eight native wish page templates and six original 3D memory reels. Pick a look, add photos and download a 9:16 reel, all inside Wishly.",
   path: "/templates",
 });
 
@@ -24,22 +21,33 @@ export default function TemplatesPage() {
           Templates
         </p>
         <h1 className="mt-3 max-w-3xl font-serif text-5xl italic leading-[1.05] text-ink sm:text-6xl">
-          A page that looks like the feeling.
+          A page, and a little world.
         </h1>
         <p className="mt-5 max-w-2xl text-lg leading-relaxed text-ink-muted">
-          Every template sets the background, type, photo layout, confetti and
-          music mood. Pick one now — you can change it any time before you
-          publish.
+          Eight wish page looks and six original 3D memory reels. Every template
+          is made by Wishly and previews right here — no redirects, no other
+          editor.
         </p>
-        <div className="mt-8">
-          <ButtonLink href="/dashboard" size="lg">
+        <div className="mt-8 flex flex-wrap gap-3">
+          <ButtonLink href="/create" size="lg">
             Create a wish
+          </ButtonLink>
+          <ButtonLink href="#memory-reels" variant="outline" size="lg">
+            Explore 3D reels
           </ButtonLink>
         </div>
       </section>
 
       <section className="border-t border-hairline">
-        <div className="mx-auto max-w-6xl px-4 py-14 sm:px-6">
+        <div className="mx-auto max-w-6xl px-4 pb-2 pt-12 sm:px-6">
+          <p className="text-xs font-semibold uppercase tracking-[0.12em] text-ink-muted">
+            Wish page templates
+          </p>
+          <h2 className="mt-2 font-serif text-3xl italic leading-tight text-ink">
+            Pick the feeling.
+          </h2>
+        </div>
+        <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
           <div className="grid grid-cols-2 gap-x-6 gap-y-10 md:grid-cols-3 lg:grid-cols-4">
             {TEMPLATES.map((template) => (
               <InteractiveTemplateCard key={template.id} template={template} />
@@ -49,29 +57,27 @@ export default function TemplatesPage() {
       </section>
 
       <section
-        id="video-templates"
+        id="memory-reels"
         className="scroll-mt-24 border-t border-hairline bg-sand"
       >
-        <div className="mx-auto max-w-6xl px-4 pb-4 pt-14 sm:px-6">
+        <div className="mx-auto max-w-6xl px-4 pb-2 pt-14 sm:px-6">
           <p className="text-xs font-semibold uppercase tracking-[0.12em] text-ink-muted">
-            Canva video templates
+            3D memory reels
           </p>
           <h2 className="mt-3 max-w-3xl font-serif text-4xl italic leading-tight text-ink sm:text-5xl">
-            Add motion to the moment.
+            Three photos. One small world.
           </h2>
           <p className="mt-4 max-w-2xl text-base leading-relaxed text-ink-muted">
-            {CANVA_VIDEO_TEMPLATES.length} Canva video templates across{" "}
-            {CANVA_VIDEO_CATEGORIES.length} occasions. Every preview is hosted in
-            Wishly — browse, filter, and tap any template to see it full size. No
-            redirects, no new tabs.
+            Add 3–10 photos and a wish message. Wishly renders an interactive 3D
+            scene and a silent 9:16 reel you can post or send. Drag any preview
+            to move through the memory. Every scene respects reduced motion.
           </p>
         </div>
-        <div className="bg-canvas">
-          <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
-            <CanvaVideoGallery
-              templates={CANVA_VIDEO_TEMPLATES}
-              categories={CANVA_VIDEO_CATEGORIES}
-            />
+        <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
+          <div className="grid grid-cols-2 gap-x-5 gap-y-10 md:grid-cols-3">
+            {MEMORY_TEMPLATES.map((template) => (
+              <MemoryTemplateCard key={template.id} template={template} />
+            ))}
           </div>
         </div>
       </section>
@@ -83,16 +89,16 @@ export default function TemplatesPage() {
               Calm is a design decision.
             </h2>
             <p className="mt-3 max-w-lg text-base leading-relaxed text-ink-muted">
-              Get well soon and remembrance pages use Calm Sky: slower motion,
-              softer colors, no confetti. Because some days need a quiet room,
-              not a party.
+              Get well soon, sorry and remembrance pages use the reflective 3D
+              scene: slow water, candlelight, no confetti. Because some days need
+              a quiet room, not a party.
             </p>
           </div>
           <div className="flex flex-wrap gap-2">
             {[
-              "No confetti on calm pages",
+              "No confetti on calm scenes",
               "Reduced motion respected",
-              "One clear action at a time",
+              "Native 3D, no third-party editor",
             ].map((item) => (
               <span
                 key={item}

@@ -16,9 +16,9 @@ export const metadata: Metadata = pageMetadata({
 export default async function CreatePage({
   searchParams,
 }: {
-  searchParams: Promise<{ template?: string; resume?: string }>;
+  searchParams: Promise<{ template?: string; reel?: string; resume?: string }>;
 }) {
-  const [{ template, resume }, sender] = await Promise.all([
+  const [{ template, reel, resume }, sender] = await Promise.all([
     searchParams,
     getSender(),
   ]);
@@ -26,6 +26,7 @@ export default async function CreatePage({
   return (
     <GuestWizard
       initialTemplateId={template ?? null}
+      initialReelId={reel ?? null}
       authenticated={Boolean(sender)}
       authEnabled={env().AUTH_MODE === "clerk"}
       resuming={resume === "1"}

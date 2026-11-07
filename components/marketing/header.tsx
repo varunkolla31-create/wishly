@@ -6,6 +6,7 @@ import { ThemeToggle } from "@/components/marketing/theme-toggle";
 const NAV_LINKS = [
   { href: "/occasions/birthday", label: "Occasions" },
   { href: "/templates", label: "Templates" },
+  { href: "/studio", label: "3D reels" },
   { href: "/pricing", label: "Pricing" },
 ];
 

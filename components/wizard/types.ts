@@ -15,6 +15,7 @@ export interface DraftValues {
   title: string;
   message: string;
   bonusNote: string;
+  reelTemplateId: string;
   mediaKeys: string[];
   musicId: string | null;
   unlockAt: string;

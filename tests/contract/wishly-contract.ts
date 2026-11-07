@@ -42,6 +42,7 @@ export function wishlyContract(
         expect(wish.title).toBe("");
         expect(wish.message).toBe("");
         expect(wish.bonusNote).toBeNull();
+        expect(wish.reelTemplateId).toBeNull();
         expect(wish.mediaKeys).toEqual([]);
         expect(wish.musicId).toBeNull();
         expect(wish.passwordHash).toBeNull();
@@ -68,6 +69,7 @@ export function wishlyContract(
           title: "Fifty years",
           message: "A letter",
           bonusNote: "Scratch: WISH-42",
+          reelTemplateId: "3d-tunnel",
           mediaKeys: ["wishes/a/photo/one.png", "wishes/a/voice/two.webm"],
           musicId: "warm-glow",
           passwordHash: "$argon2id$fake",
@@ -84,6 +86,7 @@ export function wishlyContract(
         expect(updated?.title).toBe("Fifty years");
         expect(updated?.message).toBe("A letter");
         expect(updated?.bonusNote).toBe("Scratch: WISH-42");
+        expect(updated?.reelTemplateId).toBe("3d-tunnel");
         expect(updated?.mediaKeys).toEqual([
           "wishes/a/photo/one.png",
           "wishes/a/voice/two.webm",
@@ -97,11 +100,12 @@ export function wishlyContract(
         expect(await wishRepo.update("doesnotexist123456789", { title: "x" })).toBeNull();
 
         // ---- nulling a field clears it -------------------------------
-        await wishRepo.update(wishId, { musicId: null, unlockAt: null, bonusNote: null });
+        await wishRepo.update(wishId, { musicId: null, unlockAt: null, bonusNote: null, reelTemplateId: null });
         const cleared = await wishRepo.getById(wishId);
         expect(cleared?.musicId).toBeNull();
         expect(cleared?.unlockAt).toBeNull();
         expect(cleared?.bonusNote).toBeNull();
+        expect(cleared?.reelTemplateId).toBeNull();
 
         // ---- list by owner: newest-updated first, no password hash ---
         const second = await wishRepo.create({

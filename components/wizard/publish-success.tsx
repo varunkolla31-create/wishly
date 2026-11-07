@@ -12,14 +12,12 @@ const shareClass =
 
 export function PublishSuccess({
   wishId,
-  templateId,
   title,
   password,
   occasionName,
   hint,
 }: {
   wishId: string;
-  templateId: string;
   title: string;
   password: string | null;
   occasionName?: string | null;
@@ -209,13 +207,13 @@ export function PublishSuccess({
             label="Download card"
           />
           <a
-            href={`/studio/${templateId}`}
+            href="/studio"
             target="_blank"
             rel="noreferrer"
             className={shareClass}
           >
             <Video aria-hidden="true" className="size-4" />
-            Make a video
+            Make a 3D reel
           </a>
         </div>
 

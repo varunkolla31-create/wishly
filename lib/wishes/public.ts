@@ -32,6 +32,7 @@ export interface PublicWishContent {
   title: string;
   message: string;
   bonusNote: string | null;
+  reelTemplateId: string | null;
   templateId: string;
   category: string;
   musicId: string | null;
@@ -105,6 +106,7 @@ export async function buildWishContent(
     title: wish.title,
     message: wish.message,
     bonusNote: wish.bonusNote,
+    reelTemplateId: wish.reelTemplateId,
     templateId: wish.templateId,
     category: wish.category,
     musicId: wish.musicId,
