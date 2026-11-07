@@ -1,6 +1,7 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import Image from "next/image";
+import { useEffect, useMemo, useState } from "react";
 import { CanvaVideoCard } from "@/components/marketing/canva-video-card";
 import type {
   CanvaVideoCategory,
@@ -31,6 +32,21 @@ export function CanvaVideoGallery({
   const [freeOnly, setFreeOnly] = useState(false);
   const [query, setQuery] = useState("");
   const [visible, setVisible] = useState(PAGE_SIZE);
+  const [selected, setSelected] = useState<CanvaVideoTemplate | null>(null);
+
+  useEffect(() => {
+    if (!selected) return undefined;
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setSelected(null);
+    };
+    window.addEventListener("keydown", onKey);
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [selected]);
 
   const ordered = useMemo(() => {
     const groups = new Map<string, CanvaVideoTemplate[]>();
@@ -149,7 +165,11 @@ export function CanvaVideoGallery({
       ) : (
         <div className="mt-6 grid grid-cols-2 gap-x-5 gap-y-8 md:grid-cols-3 lg:grid-cols-4">
           {shown.map((template) => (
-            <CanvaVideoCard key={template.id} template={template} />
+            <CanvaVideoCard
+              key={template.id}
+              template={template}
+              onSelect={setSelected}
+            />
           ))}
         </div>
       )}
@@ -163,6 +183,59 @@ export function CanvaVideoGallery({
           >
             Show more templates
           </button>
+        </div>
+      ) : null}
+
+      {selected ? (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-ink/70 p-4"
+          role="presentation"
+          onClick={() => setSelected(null)}
+        >
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-label={selected.title}
+            className="relative max-h-[92vh] w-full max-w-4xl overflow-y-auto rounded-card bg-canvas p-4 shadow-2xl sm:p-6"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <button
+              type="button"
+              onClick={() => setSelected(null)}
+              autoFocus
+              className="absolute right-3 top-3 z-10 rounded-full bg-ink px-3 py-1 text-xs font-medium text-canvas hover:opacity-90"
+            >
+              Close
+            </button>
+            <div className="relative aspect-video w-full overflow-hidden rounded-card bg-sand">
+              <Image
+                src={selected.thumb}
+                alt={selected.title}
+                fill
+                sizes="(min-width: 1024px) 900px, 100vw"
+                unoptimized
+                className="object-contain"
+              />
+            </div>
+            <div className="mt-4 flex flex-wrap items-start justify-between gap-3">
+              <div>
+                <h2 className="font-serif text-2xl italic leading-tight text-ink">
+                  {selected.title}
+                </h2>
+                <p className="mt-1 text-sm text-ink-muted">
+                  {selected.categoryName} · {selected.aspect_ratio} ·{" "}
+                  {selected.plan_tier === "FREE" ? "Free" : "Pro"}
+                </p>
+              </div>
+              <span className="rounded-full border border-hairline bg-surface px-3 py-1 text-xs text-ink-muted">
+                {selected.aspect_ratio}
+              </span>
+            </div>
+            <p className="mt-3 text-xs leading-relaxed text-ink-muted">
+              Preview image hosted in Wishly. The editable video template itself
+              lives in Canva.
+            </p>
+          </div>
         </div>
       ) : null}
     </div>

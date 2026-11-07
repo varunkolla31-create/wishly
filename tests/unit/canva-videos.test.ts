@@ -1,3 +1,5 @@
+import { existsSync } from "node:fs";
+import path from "node:path";
 import { describe, expect, it } from "vitest";
 import {
   CANVA_VIDEO_CATEGORIES,
@@ -28,7 +30,7 @@ describe("canva video catalog", () => {
     }
   });
 
-  it("links every template to canva.com and a Canva-hosted preview", () => {
+  it("ships every preview locally and keeps the Canva source link", () => {
     for (const template of CANVA_VIDEO_TEMPLATES) {
       expect(template.url.startsWith("https://www.canva.com/templates/")).toBe(
         true,
@@ -36,8 +38,17 @@ describe("canva video catalog", () => {
       expect(template.url.startsWith(`https://www.canva.com/templates/${template.id}-`)).toBe(
         true,
       );
-      expect(template.thumb.startsWith("https://template.canva.com/")).toBe(true);
-      expect(template.thumb.endsWith(".jpg")).toBe(true);
+      expect(template.thumb).toBe(`/canva-video-templates/${template.id}.jpg`);
+      expect(
+        existsSync(
+          path.join(
+            process.cwd(),
+            "public",
+            template.thumb.replace(/^\//, ""),
+          ),
+        ),
+        template.id,
+      ).toBe(true);
       expect(template.title.length).toBeGreaterThan(3);
     }
   });

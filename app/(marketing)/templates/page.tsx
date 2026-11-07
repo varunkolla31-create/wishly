@@ -12,7 +12,7 @@ import { pageMetadata } from "@/lib/seo";
 export const metadata: Metadata = pageMetadata({
   title: "Templates",
   description:
-    "Eight wish page templates plus 212 Canva video templates for birthdays, weddings, Diwali, anniversaries and reels. Pick a look, or open a video template in Canva.",
+    "Eight wish page templates plus 212 Canva video templates for birthdays, weddings, Diwali, anniversaries and reels. Preview every template in the app.",
   path: "/templates",
 });
 
@@ -61,9 +61,9 @@ export default function TemplatesPage() {
           </h2>
           <p className="mt-4 max-w-2xl text-base leading-relaxed text-ink-muted">
             {CANVA_VIDEO_TEMPLATES.length} Canva video templates across{" "}
-            {CANVA_VIDEO_CATEGORIES.length} occasions. Open any template in Canva,
-            add your photos and words, and send it as a video — or pair it with a
-            Wishly page. Pro templates need a Canva Pro plan.
+            {CANVA_VIDEO_CATEGORIES.length} occasions. Every preview is hosted in
+            Wishly — browse, filter, and tap any template to see it full size. No
+            redirects, no new tabs.
           </p>
         </div>
         <div className="bg-canvas">

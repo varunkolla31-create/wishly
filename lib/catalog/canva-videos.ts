@@ -32,7 +32,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "PRO",
     "url": "https://www.canva.com/templates/EAGi6qx_bBE-pink-white-elegant-festive-happy-birthday-greeting-video/",
-    "thumb": "https://template.canva.com/EAGi6qx_bBE/2/0/400w-iLrTj4yJEMk.jpg"
+    "thumb": "/canva-video-templates/EAGi6qx_bBE.jpg"
   },
   {
     "id": "EAHCmsIFtyI",
@@ -42,7 +42,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "PRO",
     "url": "https://www.canva.com/templates/EAHCmsIFtyI-pink-green-and-white-playful-birthday-greetings-video/",
-    "thumb": "https://template.canva.com/EAHCmsIFtyI/1/0/400w-t8b09csTY18.jpg"
+    "thumb": "/canva-video-templates/EAHCmsIFtyI.jpg"
   },
   {
     "id": "EAFW8asjx6o",
@@ -52,7 +52,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "PRO",
     "url": "https://www.canva.com/templates/EAFW8asjx6o-yellow-and-brown-playful-happy-birthday-celebration-message-video/",
-    "thumb": "https://template.canva.com/EAFW8asjx6o/1/0/400w-fftighjD2DA.jpg"
+    "thumb": "/canva-video-templates/EAFW8asjx6o.jpg"
   },
   {
     "id": "EAGgoz0bk4k",
@@ -62,7 +62,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "PRO",
     "url": "https://www.canva.com/templates/EAGgoz0bk4k-orange-and-white-simple-happy-birthday-video/",
-    "thumb": "https://template.canva.com/EAGgoz0bk4k/1/0/400w-Zf3Tc5Xe_ns.jpg"
+    "thumb": "/canva-video-templates/EAGgoz0bk4k.jpg"
   },
   {
     "id": "EAGhDjCZB5s",
@@ -72,7 +72,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "PRO",
     "url": "https://www.canva.com/templates/EAGhDjCZB5s-blue-gradient-simple-birthday-video/",
-    "thumb": "https://template.canva.com/EAGhDjCZB5s/1/0/400w-fP48W74TxZg.jpg"
+    "thumb": "/canva-video-templates/EAGhDjCZB5s.jpg"
   },
   {
     "id": "EAHMndF9ank",
@@ -82,7 +82,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "PRO",
     "url": "https://www.canva.com/templates/EAHMndF9ank-purple-neon-glitch-birthday-party-video/",
-    "thumb": "https://template.canva.com/EAHMndF9ank/1/0/400w-MQzzy2IlEhw.jpg"
+    "thumb": "/canva-video-templates/EAHMndF9ank.jpg"
   },
   {
     "id": "EAGe5Gsf5sw",
@@ -92,7 +92,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "PRO",
     "url": "https://www.canva.com/templates/EAGe5Gsf5sw-pink-and-silver-retro-y2k-cute-aesthetic-scrapbook-happy-birthday-message-video/",
-    "thumb": "https://template.canva.com/EAGe5Gsf5sw/1/0/400w-SF5CU6sJ_oQ.jpg"
+    "thumb": "/canva-video-templates/EAGe5Gsf5sw.jpg"
   },
   {
     "id": "EAFVyvQ0Rhk",
@@ -102,7 +102,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "PRO",
     "url": "https://www.canva.com/templates/EAFVyvQ0Rhk-violet-animated-happy-birthday-video/",
-    "thumb": "https://template.canva.com/EAFVyvQ0Rhk/1/0/400w-3W5dpV8_Rfo.jpg"
+    "thumb": "/canva-video-templates/EAFVyvQ0Rhk.jpg"
   },
   {
     "id": "EAGW9PpZxqc",
@@ -112,7 +112,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "PRO",
     "url": "https://www.canva.com/templates/EAGW9PpZxqc-pink-and-white-watercolor-cute-doodle-happy-birthday-greeting-slideshow-video/",
-    "thumb": "https://template.canva.com/EAGW9PpZxqc/2/0/400w-p1ULuYFsLiQ.jpg"
+    "thumb": "/canva-video-templates/EAGW9PpZxqc.jpg"
   },
   {
     "id": "EAGqeCntZ6g",
@@ -122,7 +122,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "PRO",
     "url": "https://www.canva.com/templates/EAGqeCntZ6g-beige-brown-and-green-abstract-happy-birthday-video/",
-    "thumb": "https://template.canva.com/EAGqeCntZ6g/1/0/400w-y6MpjwbjeUk.jpg"
+    "thumb": "/canva-video-templates/EAGqeCntZ6g.jpg"
   },
   {
     "id": "EAGWspsIW0Y",
@@ -132,7 +132,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "PRO",
     "url": "https://www.canva.com/templates/EAGWspsIW0Y-white-purple-aesthetic-happy-birthday-greeting-video/",
-    "thumb": "https://template.canva.com/EAGWspsIW0Y/2/0/400w-RalUbOHtLzA.jpg"
+    "thumb": "/canva-video-templates/EAGWspsIW0Y.jpg"
   },
   {
     "id": "EAHAJP2RKhY",
@@ -142,7 +142,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "PRO",
     "url": "https://www.canva.com/templates/EAHAJP2RKhY-yellow-blue-and-pink-playful-family-memories-video/",
-    "thumb": "https://template.canva.com/EAHAJP2RKhY/1/0/400w-rH8Gqt6McJ4.jpg"
+    "thumb": "/canva-video-templates/EAHAJP2RKhY.jpg"
   },
   {
     "id": "EAGnVIc12f4",
@@ -152,7 +152,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "9:16",
     "plan_tier": "PRO",
     "url": "https://www.canva.com/templates/EAGnVIc12f4-purple-pink-and-white-happy-birthday-celebration-mobile-video-with-photo/",
-    "thumb": "https://template.canva.com/EAGnVIc12f4/1/0/900w-0xhDCyL9rW0.jpg"
+    "thumb": "/canva-video-templates/EAGnVIc12f4.jpg"
   },
   {
     "id": "EAGpCMRhvlk",
@@ -162,7 +162,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "PRO",
     "url": "https://www.canva.com/templates/EAGpCMRhvlk-yellow-pink-playful-birthday-greeting-video/",
-    "thumb": "https://template.canva.com/EAGpCMRhvlk/1/0/400w-9QFei9Qfsz0.jpg"
+    "thumb": "/canva-video-templates/EAGpCMRhvlk.jpg"
   },
   {
     "id": "EAGkQfXiXx0",
@@ -172,7 +172,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "PRO",
     "url": "https://www.canva.com/templates/EAGkQfXiXx0-pink-purple-cute-dreamy-happy-birthday-greeting-video/",
-    "thumb": "https://template.canva.com/EAGkQfXiXx0/1/0/400w-2_3XsLtAcGg.jpg"
+    "thumb": "/canva-video-templates/EAGkQfXiXx0.jpg"
   },
   {
     "id": "EAHXkTNUWjk",
@@ -182,7 +182,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "PRO",
     "url": "https://www.canva.com/templates/EAHXkTNUWjk-blue-white-and-navy-minimalist-happy-birthday-landscape-video/",
-    "thumb": "https://template.canva.com/EAHXkTNUWjk/1/0/400w-PLOkB91RjVs.jpg"
+    "thumb": "/canva-video-templates/EAHXkTNUWjk.jpg"
   },
   {
     "id": "EAHGzIVxZ14",
@@ -192,7 +192,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "PRO",
     "url": "https://www.canva.com/templates/EAHGzIVxZ14-pink-purple-and-white-playful-birthday-celebration-video/",
-    "thumb": "https://template.canva.com/EAHGzIVxZ14/3/0/400w-GURJHlb3ypQ.jpg"
+    "thumb": "/canva-video-templates/EAHGzIVxZ14.jpg"
   },
   {
     "id": "EADxgI4XnL0",
@@ -202,7 +202,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "FREE",
     "url": "https://www.canva.com/templates/EADxgI4XnL0-cream-brown-and-pink-modern-elegant-love-story-wedding-slideshow-video/",
-    "thumb": "https://template.canva.com/EADxgI4XnL0/1/0/400w-n6Kgk-jn-N0.jpg"
+    "thumb": "/canva-video-templates/EADxgI4XnL0.jpg"
   },
   {
     "id": "EADscF6qgL0",
@@ -212,7 +212,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "FREE",
     "url": "https://www.canva.com/templates/EADscF6qgL0-gray-and-cream-wedding-anniversary-animated-presentation/",
-    "thumb": "https://template.canva.com/EADscF6qgL0/2/0/400w-v6tHE7os3AM.jpg"
+    "thumb": "/canva-video-templates/EADscF6qgL0.jpg"
   },
   {
     "id": "EAFA1E6wDkM",
@@ -222,7 +222,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "PRO",
     "url": "https://www.canva.com/templates/EAFA1E6wDkM-dark-olive-watercolor-modern-wedding-invitation-party-video/",
-    "thumb": "https://template.canva.com/EAFA1E6wDkM/1/0/400w-6BofNd9oZD8.jpg"
+    "thumb": "/canva-video-templates/EAFA1E6wDkM.jpg"
   },
   {
     "id": "EAFDL5c7IJA",
@@ -232,7 +232,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "PRO",
     "url": "https://www.canva.com/templates/EAFDL5c7IJA-champagne-beige-elegant-animated-wedding-invitation-video/",
-    "thumb": "https://template.canva.com/EAFDL5c7IJA/1/0/400w-iP0GqrFXZlE.jpg"
+    "thumb": "/canva-video-templates/EAFDL5c7IJA.jpg"
   },
   {
     "id": "EADppg4DRuw",
@@ -242,7 +242,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "PRO",
     "url": "https://www.canva.com/templates/EADppg4DRuw-maroon-and-gold-wedding-save-the-date-slideshow-video/",
-    "thumb": "https://template.canva.com/EADppg4DRuw/4/0/400w-X0ohYhch41o.jpg"
+    "thumb": "/canva-video-templates/EADppg4DRuw.jpg"
   },
   {
     "id": "EADpo9gRgE4",
@@ -252,7 +252,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "PRO",
     "url": "https://www.canva.com/templates/EADpo9gRgE4-black-and-gold-marble-wedding-save-the-date-slideshow-video/",
-    "thumb": "https://template.canva.com/EADpo9gRgE4/3/0/400w-NsW5ourDeX4.jpg"
+    "thumb": "/canva-video-templates/EADpo9gRgE4.jpg"
   },
   {
     "id": "EAFKGo8PqGQ",
@@ -262,7 +262,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "PRO",
     "url": "https://www.canva.com/templates/EAFKGo8PqGQ-light-green-pastel-pink-scrapbook-wedding-video/",
-    "thumb": "https://template.canva.com/EAFKGo8PqGQ/1/0/400w-Bjegg7eEiJ0.jpg"
+    "thumb": "/canva-video-templates/EAFKGo8PqGQ.jpg"
   },
   {
     "id": "EAFKGRtBjwM",
@@ -272,7 +272,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "PRO",
     "url": "https://www.canva.com/templates/EAFKGRtBjwM-gold-black-celegoldbration-wedding-video/",
-    "thumb": "https://template.canva.com/EAFKGRtBjwM/1/0/400w-gccM4OUq2h8.jpg"
+    "thumb": "/canva-video-templates/EAFKGRtBjwM.jpg"
   },
   {
     "id": "EAG_SeKxbhI",
@@ -282,7 +282,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "FREE",
     "url": "https://www.canva.com/templates/EAG_SeKxbhI-gold-and-black-dark-modern-marble-texture-save-the-date-wedding-invitation-video/",
-    "thumb": "https://template.canva.com/EAG_SeKxbhI/2/0/400w-RpCfuapH9ak.jpg"
+    "thumb": "/canva-video-templates/EAG_SeKxbhI.jpg"
   },
   {
     "id": "EADppndL624",
@@ -292,7 +292,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "FREE",
     "url": "https://www.canva.com/templates/EADppndL624-green-and-white-tropical-engagement-announcement-slideshow-video/",
-    "thumb": "https://template.canva.com/EADppndL624/3/0/400w-FY9AZmx2p-k.jpg"
+    "thumb": "/canva-video-templates/EADppndL624.jpg"
   },
   {
     "id": "EADscNWLoEk",
@@ -302,7 +302,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "FREE",
     "url": "https://www.canva.com/templates/EADscNWLoEk-cream-and-gold-wedding-anniversary-animated-presentation/",
-    "thumb": "https://template.canva.com/EADscNWLoEk/1/0/400w-xGo21C1RNOo.jpg"
+    "thumb": "/canva-video-templates/EADscNWLoEk.jpg"
   },
   {
     "id": "EADscHoxG_M",
@@ -312,7 +312,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "PRO",
     "url": "https://www.canva.com/templates/EADscHoxG_M-pink-and-bronze-wedding-anniversary-animated-presentation/",
-    "thumb": "https://template.canva.com/EADscHoxG_M/1/0/400w-Up46j6AlRJ0.jpg"
+    "thumb": "/canva-video-templates/EADscHoxG_M.jpg"
   },
   {
     "id": "EAFKG7jFUPc",
@@ -322,7 +322,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "PRO",
     "url": "https://www.canva.com/templates/EAFKG7jFUPc-beige-pink-watercolor-wedding-video/",
-    "thumb": "https://template.canva.com/EAFKG7jFUPc/1/0/400w-T6mhuT2AXJY.jpg"
+    "thumb": "/canva-video-templates/EAFKG7jFUPc.jpg"
   },
   {
     "id": "EAG_NAvUiVQ",
@@ -332,7 +332,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "FREE",
     "url": "https://www.canva.com/templates/EAG_NAvUiVQ-black-and-blue-dark-modern-rustic-floral-illustrative-couple-wedding-invitation-video/",
-    "thumb": "https://template.canva.com/EAG_NAvUiVQ/1/0/400w-0_1u7H4ZJoc.jpg"
+    "thumb": "/canva-video-templates/EAG_NAvUiVQ.jpg"
   },
   {
     "id": "EAGbPzHISDM",
@@ -342,7 +342,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "9:16",
     "plan_tier": "PRO",
     "url": "https://www.canva.com/templates/EAGbPzHISDM-yellow-traditional-indian-wedding-haldi-ceremony-invitation-mobile-video/",
-    "thumb": "https://template.canva.com/EAGbPzHISDM/1/0/900w-bFY9gIonbYw.jpg"
+    "thumb": "/canva-video-templates/EAGbPzHISDM.jpg"
   },
   {
     "id": "EAGeJzaxnVU",
@@ -352,7 +352,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "9:16",
     "plan_tier": "PRO",
     "url": "https://www.canva.com/templates/EAGeJzaxnVU-green-and-white-floral-indian-wedding-reception-party-invitation-mobile-video/",
-    "thumb": "https://template.canva.com/EAGeJzaxnVU/1/0/900w-BEw3lID_Kok.jpg"
+    "thumb": "/canva-video-templates/EAGeJzaxnVU.jpg"
   },
   {
     "id": "EAFsAnpj5s8",
@@ -362,7 +362,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "1:1",
     "plan_tier": "PRO",
     "url": "https://www.canva.com/templates/EAFsAnpj5s8-dark-blue-and-white-floral-indian-wedding-save-the-date-instagram-post/",
-    "thumb": "https://template.canva.com/EAFsAnpj5s8/1/0/400w-UvZnU4RbwFo.jpg"
+    "thumb": "/canva-video-templates/EAFsAnpj5s8.jpg"
   },
   {
     "id": "EAHQpu7csJI",
@@ -372,7 +372,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "9:16",
     "plan_tier": "PRO",
     "url": "https://www.canva.com/templates/EAHQpu7csJI-orange-and-green-illustrated-indian-wedding-invitation-instagram-story/",
-    "thumb": "https://template.canva.com/EAHQpu7csJI/1/0/900w-GkITwCgxQKg.jpg"
+    "thumb": "/canva-video-templates/EAHQpu7csJI.jpg"
   },
   {
     "id": "EAF1dmuAzCg",
@@ -382,7 +382,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "9:16",
     "plan_tier": "PRO",
     "url": "https://www.canva.com/templates/EAF1dmuAzCg-red-and-white-elegant-indian-wedding-jewellery-mobile-video/",
-    "thumb": "https://template.canva.com/EAF1dmuAzCg/1/0/900w-LvN9AQerRmk.jpg"
+    "thumb": "/canva-video-templates/EAF1dmuAzCg.jpg"
   },
   {
     "id": "EAGaDSfHRvk",
@@ -392,7 +392,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "9:16",
     "plan_tier": "PRO",
     "url": "https://www.canva.com/templates/EAGaDSfHRvk-beige-and-green-traditional-vintage-indian-wedding-virtual-invitation/",
-    "thumb": "https://template.canva.com/EAGaDSfHRvk/1/0/568w-5pDML2WfeR4.jpg"
+    "thumb": "/canva-video-templates/EAGaDSfHRvk.jpg"
   },
   {
     "id": "EAGfdl5xiME",
@@ -402,7 +402,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "9:16",
     "plan_tier": "PRO",
     "url": "https://www.canva.com/templates/EAGfdl5xiME-green-and-orange-traditional-indian-wedding-mehndi-ceremony-invitation-mobile-video/",
-    "thumb": "https://template.canva.com/EAGfdl5xiME/3/0/900w-4ywtoOy4IDA.jpg"
+    "thumb": "/canva-video-templates/EAGfdl5xiME.jpg"
   },
   {
     "id": "EAHDoKwHh1E",
@@ -412,7 +412,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "9:16",
     "plan_tier": "PRO",
     "url": "https://www.canva.com/templates/EAHDoKwHh1E-beige-gold-and-red-traditional-wedding-mobile-video/",
-    "thumb": "https://template.canva.com/EAHDoKwHh1E/1/0/900w-2ugWntkh5Uw.jpg"
+    "thumb": "/canva-video-templates/EAHDoKwHh1E.jpg"
   },
   {
     "id": "EAG4KiZViKs",
@@ -422,7 +422,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "9:16",
     "plan_tier": "PRO",
     "url": "https://www.canva.com/templates/EAG4KiZViKs-red-white-traditional-indian-wedding-invitation-mobile-video/",
-    "thumb": "https://template.canva.com/EAG4KiZViKs/1/0/900w-q9c61Z6lnm4.jpg"
+    "thumb": "/canva-video-templates/EAG4KiZViKs.jpg"
   },
   {
     "id": "EAGWPc1iUf4",
@@ -432,7 +432,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "9:16",
     "plan_tier": "PRO",
     "url": "https://www.canva.com/templates/EAGWPc1iUf4-red-and-pink-floral-indian-wedding-invitation-animated-mobile-video/",
-    "thumb": "https://template.canva.com/EAGWPc1iUf4/1/0/900w-zXbcQOjXsWE.jpg"
+    "thumb": "/canva-video-templates/EAGWPc1iUf4.jpg"
   },
   {
     "id": "EAGd4wEAq7Q",
@@ -442,7 +442,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "9:16",
     "plan_tier": "PRO",
     "url": "https://www.canva.com/templates/EAGd4wEAq7Q-light-blue-and-pink-floral-indian-wedding-ring-ceremony-invitation-mobile-video/",
-    "thumb": "https://template.canva.com/EAGd4wEAq7Q/1/0/900w-yqGCg1yoLwQ.jpg"
+    "thumb": "/canva-video-templates/EAGd4wEAq7Q.jpg"
   },
   {
     "id": "EAGB1cj9ETY",
@@ -452,7 +452,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "9:16",
     "plan_tier": "PRO",
     "url": "https://www.canva.com/templates/EAGB1cj9ETY-orange-haldi-indian-wedding-invitation/",
-    "thumb": "https://template.canva.com/EAGB1cj9ETY/1/0/571w-O0n-xbDStPM.jpg"
+    "thumb": "/canva-video-templates/EAGB1cj9ETY.jpg"
   },
   {
     "id": "EAG_gjoucps",
@@ -462,7 +462,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "9:16",
     "plan_tier": "PRO",
     "url": "https://www.canva.com/templates/EAG_gjoucps-pink-and-yellow-traditional-indian-wedding-invitation/",
-    "thumb": "https://template.canva.com/EAG_gjoucps/2/0/572w-D94moxv6t9U.jpg"
+    "thumb": "/canva-video-templates/EAG_gjoucps.jpg"
   },
   {
     "id": "EAFrrtEfrFc",
@@ -472,7 +472,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "FREE",
     "url": "https://www.canva.com/templates/EAFrrtEfrFc-blue-and-gold-traditional-indian-wedding-save-the-date-video/",
-    "thumb": "https://template.canva.com/EAFrrtEfrFc/1/0/400w-byjyb--dohY.jpg"
+    "thumb": "/canva-video-templates/EAFrrtEfrFc.jpg"
   },
   {
     "id": "EAGkkkOPERU",
@@ -482,7 +482,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "FREE",
     "url": "https://www.canva.com/templates/EAGkkkOPERU-black-and-white-gradient-elegant-bold-floral-sparkle-wedding-invitation-video/",
-    "thumb": "https://template.canva.com/EAGkkkOPERU/1/0/400w-3TslNRiTPGk.jpg"
+    "thumb": "/canva-video-templates/EAGkkkOPERU.jpg"
   },
   {
     "id": "EAGoBloXMuA",
@@ -492,7 +492,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "FREE",
     "url": "https://www.canva.com/templates/EAGoBloXMuA-beige-gray-classy-elegant-wedding-highlight-video/",
-    "thumb": "https://template.canva.com/EAGoBloXMuA/2/0/400w-91LErgPtTYs.jpg"
+    "thumb": "/canva-video-templates/EAGoBloXMuA.jpg"
   },
   {
     "id": "EAFaogtnMBo",
@@ -502,7 +502,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "FREE",
     "url": "https://www.canva.com/templates/EAFaogtnMBo-beige-simple-minimal-save-the-date-wedding-video/",
-    "thumb": "https://template.canva.com/EAFaogtnMBo/3/0/400w-79sl6GIebQk.jpg"
+    "thumb": "/canva-video-templates/EAFaogtnMBo.jpg"
   },
   {
     "id": "EAGscz9etVk",
@@ -512,7 +512,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "FREE",
     "url": "https://www.canva.com/templates/EAGscz9etVk-blue-and-pink-floral-wedding-invitation-video/",
-    "thumb": "https://template.canva.com/EAGscz9etVk/1/0/400w-AJAukUImCzw.jpg"
+    "thumb": "/canva-video-templates/EAGscz9etVk.jpg"
   },
   {
     "id": "EAGS81q8WVE",
@@ -522,7 +522,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "FREE",
     "url": "https://www.canva.com/templates/EAGS81q8WVE-green-and-gold-floral-wedding-invitation-video/",
-    "thumb": "https://template.canva.com/EAGS81q8WVE/1/0/400w-CBaqgLNJc9g.jpg"
+    "thumb": "/canva-video-templates/EAGS81q8WVE.jpg"
   },
   {
     "id": "EAHCa1wM2FY",
@@ -532,7 +532,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "FREE",
     "url": "https://www.canva.com/templates/EAHCa1wM2FY-yellow-flower-watercolor-wedding-ceremony-video/",
-    "thumb": "https://template.canva.com/EAHCa1wM2FY/1/0/400w-ttsao0tzDQY.jpg"
+    "thumb": "/canva-video-templates/EAHCa1wM2FY.jpg"
   },
   {
     "id": "EAGi72n4EZ4",
@@ -542,7 +542,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "FREE",
     "url": "https://www.canva.com/templates/EAGi72n4EZ4-navy-and-gold-elegant-wedding-video/",
-    "thumb": "https://template.canva.com/EAGi72n4EZ4/1/0/400w-xVRlf6yT1nI.jpg"
+    "thumb": "/canva-video-templates/EAGi72n4EZ4.jpg"
   },
   {
     "id": "EAFlOHmrag8",
@@ -552,7 +552,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "FREE",
     "url": "https://www.canva.com/templates/EAFlOHmrag8-light-pink-rose-floral-animated-illustration-save-the-date-wedding-video/",
-    "thumb": "https://template.canva.com/EAFlOHmrag8/1/0/400w-cPHWDT5AeMY.jpg"
+    "thumb": "/canva-video-templates/EAFlOHmrag8.jpg"
   },
   {
     "id": "EAF_YN_C6Xc",
@@ -562,7 +562,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "FREE",
     "url": "https://www.canva.com/templates/EAF_YN_C6Xc-pink-and-white-simple-wedding-video/",
-    "thumb": "https://template.canva.com/EAF_YN_C6Xc/1/0/400w-MBTxdaaEsXQ.jpg"
+    "thumb": "/canva-video-templates/EAF_YN_C6Xc.jpg"
   },
   {
     "id": "EAHXZtfS8_A",
@@ -572,7 +572,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "FREE",
     "url": "https://www.canva.com/templates/EAHXZtfS8_A-gold-and-black-dark-modern-marble-texture-save-the-date-wedding-invitation-video/",
-    "thumb": "https://template.canva.com/EAHXZtfS8_A/1/0/400w-8-W1TZBFwkg.jpg"
+    "thumb": "/canva-video-templates/EAHXZtfS8_A.jpg"
   },
   {
     "id": "EAGRirDCMrs",
@@ -582,7 +582,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "9:16",
     "plan_tier": "FREE",
     "url": "https://www.canva.com/templates/EAGRirDCMrs-purple-watercolor-floral-wedding-invitation-mobile-video/",
-    "thumb": "https://template.canva.com/EAGRirDCMrs/1/0/900w-XFUDhUcldac.jpg"
+    "thumb": "/canva-video-templates/EAGRirDCMrs.jpg"
   },
   {
     "id": "EAGS8gBxov4",
@@ -592,7 +592,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "FREE",
     "url": "https://www.canva.com/templates/EAGS8gBxov4-pink-white-and-light-pink-romantic-floral-wedding-invitation-video/",
-    "thumb": "https://template.canva.com/EAGS8gBxov4/3/0/400w-vkL5BcddjBs.jpg"
+    "thumb": "/canva-video-templates/EAGS8gBxov4.jpg"
   },
   {
     "id": "EAFl3ZU83LQ",
@@ -602,7 +602,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "FREE",
     "url": "https://www.canva.com/templates/EAFl3ZU83LQ-cream-elegant-sunset-save-the-date-wedding-slideshow-video/",
-    "thumb": "https://template.canva.com/EAFl3ZU83LQ/1/0/400w-wIMgAZl5iTs.jpg"
+    "thumb": "/canva-video-templates/EAFl3ZU83LQ.jpg"
   },
   {
     "id": "EAGfbLjfDWw",
@@ -612,7 +612,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "FREE",
     "url": "https://www.canva.com/templates/EAGfbLjfDWw-green-and-white-floral-illustration-save-the-date-video/",
-    "thumb": "https://template.canva.com/EAGfbLjfDWw/1/0/400w-58Fb-aJGRqo.jpg"
+    "thumb": "/canva-video-templates/EAGfbLjfDWw.jpg"
   },
   {
     "id": "EAFT2XYvdE4",
@@ -622,7 +622,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "FREE",
     "url": "https://www.canva.com/templates/EAFT2XYvdE4-end-of-life-tribute-video-in-blue-pink-white-elegant-photocentric-style/",
-    "thumb": "https://template.canva.com/EAFT2XYvdE4/1/0/400w-wZdCYVy3yTg.jpg"
+    "thumb": "/canva-video-templates/EAFT2XYvdE4.jpg"
   },
   {
     "id": "EAG5Fo_dkvs",
@@ -632,7 +632,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "PRO",
     "url": "https://www.canva.com/templates/EAG5Fo_dkvs-beige-and-gold-playful-celebration-message-for-retirement-video/",
-    "thumb": "https://template.canva.com/EAG5Fo_dkvs/1/0/400w-tbXDXj7oQrA.jpg"
+    "thumb": "/canva-video-templates/EAG5Fo_dkvs.jpg"
   },
   {
     "id": "EAHXNHp7Yq0",
@@ -642,7 +642,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "PRO",
     "url": "https://www.canva.com/templates/EAHXNHp7Yq0-orange-green-and-white-indian-air-force-day-landscape-video/",
-    "thumb": "https://template.canva.com/EAHXNHp7Yq0/1/0/400w-Do4JRDuvjUs.jpg"
+    "thumb": "/canva-video-templates/EAHXNHp7Yq0.jpg"
   },
   {
     "id": "EAFZHp6zG4k",
@@ -652,7 +652,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "1:1",
     "plan_tier": "FREE",
     "url": "https://www.canva.com/templates/EAFZHp6zG4k-end-of-life-tribute-instagram-post-video-in-red-yellow-elegant-photocentric-style/",
-    "thumb": "https://template.canva.com/EAFZHp6zG4k/1/0/400w-AO2pX0NnfMU.jpg"
+    "thumb": "/canva-video-templates/EAFZHp6zG4k.jpg"
   },
   {
     "id": "EAHW31eucJg",
@@ -662,7 +662,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "PRO",
     "url": "https://www.canva.com/templates/EAHW31eucJg-sky-blue-white-and-gray-modern-patriotic-indian-air-force-day-landscape-video/",
-    "thumb": "https://template.canva.com/EAHW31eucJg/1/0/400w-4cn1FKnUt1w.jpg"
+    "thumb": "/canva-video-templates/EAHW31eucJg.jpg"
   },
   {
     "id": "EAG4maYVbCQ",
@@ -672,7 +672,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "PRO",
     "url": "https://www.canva.com/templates/EAG4maYVbCQ-purple-and-white-romantic-couple-wedding-anniversary-video/",
-    "thumb": "https://template.canva.com/EAG4maYVbCQ/1/0/400w-mk59SE2Khk4.jpg"
+    "thumb": "/canva-video-templates/EAG4maYVbCQ.jpg"
   },
   {
     "id": "EAFT2lML59k",
@@ -682,7 +682,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "FREE",
     "url": "https://www.canva.com/templates/EAFT2lML59k-end-of-life-tribute-video-in-yellow-green-natural-photocentric-style/",
-    "thumb": "https://template.canva.com/EAFT2lML59k/1/0/400w-hCkoIBkFXqE.jpg"
+    "thumb": "/canva-video-templates/EAFT2lML59k.jpg"
   },
   {
     "id": "EAFZPgm3pCk",
@@ -692,7 +692,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "FREE",
     "url": "https://www.canva.com/templates/EAFZPgm3pCk-tribute-mobile-video-in-green-grey-illustrative-style/",
-    "thumb": "https://template.canva.com/EAFZPgm3pCk/1/0/400w-pOnjEvPv3zU.jpg"
+    "thumb": "/canva-video-templates/EAFZPgm3pCk.jpg"
   },
   {
     "id": "EAG5FmRo7qo",
@@ -702,7 +702,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "PRO",
     "url": "https://www.canva.com/templates/EAG5FmRo7qo-black-and-gold-elegant-tribute-farewell-message-for-retirement-video/",
-    "thumb": "https://template.canva.com/EAG5FmRo7qo/1/0/400w-fHuLNNAJ3cc.jpg"
+    "thumb": "/canva-video-templates/EAG5FmRo7qo.jpg"
   },
   {
     "id": "EAFT2ULvCm8",
@@ -712,17 +712,17 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "PRO",
     "url": "https://www.canva.com/templates/EAFT2ULvCm8-end-of-life-tribute-video-in-black-pink-elegant-informational-style/",
-    "thumb": "https://template.canva.com/EAFT2ULvCm8/1/0/400w-xzub0uOi0uY.jpg"
+    "thumb": "/canva-video-templates/EAFT2ULvCm8.jpg"
   },
   {
     "id": "EAGRNRapzkw",
-    "title": "Red &amp; Gold Traditional Elegant Happy Diwali Greeting Video",
+    "title": "Red & Gold Traditional Elegant Happy Diwali Greeting Video",
     "category": "festivals",
     "categoryName": "Festivals & Diwali",
     "aspect_ratio": "16:9",
     "plan_tier": "FREE",
     "url": "https://www.canva.com/templates/EAGRNRapzkw-red-gold-traditional-elegant-happy-diwali-greeting-video/",
-    "thumb": "https://template.canva.com/EAGRNRapzkw/1/0/400w-pFR1uJRRCvM.jpg"
+    "thumb": "/canva-video-templates/EAGRNRapzkw.jpg"
   },
   {
     "id": "EAGUZQNMqmk",
@@ -732,7 +732,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "FREE",
     "url": "https://www.canva.com/templates/EAGUZQNMqmk-brown-yellow-minimal-modern-diwali-greeting-video/",
-    "thumb": "https://template.canva.com/EAGUZQNMqmk/2/0/400w-ivyd4XQKDvo.jpg"
+    "thumb": "/canva-video-templates/EAGUZQNMqmk.jpg"
   },
   {
     "id": "EAGQeosvzCY",
@@ -742,7 +742,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "FREE",
     "url": "https://www.canva.com/templates/EAGQeosvzCY-orange-and-yellow-organic-diwali-video/",
-    "thumb": "https://template.canva.com/EAGQeosvzCY/1/0/400w-lX4MP0L45HI.jpg"
+    "thumb": "/canva-video-templates/EAGQeosvzCY.jpg"
   },
   {
     "id": "EAGT7PEU9mA",
@@ -752,7 +752,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "FREE",
     "url": "https://www.canva.com/templates/EAGT7PEU9mA-violet-yellow-modern-minimalist-diwali-greeting-video/",
-    "thumb": "https://template.canva.com/EAGT7PEU9mA/1/0/400w-rBYNFWAwPII.jpg"
+    "thumb": "/canva-video-templates/EAGT7PEU9mA.jpg"
   },
   {
     "id": "EAGRmGSG_GY",
@@ -762,7 +762,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "FREE",
     "url": "https://www.canva.com/templates/EAGRmGSG_GY-red-and-yellow-decorative-happy-diwali-greeting-video/",
-    "thumb": "https://template.canva.com/EAGRmGSG_GY/1/0/400w-l_bAnKsYsoA.jpg"
+    "thumb": "/canva-video-templates/EAGRmGSG_GY.jpg"
   },
   {
     "id": "EAGU3fJjSVs",
@@ -772,7 +772,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "FREE",
     "url": "https://www.canva.com/templates/EAGU3fJjSVs-purple-orange-illustrated-choti-diwali-video/",
-    "thumb": "https://template.canva.com/EAGU3fJjSVs/1/0/400w-EmGJr4BsU8E.jpg"
+    "thumb": "/canva-video-templates/EAGU3fJjSVs.jpg"
   },
   {
     "id": "EAG2D0InbFY",
@@ -782,7 +782,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "PRO",
     "url": "https://www.canva.com/templates/EAG2D0InbFY-gold-dynamic-diwali-greetings-video/",
-    "thumb": "https://template.canva.com/EAG2D0InbFY/1/0/400w-I90w0tryqe0.jpg"
+    "thumb": "/canva-video-templates/EAG2D0InbFY.jpg"
   },
   {
     "id": "EAG0af60Yb8",
@@ -792,7 +792,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "PRO",
     "url": "https://www.canva.com/templates/EAG0af60Yb8-brown-and-yellow-illustrated-diwali-greetings-video/",
-    "thumb": "https://template.canva.com/EAG0af60Yb8/2/0/400w-6azMf-r6Kjc.jpg"
+    "thumb": "/canva-video-templates/EAG0af60Yb8.jpg"
   },
   {
     "id": "EAG1RI0MtzQ",
@@ -802,7 +802,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "PRO",
     "url": "https://www.canva.com/templates/EAG1RI0MtzQ-red-and-gold-festive-diwali-video/",
-    "thumb": "https://template.canva.com/EAG1RI0MtzQ/1/0/400w-8p8eitStSp8.jpg"
+    "thumb": "/canva-video-templates/EAG1RI0MtzQ.jpg"
   },
   {
     "id": "EAG0qeLFGJw",
@@ -812,7 +812,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "PRO",
     "url": "https://www.canva.com/templates/EAG0qeLFGJw-red-and-yellow-playful-diwali-video/",
-    "thumb": "https://template.canva.com/EAG0qeLFGJw/1/0/400w-22psKg1SYKA.jpg"
+    "thumb": "/canva-video-templates/EAG0qeLFGJw.jpg"
   },
   {
     "id": "EAGzDcQ8sEI",
@@ -822,7 +822,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "PRO",
     "url": "https://www.canva.com/templates/EAGzDcQ8sEI-yellow-and-grey-traditional-diwali-video/",
-    "thumb": "https://template.canva.com/EAGzDcQ8sEI/1/0/400w-AM1mlvq8i-o.jpg"
+    "thumb": "/canva-video-templates/EAGzDcQ8sEI.jpg"
   },
   {
     "id": "EAGzMxjSqn0",
@@ -832,7 +832,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "PRO",
     "url": "https://www.canva.com/templates/EAGzMxjSqn0-yellow-and-blue-traditional-happy-diwali-greetings-video/",
-    "thumb": "https://template.canva.com/EAGzMxjSqn0/1/0/400w-cYC2h6dwl1M.jpg"
+    "thumb": "/canva-video-templates/EAGzMxjSqn0.jpg"
   },
   {
     "id": "EAHV0AYcguk",
@@ -842,7 +842,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "PRO",
     "url": "https://www.canva.com/templates/EAHV0AYcguk-gold-and-black-festive-happy-diwali-landscape-video/",
-    "thumb": "https://template.canva.com/EAHV0AYcguk/1/0/400w-HbWHRPuqvu4.jpg"
+    "thumb": "/canva-video-templates/EAHV0AYcguk.jpg"
   },
   {
     "id": "EAGzMyjPpcI",
@@ -852,7 +852,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "PRO",
     "url": "https://www.canva.com/templates/EAGzMyjPpcI-pink-and-gold-traditional-happy-diwali-greetings-video/",
-    "thumb": "https://template.canva.com/EAGzMyjPpcI/1/0/400w-Vgsgfg1cJtc.jpg"
+    "thumb": "/canva-video-templates/EAGzMyjPpcI.jpg"
   },
   {
     "id": "EAFykOWDAak",
@@ -862,7 +862,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "FREE",
     "url": "https://www.canva.com/templates/EAFykOWDAak-purple-neon-diwali-greeting-youtube-video/",
-    "thumb": "https://template.canva.com/EAFykOWDAak/1/0/400w-fglvaMs_BUI.jpg"
+    "thumb": "/canva-video-templates/EAFykOWDAak.jpg"
   },
   {
     "id": "EAG1X2djQJg",
@@ -872,7 +872,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "FREE",
     "url": "https://www.canva.com/templates/EAG1X2djQJg-orange-and-purple-illustrated-diwali-greetings-video/",
-    "thumb": "https://template.canva.com/EAG1X2djQJg/2/0/400w-6zLCxMleUt0.jpg"
+    "thumb": "/canva-video-templates/EAG1X2djQJg.jpg"
   },
   {
     "id": "EAFzf7Yn7dA",
@@ -882,7 +882,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "FREE",
     "url": "https://www.canva.com/templates/EAFzf7Yn7dA-yellow-aesthetic-diwali-greeting-video/",
-    "thumb": "https://template.canva.com/EAFzf7Yn7dA/1/0/400w-PBWrT8R0K6w.jpg"
+    "thumb": "/canva-video-templates/EAFzf7Yn7dA.jpg"
   },
   {
     "id": "EAHZcy7sXZ4",
@@ -892,17 +892,17 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "PRO",
     "url": "https://www.canva.com/templates/EAHZcy7sXZ4-red-white-and-green-playful-christmas-video/",
-    "thumb": "https://template.canva.com/EAHZcy7sXZ4/1/0/400w-1Q5wbvjIemM.jpg"
+    "thumb": "/canva-video-templates/EAHZcy7sXZ4.jpg"
   },
   {
     "id": "EAExfU38h1Y",
-    "title": "Gold Sparkles Elegant New Year Video Background&quot;",
+    "title": "Gold Sparkles Elegant New Year Video Background\"",
     "category": "christmas",
     "categoryName": "Christmas",
     "aspect_ratio": "16:9",
     "plan_tier": "PRO",
     "url": "https://www.canva.com/templates/EAExfU38h1Y-gold-sparkles-elegant-new-year-video-background/",
-    "thumb": "https://template.canva.com/EAExfU38h1Y/2/0/400w-NTudFLEiFfc.jpg"
+    "thumb": "/canva-video-templates/EAExfU38h1Y.jpg"
   },
   {
     "id": "EAHVpKmbkKE",
@@ -912,7 +912,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "PRO",
     "url": "https://www.canva.com/templates/EAHVpKmbkKE-brown-and-white-elegant-merry-christmas-video/",
-    "thumb": "https://template.canva.com/EAHVpKmbkKE/1/0/400w-0cc15ofU4F8.jpg"
+    "thumb": "/canva-video-templates/EAHVpKmbkKE.jpg"
   },
   {
     "id": "EAF3mQbRomg",
@@ -922,7 +922,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "PRO",
     "url": "https://www.canva.com/templates/EAF3mQbRomg-brown-and-red-modern-christmas-greetings-video/",
-    "thumb": "https://template.canva.com/EAF3mQbRomg/1/0/400w--be5Lwxw5Bo.jpg"
+    "thumb": "/canva-video-templates/EAF3mQbRomg.jpg"
   },
   {
     "id": "EAGVKcuhNcQ",
@@ -932,7 +932,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "PRO",
     "url": "https://www.canva.com/templates/EAGVKcuhNcQ-brown-and-gold-luxury-merry-christmas-video/",
-    "thumb": "https://template.canva.com/EAGVKcuhNcQ/1/0/400w-Oi-nI9zpMdw.jpg"
+    "thumb": "/canva-video-templates/EAGVKcuhNcQ.jpg"
   },
   {
     "id": "EAG6Q9sqIf8",
@@ -942,7 +942,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "PRO",
     "url": "https://www.canva.com/templates/EAG6Q9sqIf8-red-and-gold-festive-christmas-greetings-video/",
-    "thumb": "https://template.canva.com/EAG6Q9sqIf8/1/0/400w-K6cZXH7jglo.jpg"
+    "thumb": "/canva-video-templates/EAG6Q9sqIf8.jpg"
   },
   {
     "id": "EAFpiI2ddvs",
@@ -952,7 +952,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "PRO",
     "url": "https://www.canva.com/templates/EAFpiI2ddvs-red-and-gold-elegant-new-year-2024-greetings-animated-video/",
-    "thumb": "https://template.canva.com/EAFpiI2ddvs/1/0/400w-SyPn9i5ZnNg.jpg"
+    "thumb": "/canva-video-templates/EAFpiI2ddvs.jpg"
   },
   {
     "id": "EAGYZyu5gag",
@@ -962,7 +962,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "PRO",
     "url": "https://www.canva.com/templates/EAGYZyu5gag-red-and-gold-modern-merry-christmas-video/",
-    "thumb": "https://template.canva.com/EAGYZyu5gag/1/0/400w-Y7eOJomWTkI.jpg"
+    "thumb": "/canva-video-templates/EAGYZyu5gag.jpg"
   },
   {
     "id": "EAFt11zXZ6Y",
@@ -972,7 +972,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "PRO",
     "url": "https://www.canva.com/templates/EAFt11zXZ6Y-red-gold-animated-merry-christmas-and-happy-new-year-holiday-greeting-video/",
-    "thumb": "https://template.canva.com/EAFt11zXZ6Y/1/0/400w-2_OaeM7q_Kc.jpg"
+    "thumb": "/canva-video-templates/EAFt11zXZ6Y.jpg"
   },
   {
     "id": "EAGYnT9L9BU",
@@ -982,7 +982,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "PRO",
     "url": "https://www.canva.com/templates/EAGYnT9L9BU-red-gold-3d-classy-merry-christmas-and-happy-new-year-greeting-video/",
-    "thumb": "https://template.canva.com/EAGYnT9L9BU/2/0/400w-Ius1iZa9gm0.jpg"
+    "thumb": "/canva-video-templates/EAGYnT9L9BU.jpg"
   },
   {
     "id": "EAGVu273zS8",
@@ -992,7 +992,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "PRO",
     "url": "https://www.canva.com/templates/EAGVu273zS8-red-and-white-modern-elegant-christmas-video/",
-    "thumb": "https://template.canva.com/EAGVu273zS8/1/0/400w-WTame1vNMIU.jpg"
+    "thumb": "/canva-video-templates/EAGVu273zS8.jpg"
   },
   {
     "id": "EAG5itocO3Q",
@@ -1002,7 +1002,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "PRO",
     "url": "https://www.canva.com/templates/EAG5itocO3Q-black-and-green-simple-merry-christmas-video/",
-    "thumb": "https://template.canva.com/EAG5itocO3Q/1/0/400w-1239adPmhLM.jpg"
+    "thumb": "/canva-video-templates/EAG5itocO3Q.jpg"
   },
   {
     "id": "EAGyxoKIVDw",
@@ -1012,7 +1012,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "PRO",
     "url": "https://www.canva.com/templates/EAGyxoKIVDw-red-and-green-illustrated-christmas-greetings-video/",
-    "thumb": "https://template.canva.com/EAGyxoKIVDw/1/0/400w-gOb20DhzjJs.jpg"
+    "thumb": "/canva-video-templates/EAGyxoKIVDw.jpg"
   },
   {
     "id": "EAFzHx6OKCo",
@@ -1022,7 +1022,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "PRO",
     "url": "https://www.canva.com/templates/EAFzHx6OKCo-red-and-white-sparkling-animated-christmas-greeting-video/",
-    "thumb": "https://template.canva.com/EAFzHx6OKCo/1/0/400w-f1vxcYrdE8I.jpg"
+    "thumb": "/canva-video-templates/EAFzHx6OKCo.jpg"
   },
   {
     "id": "EAGVu9cUFPc",
@@ -1032,7 +1032,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "PRO",
     "url": "https://www.canva.com/templates/EAGVu9cUFPc-blue-merry-christmas-greeting-video/",
-    "thumb": "https://template.canva.com/EAGVu9cUFPc/1/0/400w-yehQ-w14bbc.jpg"
+    "thumb": "/canva-video-templates/EAGVu9cUFPc.jpg"
   },
   {
     "id": "EAGYlvHsVCA",
@@ -1042,7 +1042,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "PRO",
     "url": "https://www.canva.com/templates/EAGYlvHsVCA-white-and-green-modern-merry-christmas-greeting-video/",
-    "thumb": "https://template.canva.com/EAGYlvHsVCA/1/0/400w-noYha4DG8tU.jpg"
+    "thumb": "/canva-video-templates/EAGYlvHsVCA.jpg"
   },
   {
     "id": "EAHZx3_LK0k",
@@ -1052,7 +1052,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "PRO",
     "url": "https://www.canva.com/templates/EAHZx3_LK0k-green-red-and-black-elegant-merry-christmas-video/",
-    "thumb": "https://template.canva.com/EAHZx3_LK0k/1/0/400w-eMvEkJwdNEM.jpg"
+    "thumb": "/canva-video-templates/EAHZx3_LK0k.jpg"
   },
   {
     "id": "EAEoq1dO0S0",
@@ -1062,7 +1062,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "PRO",
     "url": "https://www.canva.com/templates/EAEoq1dO0S0-blue-10-seconds-happy-new-year-countdown-2022-video/",
-    "thumb": "https://template.canva.com/EAEoq1dO0S0/2/0/400w-R8vzCJJ6ivU.jpg"
+    "thumb": "/canva-video-templates/EAEoq1dO0S0.jpg"
   },
   {
     "id": "EAGYob10g1A",
@@ -1072,7 +1072,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "PRO",
     "url": "https://www.canva.com/templates/EAGYob10g1A-red-gold-vibrant-festive-show-merry-christmas-greeting-video/",
-    "thumb": "https://template.canva.com/EAGYob10g1A/2/0/400w-JapOlnYERAI.jpg"
+    "thumb": "/canva-video-templates/EAGYob10g1A.jpg"
   },
   {
     "id": "EAFy1WqvSoY",
@@ -1082,7 +1082,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "PRO",
     "url": "https://www.canva.com/templates/EAFy1WqvSoY-yellow-and-brown-greeting-new-year-party-video/",
-    "thumb": "https://template.canva.com/EAFy1WqvSoY/3/0/400w-Ed_cKhWLBZo.jpg"
+    "thumb": "/canva-video-templates/EAFy1WqvSoY.jpg"
   },
   {
     "id": "EAEoq0iwr1M",
@@ -1092,17 +1092,17 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "PRO",
     "url": "https://www.canva.com/templates/EAEoq0iwr1M-modern-happy-new-year-2022-animated-video/",
-    "thumb": "https://template.canva.com/EAEoq0iwr1M/2/0/400w-P3PdtH4xxTU.jpg"
+    "thumb": "/canva-video-templates/EAEoq0iwr1M.jpg"
   },
   {
     "id": "EAEvQ0rfyvI",
-    "title": "Green and White Merry Christmas &amp; Happy New Year Video",
+    "title": "Green and White Merry Christmas & Happy New Year Video",
     "category": "new-year",
     "categoryName": "New Year",
     "aspect_ratio": "16:9",
     "plan_tier": "PRO",
     "url": "https://www.canva.com/templates/EAEvQ0rfyvI-green-and-white-merry-christmas-happy-new-year-video/",
-    "thumb": "https://template.canva.com/EAEvQ0rfyvI/2/0/400w-Fulz0IqW49U.jpg"
+    "thumb": "/canva-video-templates/EAEvQ0rfyvI.jpg"
   },
   {
     "id": "EAFR2kF1Ucc",
@@ -1112,7 +1112,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "PRO",
     "url": "https://www.canva.com/templates/EAFR2kF1Ucc-black-golden-and-white-3d-realistic-illustrated-2027-new-year-video/",
-    "thumb": "https://template.canva.com/EAFR2kF1Ucc/6/0/400w-yBxGz9nomKY.jpg"
+    "thumb": "/canva-video-templates/EAFR2kF1Ucc.jpg"
   },
   {
     "id": "EAFVZRh1Bzc",
@@ -1122,7 +1122,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "PRO",
     "url": "https://www.canva.com/templates/EAFVZRh1Bzc-brown-and-white-creative-christmas-wish-video/",
-    "thumb": "https://template.canva.com/EAFVZRh1Bzc/1/0/400w-qOSkbX3dD6o.jpg"
+    "thumb": "/canva-video-templates/EAFVZRh1Bzc.jpg"
   },
   {
     "id": "EAF2LzRQjJo",
@@ -1132,7 +1132,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "PRO",
     "url": "https://www.canva.com/templates/EAF2LzRQjJo-light-blue-scrapbook-photo-collage-christmas-greeting-video/",
-    "thumb": "https://template.canva.com/EAF2LzRQjJo/1/0/400w-B0uWzbW4Ap0.jpg"
+    "thumb": "/canva-video-templates/EAF2LzRQjJo.jpg"
   },
   {
     "id": "EAFRPBbDKuo",
@@ -1142,7 +1142,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "PRO",
     "url": "https://www.canva.com/templates/EAFRPBbDKuo-brown-minimalist-new-year-sale-ads-video/",
-    "thumb": "https://template.canva.com/EAFRPBbDKuo/1/0/400w-bXbk5z-vFzw.jpg"
+    "thumb": "/canva-video-templates/EAFRPBbDKuo.jpg"
   },
   {
     "id": "EAGx6OMIn1k",
@@ -1152,7 +1152,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "PRO",
     "url": "https://www.canva.com/templates/EAGx6OMIn1k-white-black-festive-elegant-happy-new-year-greeting-video/",
-    "thumb": "https://template.canva.com/EAGx6OMIn1k/1/0/400w-Ssut73NJxZw.jpg"
+    "thumb": "/canva-video-templates/EAGx6OMIn1k.jpg"
   },
   {
     "id": "EAEzDJSzy0E",
@@ -1162,7 +1162,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "PRO",
     "url": "https://www.canva.com/templates/EAEzDJSzy0E-modern-neon-gradient-happy-new-year-2022-video/",
-    "thumb": "https://template.canva.com/EAEzDJSzy0E/1/0/400w-FcjOfJEOnuk.jpg"
+    "thumb": "/canva-video-templates/EAEzDJSzy0E.jpg"
   },
   {
     "id": "EAExLun7bS8",
@@ -1172,7 +1172,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "PRO",
     "url": "https://www.canva.com/templates/EAExLun7bS8-blue-and-pink-creative-new-year-video/",
-    "thumb": "https://template.canva.com/EAExLun7bS8/1/0/400w-8tR64CK4dnM.jpg"
+    "thumb": "/canva-video-templates/EAExLun7bS8.jpg"
   },
   {
     "id": "EAEu1mQHjuA",
@@ -1182,7 +1182,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "PRO",
     "url": "https://www.canva.com/templates/EAEu1mQHjuA-red-creative-new-year-party-video/",
-    "thumb": "https://template.canva.com/EAEu1mQHjuA/2/0/400w-P9Ces1GXJIY.jpg"
+    "thumb": "/canva-video-templates/EAEu1mQHjuA.jpg"
   },
   {
     "id": "EAEzQStqg0Y",
@@ -1192,7 +1192,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "PRO",
     "url": "https://www.canva.com/templates/EAEzQStqg0Y-red-creative-greeting-happy-lunar-new-year-video/",
-    "thumb": "https://template.canva.com/EAEzQStqg0Y/2/0/400w-anDX2urLGxQ.jpg"
+    "thumb": "/canva-video-templates/EAEzQStqg0Y.jpg"
   },
   {
     "id": "EAFLdA55_X0",
@@ -1202,7 +1202,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "PRO",
     "url": "https://www.canva.com/templates/EAFLdA55_X0-blue-gold-rotating-balls-merry-christmas-video/",
-    "thumb": "https://template.canva.com/EAFLdA55_X0/1/0/400w-1e8N8eEWBM8.jpg"
+    "thumb": "/canva-video-templates/EAFLdA55_X0.jpg"
   },
   {
     "id": "EAGbNMMdfqc",
@@ -1212,7 +1212,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "PRO",
     "url": "https://www.canva.com/templates/EAGbNMMdfqc-red-and-yellow-videobased-playfull-new-year-vlog-youtube-intro/",
-    "thumb": "https://template.canva.com/EAGbNMMdfqc/1/0/400w-JXNGAAHoHeY.jpg"
+    "thumb": "/canva-video-templates/EAGbNMMdfqc.jpg"
   },
   {
     "id": "EAGSsqtE3zw",
@@ -1222,7 +1222,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "FREE",
     "url": "https://www.canva.com/templates/EAGSsqtE3zw-blue-and-yellow-playful-illustrative-baby-milestone-presentation/",
-    "thumb": "https://template.canva.com/EAGSsqtE3zw/1/0/400w-NhhoQeBEc6k.jpg"
+    "thumb": "/canva-video-templates/EAGSsqtE3zw.jpg"
   },
   {
     "id": "EAHNmQ7Plw0",
@@ -1232,7 +1232,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "FREE",
     "url": "https://www.canva.com/templates/EAHNmQ7Plw0-purple-and-white-illustrated-product-roadmap-presentation/",
-    "thumb": "https://template.canva.com/EAHNmQ7Plw0/1/0/400w-CAgKFyC4Ko4.jpg"
+    "thumb": "/canva-video-templates/EAHNmQ7Plw0.jpg"
   },
   {
     "id": "EAHRkFjTECw",
@@ -1242,7 +1242,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "FREE",
     "url": "https://www.canva.com/templates/EAHRkFjTECw-navy-blue-and-white-modern-business-milestone-instagram-post/",
-    "thumb": "https://template.canva.com/EAHRkFjTECw/1/0/640w-e2naPIlcfTE.jpg"
+    "thumb": "/canva-video-templates/EAHRkFjTECw.jpg"
   },
   {
     "id": "EAHNqLHKZ50",
@@ -1252,7 +1252,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "9:16",
     "plan_tier": "FREE",
     "url": "https://www.canva.com/templates/EAHNqLHKZ50-green-minimalist-baby-milestone-your-story/",
-    "thumb": "https://template.canva.com/EAHNqLHKZ50/1/0/900w-9MEy1vakiZ8.jpg"
+    "thumb": "/canva-video-templates/EAHNqLHKZ50.jpg"
   },
   {
     "id": "EAG5WCIriwc",
@@ -1262,7 +1262,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "1:1",
     "plan_tier": "FREE",
     "url": "https://www.canva.com/templates/EAG5WCIriwc-orange-modern-milestone-achievement-linkedin-post/",
-    "thumb": "https://template.canva.com/EAG5WCIriwc/2/0/400w-gNoBFYIpiog.jpg"
+    "thumb": "/canva-video-templates/EAG5WCIriwc.jpg"
   },
   {
     "id": "EAEuc46e08o",
@@ -1272,7 +1272,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "1:1",
     "plan_tier": "FREE",
     "url": "https://www.canva.com/templates/EAEuc46e08o-blue-and-white-playful-milestone-linkedin-post/",
-    "thumb": "https://template.canva.com/EAEuc46e08o/1/0/400w-kFxHaSTxhd0.jpg"
+    "thumb": "/canva-video-templates/EAEuc46e08o.jpg"
   },
   {
     "id": "EAHLyoVYG6M",
@@ -1282,7 +1282,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "FREE",
     "url": "https://www.canva.com/templates/EAHLyoVYG6M-pink-and-blue-modern-milestone-celebration-instagram-post/",
-    "thumb": "https://template.canva.com/EAHLyoVYG6M/1/0/640w-k9m7VlHY44w.jpg"
+    "thumb": "/canva-video-templates/EAHLyoVYG6M.jpg"
   },
   {
     "id": "EAG1GsuxnD4",
@@ -1292,7 +1292,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "9:16",
     "plan_tier": "FREE",
     "url": "https://www.canva.com/templates/EAG1GsuxnD4-black-vintage-work-milestone-recap-instagram-reel/",
-    "thumb": "https://template.canva.com/EAG1GsuxnD4/3/0/900w-K4yVl4ZGJIY.jpg"
+    "thumb": "/canva-video-templates/EAG1GsuxnD4.jpg"
   },
   {
     "id": "EAFR8cLCOH0",
@@ -1302,7 +1302,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "FREE",
     "url": "https://www.canva.com/templates/EAFR8cLCOH0-black-and-white-followers-milestone-thank-you-instagram-post/",
-    "thumb": "https://template.canva.com/EAFR8cLCOH0/1/0/640w-vS4kG9s-QjM.jpg"
+    "thumb": "/canva-video-templates/EAFR8cLCOH0.jpg"
   },
   {
     "id": "EAHQl_bCu1E",
@@ -1312,7 +1312,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "1:1",
     "plan_tier": "FREE",
     "url": "https://www.canva.com/templates/EAHQl_bCu1E-linkedin-post-for-smes-achieving-a-milestone-corporate-purple/",
-    "thumb": "https://template.canva.com/EAHQl_bCu1E/2/0/400w-clFOnK1wlZk.jpg"
+    "thumb": "/canva-video-templates/EAHQl_bCu1E.jpg"
   },
   {
     "id": "EAHR2ip09Jg",
@@ -1322,7 +1322,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "FREE",
     "url": "https://www.canva.com/templates/EAHR2ip09Jg-blue-and-white-modern-company-milestones-brainstorm/",
-    "thumb": "https://template.canva.com/EAHR2ip09Jg/1/0/400w-hk5YlvH6S-U.jpg"
+    "thumb": "/canva-video-templates/EAHR2ip09Jg.jpg"
   },
   {
     "id": "EAHLVN1QzFc",
@@ -1332,7 +1332,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "9:16",
     "plan_tier": "FREE",
     "url": "https://www.canva.com/templates/EAHLVN1QzFc-cream-and-black-minimalist-communication-instagram-reel/",
-    "thumb": "https://template.canva.com/EAHLVN1QzFc/3/0/900w-c_sOU7of90M.jpg"
+    "thumb": "/canva-video-templates/EAHLVN1QzFc.jpg"
   },
   {
     "id": "EAGq0z5K_oU",
@@ -1342,7 +1342,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "9:16",
     "plan_tier": "FREE",
     "url": "https://www.canva.com/templates/EAGq0z5K_oU-life-lately-instagram-reel-in-statement-style/",
-    "thumb": "https://template.canva.com/EAGq0z5K_oU/17/0/900w-0PZmxnuTJzg.jpg"
+    "thumb": "/canva-video-templates/EAGq0z5K_oU.jpg"
   },
   {
     "id": "EAHKp1iaIC0",
@@ -1352,7 +1352,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "9:16",
     "plan_tier": "FREE",
     "url": "https://www.canva.com/templates/EAHKp1iaIC0-green-minimalist-motivational-quotes-instagram-reel/",
-    "thumb": "https://template.canva.com/EAHKp1iaIC0/1/0/900w-goUtOY3Jq3o.jpg"
+    "thumb": "/canva-video-templates/EAHKp1iaIC0.jpg"
   },
   {
     "id": "EAGwBzqbjhs",
@@ -1362,7 +1362,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "9:16",
     "plan_tier": "FREE",
     "url": "https://www.canva.com/templates/EAGwBzqbjhs-travel-day-in-the-life-instagram-reel-in-yellow-film-analog-style/",
-    "thumb": "https://template.canva.com/EAGwBzqbjhs/10/0/900w-qbDMVuJ_BMo.jpg"
+    "thumb": "/canva-video-templates/EAGwBzqbjhs.jpg"
   },
   {
     "id": "EAG0o_BsZ6U",
@@ -1372,7 +1372,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "9:16",
     "plan_tier": "FREE",
     "url": "https://www.canva.com/templates/EAG0o_BsZ6U-yellow-and-black-modern-party-photo-dump-instagram-reel/",
-    "thumb": "https://template.canva.com/EAG0o_BsZ6U/1/0/900w-9uyFjA8ETMI.jpg"
+    "thumb": "/canva-video-templates/EAG0o_BsZ6U.jpg"
   },
   {
     "id": "EAHNnZR01zs",
@@ -1382,7 +1382,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "9:16",
     "plan_tier": "FREE",
     "url": "https://www.canva.com/templates/EAHNnZR01zs-orange-and-white-modern-love-anniversary-date-instagram-reel/",
-    "thumb": "https://template.canva.com/EAHNnZR01zs/1/0/900w-bGQl3fRvS-U.jpg"
+    "thumb": "/canva-video-templates/EAHNnZR01zs.jpg"
   },
   {
     "id": "EAGtxqhTOFc",
@@ -1392,7 +1392,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "9:16",
     "plan_tier": "FREE",
     "url": "https://www.canva.com/templates/EAGtxqhTOFc-montage-montage-instagram-reel-in-black-yellow-statement-style/",
-    "thumb": "https://template.canva.com/EAGtxqhTOFc/4/0/900w-6awPFrqRorw.jpg"
+    "thumb": "/canva-video-templates/EAGtxqhTOFc.jpg"
   },
   {
     "id": "EAHK31q8BBg",
@@ -1402,7 +1402,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "9:16",
     "plan_tier": "FREE",
     "url": "https://www.canva.com/templates/EAHK31q8BBg-black-and-white-modern-fashion-instagram-reel/",
-    "thumb": "https://template.canva.com/EAHK31q8BBg/1/0/900w-fUEoMrArsAQ.jpg"
+    "thumb": "/canva-video-templates/EAHK31q8BBg.jpg"
   },
   {
     "id": "EAFOHTrab2s",
@@ -1412,7 +1412,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "9:16",
     "plan_tier": "FREE",
     "url": "https://www.canva.com/templates/EAFOHTrab2s-brown-yellow-green-happy-birthday-greeting-mobile-video/",
-    "thumb": "https://template.canva.com/EAFOHTrab2s/2/0/900w-DfB-eRLEyqY.jpg"
+    "thumb": "/canva-video-templates/EAFOHTrab2s.jpg"
   },
   {
     "id": "EAGJcJxRqsM",
@@ -1422,7 +1422,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "9:16",
     "plan_tier": "FREE",
     "url": "https://www.canva.com/templates/EAGJcJxRqsM-yellow-grey-modern-bold-sportswear-advertisement-instagram-reel/",
-    "thumb": "https://template.canva.com/EAGJcJxRqsM/2/0/900w-gD02s_geOVI.jpg"
+    "thumb": "/canva-video-templates/EAGJcJxRqsM.jpg"
   },
   {
     "id": "EAGtxvqpxzk",
@@ -1432,7 +1432,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "9:16",
     "plan_tier": "FREE",
     "url": "https://www.canva.com/templates/EAGtxvqpxzk-montage-photo-dump-instagram-reel-in-statement-style/",
-    "thumb": "https://template.canva.com/EAGtxvqpxzk/3/0/900w-XFWptZ9eWb4.jpg"
+    "thumb": "/canva-video-templates/EAGtxvqpxzk.jpg"
   },
   {
     "id": "EAHGZidy8is",
@@ -1442,7 +1442,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "9:16",
     "plan_tier": "FREE",
     "url": "https://www.canva.com/templates/EAHGZidy8is-golden-orange-minimalist-sunset-mobile-video/",
-    "thumb": "https://template.canva.com/EAHGZidy8is/1/0/900w-hCGyjKmfR_8.jpg"
+    "thumb": "/canva-video-templates/EAHGZidy8is.jpg"
   },
   {
     "id": "EAG1wwUU3G8",
@@ -1452,7 +1452,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "9:16",
     "plan_tier": "FREE",
     "url": "https://www.canva.com/templates/EAG1wwUU3G8-neutral-simple-man-lying-down-mobile-video/",
-    "thumb": "https://template.canva.com/EAG1wwUU3G8/2/0/900w-dDsW0UAyYqg.jpg"
+    "thumb": "/canva-video-templates/EAG1wwUU3G8.jpg"
   },
   {
     "id": "EAFkXo13zyQ",
@@ -1462,7 +1462,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "9:16",
     "plan_tier": "FREE",
     "url": "https://www.canva.com/templates/EAFkXo13zyQ-olive-green-floral-wedding-invitation-mobile-video/",
-    "thumb": "https://template.canva.com/EAFkXo13zyQ/2/0/900w-e9WNOoVC0m8.jpg"
+    "thumb": "/canva-video-templates/EAFkXo13zyQ.jpg"
   },
   {
     "id": "EAGwBwMFj78",
@@ -1472,7 +1472,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "9:16",
     "plan_tier": "FREE",
     "url": "https://www.canva.com/templates/EAGwBwMFj78-travel-day-in-the-life-instagram-reel-in-yellow-collage-style/",
-    "thumb": "https://template.canva.com/EAGwBwMFj78/9/0/900w-NlyB20942k4.jpg"
+    "thumb": "/canva-video-templates/EAGwBwMFj78.jpg"
   },
   {
     "id": "EAHLmTKzn4U",
@@ -1482,7 +1482,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "9:16",
     "plan_tier": "FREE",
     "url": "https://www.canva.com/templates/EAHLmTKzn4U-white-modern-motivational-quote-instagram-reel/",
-    "thumb": "https://template.canva.com/EAHLmTKzn4U/1/0/900w-pyqyFMV-4w4.jpg"
+    "thumb": "/canva-video-templates/EAHLmTKzn4U.jpg"
   },
   {
     "id": "EAGnBmp5Qig",
@@ -1492,7 +1492,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "FREE",
     "url": "https://www.canva.com/templates/EAGnBmp5Qig-blue-orange-and-black-dynamic-tunnel-futuristic-intro-video/",
-    "thumb": "https://template.canva.com/EAGnBmp5Qig/1/0/400w-RgE8VFkVnCo.jpg"
+    "thumb": "/canva-video-templates/EAGnBmp5Qig.jpg"
   },
   {
     "id": "EAG6d4f6H3M",
@@ -1502,17 +1502,17 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "FREE",
     "url": "https://www.canva.com/templates/EAG6d4f6H3M-blue-yellow-and-black-simple-intro-video/",
-    "thumb": "https://template.canva.com/EAG6d4f6H3M/1/0/400w-kQHDfTh52X4.jpg"
+    "thumb": "/canva-video-templates/EAG6d4f6H3M.jpg"
   },
   {
     "id": "EAFJK2c8tJ4",
-    "title": "Pink &amp; Blue Futuristic Gaming Channel Youtube Intro",
+    "title": "Pink & Blue Futuristic Gaming Channel Youtube Intro",
     "category": "youtube",
     "categoryName": "YouTube Intros",
     "aspect_ratio": "16:9",
     "plan_tier": "FREE",
     "url": "https://www.canva.com/templates/EAFJK2c8tJ4-pink-blue-futuristic-gaming-channel-youtube-intro/",
-    "thumb": "https://template.canva.com/EAFJK2c8tJ4/1/0/400w-PqbLlyAkHhQ.jpg"
+    "thumb": "/canva-video-templates/EAFJK2c8tJ4.jpg"
   },
   {
     "id": "EAGrsY1TXL8",
@@ -1522,7 +1522,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "FREE",
     "url": "https://www.canva.com/templates/EAGrsY1TXL8-red-and-white-minimal-simple-vlog-subscribe-video/",
-    "thumb": "https://template.canva.com/EAGrsY1TXL8/1/0/400w-tMnKODzqQUY.jpg"
+    "thumb": "/canva-video-templates/EAGrsY1TXL8.jpg"
   },
   {
     "id": "EAHNu5VVMn4",
@@ -1532,7 +1532,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "FREE",
     "url": "https://www.canva.com/templates/EAHNu5VVMn4-red-black-and-white-modern-my-channel-video/",
-    "thumb": "https://template.canva.com/EAHNu5VVMn4/1/0/400w-jEzzQildr6E.jpg"
+    "thumb": "/canva-video-templates/EAHNu5VVMn4.jpg"
   },
   {
     "id": "EAFKqympeoY",
@@ -1542,7 +1542,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "FREE",
     "url": "https://www.canva.com/templates/EAFKqympeoY-colorful-blue-and-purple-animated-youtube-outro/",
-    "thumb": "https://template.canva.com/EAFKqympeoY/1/0/400w-CXS6-zhQMgg.jpg"
+    "thumb": "/canva-video-templates/EAFKqympeoY.jpg"
   },
   {
     "id": "EAFm6i1Truo",
@@ -1552,7 +1552,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "FREE",
     "url": "https://www.canva.com/templates/EAFm6i1Truo-pink-retro-subscribe-youtube-video/",
-    "thumb": "https://template.canva.com/EAFm6i1Truo/3/0/400w-xoRNtNhImaU.jpg"
+    "thumb": "/canva-video-templates/EAFm6i1Truo.jpg"
   },
   {
     "id": "EAHMtgONOmc",
@@ -1562,7 +1562,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "FREE",
     "url": "https://www.canva.com/templates/EAHMtgONOmc-black-and-blue-modern-welcome-landscape-video/",
-    "thumb": "https://template.canva.com/EAHMtgONOmc/1/0/400w-r_-SqTPbPDU.jpg"
+    "thumb": "/canva-video-templates/EAHMtgONOmc.jpg"
   },
   {
     "id": "EAGWpzeHjR4",
@@ -1572,7 +1572,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "FREE",
     "url": "https://www.canva.com/templates/EAGWpzeHjR4-red-and-black-simple-modern-subscribe-button-youtube-video/",
-    "thumb": "https://template.canva.com/EAGWpzeHjR4/1/0/400w-pM_K-Yc8L-4.jpg"
+    "thumb": "/canva-video-templates/EAGWpzeHjR4.jpg"
   },
   {
     "id": "EAGoD1VQm6c",
@@ -1582,7 +1582,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "FREE",
     "url": "https://www.canva.com/templates/EAGoD1VQm6c-pink-watercolor-illustrated-fashion-youtube-channel-intro-video/",
-    "thumb": "https://template.canva.com/EAGoD1VQm6c/1/0/400w-JTUAEYnhVFk.jpg"
+    "thumb": "/canva-video-templates/EAGoD1VQm6c.jpg"
   },
   {
     "id": "EAFKFtt2XhI",
@@ -1592,7 +1592,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "FREE",
     "url": "https://www.canva.com/templates/EAFKFtt2XhI-red-and-black-futuristic-gaming-channel-youtube-intro/",
-    "thumb": "https://template.canva.com/EAFKFtt2XhI/1/0/400w-BoJpVCo_DWI.jpg"
+    "thumb": "/canva-video-templates/EAFKFtt2XhI.jpg"
   },
   {
     "id": "EAF3_pXHb5A",
@@ -1602,7 +1602,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "FREE",
     "url": "https://www.canva.com/templates/EAF3_pXHb5A-black-and-white-modern-geometric-animation-youtube-channel-intro/",
-    "thumb": "https://template.canva.com/EAF3_pXHb5A/3/0/400w-EPMY6ld5qnA.jpg"
+    "thumb": "/canva-video-templates/EAF3_pXHb5A.jpg"
   },
   {
     "id": "EAFgP7NJXBo",
@@ -1612,7 +1612,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "FREE",
     "url": "https://www.canva.com/templates/EAFgP7NJXBo-black-and-white-minimalist-animated-grunge-photography-camera-youtube-intro/",
-    "thumb": "https://template.canva.com/EAFgP7NJXBo/1/0/400w--sojAHZSkPc.jpg"
+    "thumb": "/canva-video-templates/EAFgP7NJXBo.jpg"
   },
   {
     "id": "EAE4aI2_Yjg",
@@ -1622,7 +1622,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "FREE",
     "url": "https://www.canva.com/templates/EAE4aI2_Yjg-sunset-video-relaxing-destinations-travel-vlog-youtube-intro/",
-    "thumb": "https://template.canva.com/EAE4aI2_Yjg/2/0/400w-PgNP-1CbEZI.jpg"
+    "thumb": "/canva-video-templates/EAE4aI2_Yjg.jpg"
   },
   {
     "id": "EAFriokdgng",
@@ -1632,7 +1632,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "FREE",
     "url": "https://www.canva.com/templates/EAFriokdgng-black-and-white-retro-countdown-video/",
-    "thumb": "https://template.canva.com/EAFriokdgng/1/0/400w-i0T4faidxZI.jpg"
+    "thumb": "/canva-video-templates/EAFriokdgng.jpg"
   },
   {
     "id": "EAGtHiXn8cc",
@@ -1642,7 +1642,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "FREE",
     "url": "https://www.canva.com/templates/EAGtHiXn8cc-red-and-white-dynamic-countdown-video/",
-    "thumb": "https://template.canva.com/EAGtHiXn8cc/1/0/400w-h0UO2wsZHFE.jpg"
+    "thumb": "/canva-video-templates/EAGtHiXn8cc.jpg"
   },
   {
     "id": "EAFllcNqVao",
@@ -1652,7 +1652,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "FREE",
     "url": "https://www.canva.com/templates/EAFllcNqVao-white-and-pastel-kawaii-cute-typography-plaid-video-centric-youtube-intro/",
-    "thumb": "https://template.canva.com/EAFllcNqVao/1/0/400w-Wye_Tcp1B1I.jpg"
+    "thumb": "/canva-video-templates/EAFllcNqVao.jpg"
   },
   {
     "id": "EAGKbD2qga0",
@@ -1662,7 +1662,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "FREE",
     "url": "https://www.canva.com/templates/EAGKbD2qga0-white-floral-simple-thanks-for-watching-youtube-video/",
-    "thumb": "https://template.canva.com/EAGKbD2qga0/1/0/400w-cKuBrfqTd_s.jpg"
+    "thumb": "/canva-video-templates/EAGKbD2qga0.jpg"
   },
   {
     "id": "EAEdeVtVJN8",
@@ -1672,7 +1672,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "FREE",
     "url": "https://www.canva.com/templates/EAEdeVtVJN8-green-and-beige-toys-playful-illustrative-birth-slideshow-video/",
-    "thumb": "https://template.canva.com/EAEdeVtVJN8/3/0/400w-ukJK80z9J1M.jpg"
+    "thumb": "/canva-video-templates/EAEdeVtVJN8.jpg"
   },
   {
     "id": "EAE9FgBsSAs",
@@ -1682,7 +1682,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "FREE",
     "url": "https://www.canva.com/templates/EAE9FgBsSAs-brown-friendship-video/",
-    "thumb": "https://template.canva.com/EAE9FgBsSAs/1/0/400w-avIqzWUqZ7A.jpg"
+    "thumb": "/canva-video-templates/EAE9FgBsSAs.jpg"
   },
   {
     "id": "EADxf01hDtQ",
@@ -1692,7 +1692,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "FREE",
     "url": "https://www.canva.com/templates/EADxf01hDtQ-grey-minimalism-real-estate-residential-slideshow-video/",
-    "thumb": "https://template.canva.com/EADxf01hDtQ/1/0/400w-fLfh7rxtrZc.jpg"
+    "thumb": "/canva-video-templates/EADxf01hDtQ.jpg"
   },
   {
     "id": "EADpo5k76vo",
@@ -1702,7 +1702,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "FREE",
     "url": "https://www.canva.com/templates/EADpo5k76vo-white-and-green-modern-real-estate-property-listing-slideshow-video/",
-    "thumb": "https://template.canva.com/EADpo5k76vo/4/0/400w-8OTfgwRvp_Q.jpg"
+    "thumb": "/canva-video-templates/EADpo5k76vo.jpg"
   },
   {
     "id": "EADpoxO8aog",
@@ -1712,7 +1712,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "FREE",
     "url": "https://www.canva.com/templates/EADpoxO8aog-beige-and-white-minimalist-clothing-slideshow-video/",
-    "thumb": "https://template.canva.com/EADpoxO8aog/4/0/400w-rxF21VpDfzw.jpg"
+    "thumb": "/canva-video-templates/EADpoxO8aog.jpg"
   },
   {
     "id": "EAFBwRKWGug",
@@ -1722,7 +1722,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "FREE",
     "url": "https://www.canva.com/templates/EAFBwRKWGug-stop-motion-gaming-video/",
-    "thumb": "https://template.canva.com/EAFBwRKWGug/1/0/400w-O4G_fpQH6Sg.jpg"
+    "thumb": "/canva-video-templates/EAFBwRKWGug.jpg"
   },
   {
     "id": "EAEdeS5Y5xk",
@@ -1732,7 +1732,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "FREE",
     "url": "https://www.canva.com/templates/EAEdeS5Y5xk-green-and-gold-delicate-flowers-watercolor-christening-slideshow-video/",
-    "thumb": "https://template.canva.com/EAEdeS5Y5xk/2/0/400w-WtDKCfIgOi0.jpg"
+    "thumb": "/canva-video-templates/EAEdeS5Y5xk.jpg"
   },
   {
     "id": "EAEdedrQiM0",
@@ -1742,7 +1742,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "FREE",
     "url": "https://www.canva.com/templates/EAEdedrQiM0-green-and-peach-delicate-watercolor-flowers-christening-slideshow-video/",
-    "thumb": "https://template.canva.com/EAEdedrQiM0/2/0/400w-HInXkfAnbfo.jpg"
+    "thumb": "/canva-video-templates/EAEdedrQiM0.jpg"
   },
   {
     "id": "EAEOljyiZmA",
@@ -1752,7 +1752,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "FREE",
     "url": "https://www.canva.com/templates/EAEOljyiZmA-black-and-yellow-woman-film-frames-all-about-me-slideshow/",
-    "thumb": "https://template.canva.com/EAEOljyiZmA/2/0/400w-9YxsYNv3AKg.jpg"
+    "thumb": "/canva-video-templates/EAEOljyiZmA.jpg"
   },
   {
     "id": "EAElh99WBlM",
@@ -1762,7 +1762,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "FREE",
     "url": "https://www.canva.com/templates/EAElh99WBlM-colorful-quirky-will-you-be-my-boyfriend-proposal-slideshow-video/",
-    "thumb": "https://template.canva.com/EAElh99WBlM/2/0/400w-3FF12_JKYyg.jpg"
+    "thumb": "/canva-video-templates/EAElh99WBlM.jpg"
   },
   {
     "id": "EAE9Fi5kcPc",
@@ -1772,7 +1772,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "FREE",
     "url": "https://www.canva.com/templates/EAE9Fi5kcPc-brown-minimalist-moodboard-home-decor-inspiration-video/",
-    "thumb": "https://template.canva.com/EAE9Fi5kcPc/1/0/400w-vdoxW_Pi_Z4.jpg"
+    "thumb": "/canva-video-templates/EAE9Fi5kcPc.jpg"
   },
   {
     "id": "EADom4zfWgw",
@@ -1782,7 +1782,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "FREE",
     "url": "https://www.canva.com/templates/EADom4zfWgw-orange-and-white-cultural-travel-documentary-slideshow-video/",
-    "thumb": "https://template.canva.com/EADom4zfWgw/3/0/400w-o4kDbdUXRCU.jpg"
+    "thumb": "/canva-video-templates/EADom4zfWgw.jpg"
   },
   {
     "id": "EAE9FnZKh5o",
@@ -1792,7 +1792,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "FREE",
     "url": "https://www.canva.com/templates/EAE9FnZKh5o-cream-polaroid-modern-beauty-of-beach-video/",
-    "thumb": "https://template.canva.com/EAE9FnZKh5o/1/0/400w-uJyEbt1Z5n4.jpg"
+    "thumb": "/canva-video-templates/EAE9FnZKh5o.jpg"
   },
   {
     "id": "EAEZt6UxAHw",
@@ -1802,7 +1802,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "FREE",
     "url": "https://www.canva.com/templates/EAEZt6UxAHw-purple-pink-and-turquoise-minimalist-delicate-funeral-slideshow-video/",
-    "thumb": "https://template.canva.com/EAEZt6UxAHw/2/0/400w-tYJxCWEDQk8.jpg"
+    "thumb": "/canva-video-templates/EAEZt6UxAHw.jpg"
   },
   {
     "id": "EAE9FvVdx5k",
@@ -1812,7 +1812,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "FREE",
     "url": "https://www.canva.com/templates/EAE9FvVdx5k-white-aesthetic-collage-video/",
-    "thumb": "https://template.canva.com/EAE9FvVdx5k/1/0/400w-cmZP_4b_UU0.jpg"
+    "thumb": "/canva-video-templates/EAE9FvVdx5k.jpg"
   },
   {
     "id": "EAFuPdt4TnA",
@@ -1822,7 +1822,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "FREE",
     "url": "https://www.canva.com/templates/EAFuPdt4TnA-yellow-and-black-vintage-outdoor-adventure-trip-video/",
-    "thumb": "https://template.canva.com/EAFuPdt4TnA/1/0/400w-4COqSWnTMqM.jpg"
+    "thumb": "/canva-video-templates/EAFuPdt4TnA.jpg"
   },
   {
     "id": "EAElh_4n01c",
@@ -1832,7 +1832,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "FREE",
     "url": "https://www.canva.com/templates/EAElh_4n01c-colorful-speckles-quirky-be-mine-gender-neutral-proposal-slideshow-video/",
-    "thumb": "https://template.canva.com/EAElh_4n01c/3/0/400w-fbmp0INyQFA.jpg"
+    "thumb": "/canva-video-templates/EAElh_4n01c.jpg"
   },
   {
     "id": "EAGSSk1DOVQ",
@@ -1842,17 +1842,17 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "FREE",
     "url": "https://www.canva.com/templates/EAGSSk1DOVQ-red-white-aesthetic-lipstick-promo-video/",
-    "thumb": "https://template.canva.com/EAGSSk1DOVQ/1/0/400w-PvuIj1eTrwE.jpg"
+    "thumb": "/canva-video-templates/EAGSSk1DOVQ.jpg"
   },
   {
     "id": "EAE7pWP4Oe0",
-    "title": "White &amp; Yellow Modern Restaurant Food Menu For Fast Food Video",
+    "title": "White & Yellow Modern Restaurant Food Menu For Fast Food Video",
     "category": "marketing",
     "categoryName": "Marketing & Promos",
     "aspect_ratio": "16:9",
     "plan_tier": "PRO",
     "url": "https://www.canva.com/templates/EAE7pWP4Oe0-white-yellow-modern-restaurant-food-menu-for-fast-food-video/",
-    "thumb": "https://template.canva.com/EAE7pWP4Oe0/2/0/400w-UawGzl3N60w.jpg"
+    "thumb": "/canva-video-templates/EAE7pWP4Oe0.jpg"
   },
   {
     "id": "EAHG1UVATy4",
@@ -1862,7 +1862,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "PRO",
     "url": "https://www.canva.com/templates/EAHG1UVATy4-brown-modern-bold-cookies-promo-video/",
-    "thumb": "https://template.canva.com/EAHG1UVATy4/1/0/400w-s1t8s2orZ5g.jpg"
+    "thumb": "/canva-video-templates/EAHG1UVATy4.jpg"
   },
   {
     "id": "EAFzZxRpBPo",
@@ -1872,7 +1872,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "PRO",
     "url": "https://www.canva.com/templates/EAFzZxRpBPo-pink-and-black-new-single-promo-video/",
-    "thumb": "https://template.canva.com/EAFzZxRpBPo/1/0/400w-TvE81-7bqH4.jpg"
+    "thumb": "/canva-video-templates/EAFzZxRpBPo.jpg"
   },
   {
     "id": "EAE8TlIrW20",
@@ -1882,7 +1882,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "PRO",
     "url": "https://www.canva.com/templates/EAE8TlIrW20-pink-neon-restaurant-food-menu-for-fast-food-video/",
-    "thumb": "https://template.canva.com/EAE8TlIrW20/2/0/400w-0yPXpa2UAM4.jpg"
+    "thumb": "/canva-video-templates/EAE8TlIrW20.jpg"
   },
   {
     "id": "EAGxFg5A_Pg",
@@ -1892,7 +1892,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "FREE",
     "url": "https://www.canva.com/templates/EAGxFg5A_Pg-blue-and-gold-modern-coming-soon-video/",
-    "thumb": "https://template.canva.com/EAGxFg5A_Pg/1/0/400w-vti4CpfBzss.jpg"
+    "thumb": "/canva-video-templates/EAGxFg5A_Pg.jpg"
   },
   {
     "id": "EAHUIb2uOKY",
@@ -1902,7 +1902,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "FREE",
     "url": "https://www.canva.com/templates/EAHUIb2uOKY-orange-and-blackmodern-thank-you-for-watching-video/",
-    "thumb": "https://template.canva.com/EAHUIb2uOKY/1/0/400w-tKQsI3PS344.jpg"
+    "thumb": "/canva-video-templates/EAHUIb2uOKY.jpg"
   },
   {
     "id": "EAGsCZI0bvs",
@@ -1912,7 +1912,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "FREE",
     "url": "https://www.canva.com/templates/EAGsCZI0bvs-red-and-yellow-modern-indian-food-menu-video/",
-    "thumb": "https://template.canva.com/EAGsCZI0bvs/1/0/400w-ReqwgnFlPSw.jpg"
+    "thumb": "/canva-video-templates/EAGsCZI0bvs.jpg"
   },
   {
     "id": "EAFqMueM_pQ",
@@ -1922,7 +1922,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "FREE",
     "url": "https://www.canva.com/templates/EAFqMueM_pQ-blue-white-modern-bold-digital-marketing-expert-video/",
-    "thumb": "https://template.canva.com/EAFqMueM_pQ/2/0/400w-5ZlmKj-hhnk.jpg"
+    "thumb": "/canva-video-templates/EAFqMueM_pQ.jpg"
   },
   {
     "id": "EAHV_gmWQ1I",
@@ -1932,7 +1932,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "FREE",
     "url": "https://www.canva.com/templates/EAHV_gmWQ1I-blue-and-red-breaking-news-intro-video/",
-    "thumb": "https://template.canva.com/EAHV_gmWQ1I/1/0/400w-K1vOH3iogK0.jpg"
+    "thumb": "/canva-video-templates/EAHV_gmWQ1I.jpg"
   },
   {
     "id": "EAGSj0bq4HU",
@@ -1942,7 +1942,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "FREE",
     "url": "https://www.canva.com/templates/EAGSj0bq4HU-pink-cream-aesthetic-lipstick-promo-video/",
-    "thumb": "https://template.canva.com/EAGSj0bq4HU/1/0/400w-eX-ENY7DX6M.jpg"
+    "thumb": "/canva-video-templates/EAGSj0bq4HU.jpg"
   },
   {
     "id": "EAGKsXMJk_w",
@@ -1952,7 +1952,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "FREE",
     "url": "https://www.canva.com/templates/EAGKsXMJk_w-white-black-minimalist-watch-product-showcase-video/",
-    "thumb": "https://template.canva.com/EAGKsXMJk_w/1/0/400w-T11elLOElyY.jpg"
+    "thumb": "/canva-video-templates/EAGKsXMJk_w.jpg"
   },
   {
     "id": "EAE1qRb58vg",
@@ -1962,7 +1962,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "FREE",
     "url": "https://www.canva.com/templates/EAE1qRb58vg-neon-new-articles-fashion-gradient-video/",
-    "thumb": "https://template.canva.com/EAE1qRb58vg/2/0/400w-QgAkbOL2AD8.jpg"
+    "thumb": "/canva-video-templates/EAE1qRb58vg.jpg"
   },
   {
     "id": "EAD3hwBc2tc",
@@ -1972,7 +1972,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "FREE",
     "url": "https://www.canva.com/templates/EAD3hwBc2tc-white-croissant-photo-food-retail-in-stream-video-ad/",
-    "thumb": "https://template.canva.com/EAD3hwBc2tc/1/0/400w-wWvMWbq1G2o.jpg"
+    "thumb": "/canva-video-templates/EAD3hwBc2tc.jpg"
   },
   {
     "id": "EAGebUK8rFo",
@@ -1982,7 +1982,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "FREE",
     "url": "https://www.canva.com/templates/EAGebUK8rFo-black-yellow-fitness-centre-promo-video/",
-    "thumb": "https://template.canva.com/EAGebUK8rFo/1/0/400w-CZg4RA8phjY.jpg"
+    "thumb": "/canva-video-templates/EAGebUK8rFo.jpg"
   },
   {
     "id": "EAF3Vv3hJBE",
@@ -1992,7 +1992,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "FREE",
     "url": "https://www.canva.com/templates/EAF3Vv3hJBE-black-yellow-modern-spicy-food-promo-video/",
-    "thumb": "https://template.canva.com/EAF3Vv3hJBE/2/0/400w-UetFNEM7QKg.jpg"
+    "thumb": "/canva-video-templates/EAF3Vv3hJBE.jpg"
   },
   {
     "id": "EAE18i_zCVI",
@@ -2002,7 +2002,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "FREE",
     "url": "https://www.canva.com/templates/EAE18i_zCVI-black-this-or-that-urban-streetwear-fashion-grayscale-video/",
-    "thumb": "https://template.canva.com/EAE18i_zCVI/2/0/400w-8na1Qmj9zz8.jpg"
+    "thumb": "/canva-video-templates/EAE18i_zCVI.jpg"
   },
   {
     "id": "EAFT2QgQ_lo",
@@ -2012,7 +2012,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "FREE",
     "url": "https://www.canva.com/templates/EAFT2QgQ_lo-end-of-life-tribute-video-in-beige-white-elegant-informational-style/",
-    "thumb": "https://template.canva.com/EAFT2QgQ_lo/2/0/400w-DkE6e5A9DZQ.jpg"
+    "thumb": "/canva-video-templates/EAFT2QgQ_lo.jpg"
   },
   {
     "id": "EAFT2UDO_mE",
@@ -2022,7 +2022,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "FREE",
     "url": "https://www.canva.com/templates/EAFT2UDO_mE-end-of-life-tribute-video-in-beige-dark-red-elegant-photocentric-style/",
-    "thumb": "https://template.canva.com/EAFT2UDO_mE/1/0/400w-VtlQN0Zq2tc.jpg"
+    "thumb": "/canva-video-templates/EAFT2UDO_mE.jpg"
   },
   {
     "id": "EAFT2fczJ1g",
@@ -2032,7 +2032,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "FREE",
     "url": "https://www.canva.com/templates/EAFT2fczJ1g-end-of-life-tribute-video-in-grey-white-natural-photocentric-style/",
-    "thumb": "https://template.canva.com/EAFT2fczJ1g/1/0/400w-SNQn1koduvk.jpg"
+    "thumb": "/canva-video-templates/EAFT2fczJ1g.jpg"
   },
   {
     "id": "EAFT2uPY6HM",
@@ -2042,7 +2042,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "FREE",
     "url": "https://www.canva.com/templates/EAFT2uPY6HM-tribute-video-in-grey-purple-watercolor-style/",
-    "thumb": "https://template.canva.com/EAFT2uPY6HM/1/0/400w-OjwrKzXp9e0.jpg"
+    "thumb": "/canva-video-templates/EAFT2uPY6HM.jpg"
   },
   {
     "id": "EAFT9t8l6IY",
@@ -2052,7 +2052,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "FREE",
     "url": "https://www.canva.com/templates/EAFT9t8l6IY-tribute-video-in-black-white-film-frames-style/",
-    "thumb": "https://template.canva.com/EAFT9t8l6IY/2/0/400w-rrC0u6Wej_0.jpg"
+    "thumb": "/canva-video-templates/EAFT9t8l6IY.jpg"
   },
   {
     "id": "EAFZJU0CWK0",
@@ -2062,7 +2062,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "1:1",
     "plan_tier": "FREE",
     "url": "https://www.canva.com/templates/EAFZJU0CWK0-end-of-life-tribute-instagram-post-video-in-white-beige-elegant-informational-style/",
-    "thumb": "https://template.canva.com/EAFZJU0CWK0/1/0/400w-I37DdHxNib4.jpg"
+    "thumb": "/canva-video-templates/EAFZJU0CWK0.jpg"
   },
   {
     "id": "EAFZPpXA4Kw",
@@ -2072,7 +2072,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "1:1",
     "plan_tier": "FREE",
     "url": "https://www.canva.com/templates/EAFZPpXA4Kw-tribute-instagram-post-video-in-beige-pink-watercolor-style/",
-    "thumb": "https://template.canva.com/EAFZPpXA4Kw/1/0/400w-7SNXh5QrC9I.jpg"
+    "thumb": "/canva-video-templates/EAFZPpXA4Kw.jpg"
   },
   {
     "id": "EAFZOvFuYvA",
@@ -2082,7 +2082,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "1:1",
     "plan_tier": "FREE",
     "url": "https://www.canva.com/templates/EAFZOvFuYvA-end-of-life-tribute-instagram-post-video-in-black-green-natural-photocentric-style/",
-    "thumb": "https://template.canva.com/EAFZOvFuYvA/1/0/400w-UhfloHbfORo.jpg"
+    "thumb": "/canva-video-templates/EAFZOvFuYvA.jpg"
   },
   {
     "id": "EAFT2WaNhqA",
@@ -2092,7 +2092,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "FREE",
     "url": "https://www.canva.com/templates/EAFT2WaNhqA-end-of-life-tribute-video-in-pink-blue-white-femme-florals-style/",
-    "thumb": "https://template.canva.com/EAFT2WaNhqA/1/0/400w-hTwp8NBWmL4.jpg"
+    "thumb": "/canva-video-templates/EAFT2WaNhqA.jpg"
   },
   {
     "id": "EAFYuuTzdVo",
@@ -2102,7 +2102,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "1:1",
     "plan_tier": "FREE",
     "url": "https://www.canva.com/templates/EAFYuuTzdVo-tribute-video-in-green-beige-scrapbook-style/",
-    "thumb": "https://template.canva.com/EAFYuuTzdVo/1/0/400w-TEFtheov3bc.jpg"
+    "thumb": "/canva-video-templates/EAFYuuTzdVo.jpg"
   },
   {
     "id": "EAFT2iArqwA",
@@ -2112,7 +2112,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "FREE",
     "url": "https://www.canva.com/templates/EAFT2iArqwA-tribute-video-in-beige-grey-scrapbook-style/",
-    "thumb": "https://template.canva.com/EAFT2iArqwA/1/0/400w-HrI0jDAXpG0.jpg"
+    "thumb": "/canva-video-templates/EAFT2iArqwA.jpg"
   },
   {
     "id": "EAFT2tdN5eE",
@@ -2122,7 +2122,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "PRO",
     "url": "https://www.canva.com/templates/EAFT2tdN5eE-tribute-video-in-black-yellow-white-film-frames-style/",
-    "thumb": "https://template.canva.com/EAFT2tdN5eE/2/0/400w-P6bmMvtaMV0.jpg"
+    "thumb": "/canva-video-templates/EAFT2tdN5eE.jpg"
   },
   {
     "id": "EAFY0fvz9Vs",
@@ -2132,7 +2132,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "PRO",
     "url": "https://www.canva.com/templates/EAFY0fvz9Vs-end-of-life-tribute-mobile-video-in-grey-orange-elegant-informational-style/",
-    "thumb": "https://template.canva.com/EAFY0fvz9Vs/1/0/400w-3h02hQocKvc.jpg"
+    "thumb": "/canva-video-templates/EAFY0fvz9Vs.jpg"
   },
   {
     "id": "EAFT2TGU_qs",
@@ -2142,7 +2142,7 @@ export const CANVA_VIDEO_TEMPLATES: CanvaVideoTemplate[] = [
     "aspect_ratio": "16:9",
     "plan_tier": "FREE",
     "url": "https://www.canva.com/templates/EAFT2TGU_qs-end-of-life-tribute-video-in-black-and-white-natural-photocentric-style/",
-    "thumb": "https://template.canva.com/EAFT2TGU_qs/4/0/400w-12KexaKG0gQ.jpg"
+    "thumb": "/canva-video-templates/EAFT2TGU_qs.jpg"
   }
 ];
 
