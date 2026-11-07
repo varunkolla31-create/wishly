@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
 import { WrapGate } from "@/components/receiver/wrap-gate";
+import { getDemoWish } from "@/lib/demo/wishes";
 import { wishRepo } from "@/lib/repos/index";
 import {
   buildWishContent,
@@ -22,6 +23,9 @@ export default async function RevealPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
+
+  if (getDemoWish(id)) redirect(`/w/${id}`);
+
   const wish = await wishRepo().getById(id);
 
   if (!wish || !isPublished(wish)) notFound();

@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
+import { DemoWish } from "@/components/receiver/demo-wish";
 import { LockScreen } from "@/components/receiver/lock-screen";
+import { getDemoWish } from "@/lib/demo/wishes";
 import { wishRepo } from "@/lib/repos/index";
 import {
   isPublished,
@@ -35,6 +37,10 @@ export default async function WishPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
+
+  const demo = getDemoWish(id);
+  if (demo) return <DemoWish wish={demo} />;
+
   const wish = await wishRepo().getById(id);
 
   if (!wish || !isPublished(wish)) notFound();

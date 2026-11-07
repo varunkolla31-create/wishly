@@ -40,9 +40,26 @@ export default function PrivacyPage() {
           optional hint are shown before unlock.
         </p>
         <p>
-          This is an early-access placeholder policy, not legal advice. A
-          complete policy will be published before general availability. To
-          request deletion now, sign in and delete the wish from your dashboard.
+          Deleting a wish deletes its contributions, replies, uploaded media, and
+          any voice notes attached to it. You can delete a wish from your
+          dashboard at any time.
+        </p>
+
+        <h2 className="pt-4 font-serif text-2xl italic text-ink">
+          Music and third-party content
+        </h2>
+        <p>
+          Wishly lets senders add music from Spotify and YouTube. Those embeds
+          and links are provided by Spotify and YouTube under their respective
+          Developer Terms of Service, and playback is also governed by each
+          platform&apos;s consumer terms. We do not download, store, or
+          redistribute their audio or video content. If you use those features,
+          you are responsible for complying with their terms as well as these.
+        </p>
+        <p>
+          To request access to, correction of, or deletion of your data, contact
+          the email on your account or delete the wish directly from the
+          dashboard.
         </p>
       </div>
     </article>

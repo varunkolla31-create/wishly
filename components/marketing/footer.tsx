@@ -35,7 +35,7 @@ export function SiteFooter() {
       </div>
       <div className="mx-auto max-w-6xl px-4 pb-8 sm:px-6">
         <p className="text-xs text-ink-muted">
-          © {new Date().getFullYear()} Wishly. A working name.
+          © {new Date().getFullYear()} Wishly. Crafted for moments worth keeping.
         </p>
       </div>
     </footer>

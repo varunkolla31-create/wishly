@@ -71,25 +71,49 @@ export default function LandingPage() {
             <p className="mt-5 text-sm text-ink-muted">
               Free while in early access. The receiver never signs in.
             </p>
+            <Link
+              href="/w/demo-midnight"
+              className="mt-4 inline-flex min-h-11 items-center gap-2 rounded-full border border-hairline bg-surface px-4 text-sm font-medium text-ink transition-colors hover:bg-hover"
+            >
+              Try live demo
+              <span className="rounded-full bg-gold/30 px-2 py-0.5 text-[11px] font-semibold text-ink">
+                Password: midnight
+              </span>
+            </Link>
           </div>
 
           <div className="relative mx-auto w-full max-w-md lg:max-w-none">
             <div className="grid grid-cols-1 items-end sm:grid-cols-3 sm:gap-4">
-              <TemplatePreview
-                template={HERO_TEMPLATES[0]}
-                title="For you, always"
-                className="hidden -rotate-6 opacity-90 sm:block sm:translate-y-4"
-              />
-              <TemplatePreview
-                template={HERO_TEMPLATES[1]}
-                title="Happy birthday, Amma"
-                className="z-10 mx-auto w-full max-w-[220px] sm:max-w-none sm:scale-105"
-              />
-              <TemplatePreview
-                template={HERO_TEMPLATES[2]}
-                title="See you at midnight"
-                className="hidden rotate-6 opacity-90 sm:block sm:translate-y-4"
-              />
+              <Link
+                href="/w/demo-love"
+                aria-label="Open the For you, always demo"
+                className="hidden -rotate-6 opacity-90 transition hover:z-20 hover:opacity-100 sm:block sm:translate-y-4"
+              >
+                <TemplatePreview
+                  template={HERO_TEMPLATES[0]}
+                  title="For you, always"
+                />
+              </Link>
+              <Link
+                href="/w/demo-amma"
+                aria-label="Open the Happy birthday, Amma demo"
+                className="z-10 mx-auto block w-full max-w-[220px] transition hover:-translate-y-0.5 sm:max-w-none sm:scale-105"
+              >
+                <TemplatePreview
+                  template={HERO_TEMPLATES[1]}
+                  title="Happy birthday, Amma"
+                />
+              </Link>
+              <Link
+                href="/w/demo-midnight"
+                aria-label="Open the See you at midnight demo"
+                className="hidden rotate-6 opacity-90 transition hover:z-20 hover:opacity-100 sm:block sm:translate-y-4"
+              >
+                <TemplatePreview
+                  template={HERO_TEMPLATES[2]}
+                  title="See you at midnight"
+                />
+              </Link>
             </div>
           </div>
         </div>

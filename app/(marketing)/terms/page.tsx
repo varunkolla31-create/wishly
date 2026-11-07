@@ -36,9 +36,21 @@ export default function TermsPage() {
         <p>
           Each wish page includes a report link. Reported pages may be removed.
         </p>
+
+        <h2 className="pt-4 font-serif text-2xl italic text-ink">
+          Music and third-party services
+        </h2>
         <p>
-          This is an early-access placeholder, not legal advice. Full terms will
-          be published before general availability.
+          Wishly can embed or link music and video from Spotify and YouTube. Those
+          services are provided under their respective Developer Terms of Service,
+          and your use of them is also governed by their consumer terms. We do not
+          download, store, or redistribute their content. Content availability can
+          change without notice, and a track may stop playing if a platform
+          removes it.
+        </p>
+        <p>
+          By creating a wish you confirm that you have the rights to the media you
+          upload and that the people you name would be glad to receive it.
         </p>
       </div>
     </article>

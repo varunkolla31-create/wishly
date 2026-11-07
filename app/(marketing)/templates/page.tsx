@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { CanvaVideoGallery } from "@/components/marketing/canva-video-gallery";
-import { TemplateCard } from "@/components/marketing/template-card";
+import { InteractiveTemplateCard } from "@/components/marketing/interactive-template-card";
 import { ButtonLink } from "@/components/ui/button";
 import {
   CANVA_VIDEO_CATEGORIES,
@@ -42,7 +42,7 @@ export default function TemplatesPage() {
         <div className="mx-auto max-w-6xl px-4 py-14 sm:px-6">
           <div className="grid grid-cols-2 gap-x-6 gap-y-10 md:grid-cols-3 lg:grid-cols-4">
             {TEMPLATES.map((template) => (
-              <TemplateCard key={template.id} template={template} />
+              <InteractiveTemplateCard key={template.id} template={template} />
             ))}
           </div>
         </div>

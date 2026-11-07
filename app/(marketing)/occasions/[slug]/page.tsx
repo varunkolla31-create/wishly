@@ -44,6 +44,7 @@ export default async function OccasionPage({ params }: OccasionPageProps) {
   if (!occasion) notFound();
 
   const defaultTemplate = requireTemplate(occasion.defaultTemplateId);
+  const article = /^[aeiou]/i.test(occasion.name) ? "An" : "A";
   const companionTemplates = TEMPLATES.filter(
     (template) =>
       template.id !== defaultTemplate.id && template.tone === defaultTemplate.tone,
@@ -71,7 +72,7 @@ export default async function OccasionPage({ params }: OccasionPageProps) {
               {occasion.tone === "calm" ? "A quieter page" : "Make it a moment"}
             </p>
             <h1 className="mt-3 font-serif text-5xl italic leading-[1.05] text-ink sm:text-6xl">
-              A {occasion.name.toLowerCase()} wish they can unlock.
+              {article} {occasion.name.toLowerCase()} wish they can unlock.
             </h1>
             <p className="mt-5 text-lg leading-relaxed text-ink-muted">
               {occasion.blurb}
