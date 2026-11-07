@@ -1,0 +1,160 @@
+import type { TemplateDefinition } from "@/lib/catalog/types";
+
+export const TEMPLATES: TemplateDefinition[] = [
+  {
+    id: "clean-white",
+    name: "Clean White",
+    tagline: "Quiet, warm, and all about the words.",
+    tone: "fun",
+    titleStyle: "serif",
+    photoLayout: "stack",
+    confetti: "coral",
+    musicMood: "Soft piano",
+    palette: {
+      background: "#FFFFFF",
+      surface: "#F7F1E8",
+      text: "#1C1B1A",
+      muted: "#6B6762",
+      accent: "#FF385C",
+    },
+    preview: { from: "#FFFFFF", to: "#F7F1E8" },
+  },
+  {
+    id: "soft-pastel",
+    name: "Soft Pastel",
+    tagline: "Gentle colors for gentle feelings.",
+    tone: "fun",
+    titleStyle: "serif",
+    photoLayout: "collage",
+    confetti: "pastel",
+    musicMood: "Warm strings",
+    palette: {
+      background: "#FDF6F2",
+      surface: "#FBE9E7",
+      text: "#3B2A2F",
+      muted: "#7C666B",
+      accent: "#C96F86",
+    },
+    preview: { from: "#FBE9E7", to: "#E8F0FE" },
+  },
+  {
+    id: "midnight-glow",
+    name: "Midnight Glow",
+    tagline: "Dark, golden, and a little cinematic.",
+    tone: "fun",
+    titleStyle: "serif",
+    photoLayout: "grid",
+    confetti: "gold",
+    musicMood: "Night synth",
+    palette: {
+      background: "#121212",
+      surface: "#1C1A2B",
+      text: "#FFFFFF",
+      muted: "#B3AEA6",
+      accent: "#D6C283",
+    },
+    preview: { from: "#121212", to: "#1C1A2B" },
+  },
+  {
+    id: "romantic-rose",
+    name: "Romantic Rose",
+    tagline: "For love letters with photos attached.",
+    tone: "fun",
+    titleStyle: "serif",
+    photoLayout: "collage",
+    confetti: "pastel",
+    musicMood: "Slow guitar",
+    palette: {
+      background: "#FDF2F4",
+      surface: "#F6D9DE",
+      text: "#4A2B33",
+      muted: "#8A6670",
+      accent: "#B4435C",
+    },
+    preview: { from: "#FDF2F4", to: "#F6D9DE" },
+  },
+  {
+    id: "golden-hour",
+    name: "Golden Hour",
+    tagline: "That late-afternoon light, held still.",
+    tone: "fun",
+    titleStyle: "serif",
+    photoLayout: "stack",
+    confetti: "gold",
+    musicMood: "Acoustic glow",
+    palette: {
+      background: "#FFF7E8",
+      surface: "#F6D9A8",
+      text: "#3A2A16",
+      muted: "#7E6744",
+      accent: "#B07C25",
+    },
+    preview: { from: "#FFF7E8", to: "#F6D9A8" },
+  },
+  {
+    id: "confetti-pop",
+    name: "Confetti Pop",
+    tagline: "Loud, happy, and impossible to ignore.",
+    tone: "fun",
+    titleStyle: "sans",
+    photoLayout: "grid",
+    confetti: "coral",
+    musicMood: "Bright pop",
+    palette: {
+      background: "#FFF9F2",
+      surface: "#FFE3D3",
+      text: "#2A1F1A",
+      muted: "#7A6156",
+      accent: "#FF385C",
+    },
+    preview: { from: "#FFE3D3", to: "#FFC9C9" },
+  },
+  {
+    id: "calm-sky",
+    name: "Calm Sky",
+    tagline: "Slow, open, and softly lit.",
+    tone: "calm",
+    titleStyle: "serif",
+    photoLayout: "stack",
+    confetti: "none",
+    musicMood: "Ambient air",
+    palette: {
+      background: "#EEF4F7",
+      surface: "#DCE9EF",
+      text: "#22333B",
+      muted: "#5E7783",
+      accent: "#6C8A99",
+    },
+    preview: { from: "#EEF4F7", to: "#DCE9EF" },
+  },
+  {
+    id: "festival-lights",
+    name: "Festival Lights",
+    tagline: "Warm lamps, deep night, celebration.",
+    tone: "fun",
+    titleStyle: "serif",
+    photoLayout: "collage",
+    confetti: "festival",
+    musicMood: "Festive bells",
+    palette: {
+      background: "#1A120B",
+      surface: "#2B1B10",
+      text: "#FFF8EC",
+      muted: "#C8B79C",
+      accent: "#D6C283",
+    },
+    preview: { from: "#1A120B", to: "#2B1B10" },
+  },
+];
+
+const TEMPLATE_MAP = new Map(TEMPLATES.map((template) => [template.id, template]));
+
+export function getTemplate(id: string): TemplateDefinition | null {
+  return TEMPLATE_MAP.get(id) ?? null;
+}
+
+export const DEFAULT_TEMPLATE_ID = "clean-white";
+
+export const CALM_TEMPLATE_IDS = TEMPLATES.filter(
+  (template) => template.tone === "calm",
+).map((template) => template.id);
