@@ -65,7 +65,7 @@ export default async function CardPage({
         </h2>
 
         <p className="mt-2 text-xs text-ink-muted">
-          {occasion ? `${occasion.name} · ` : ""}Scan to open your wish.
+          {occasion ? `${occasion.name} · ` : ""}Scan to open your surprise.
         </p>
 
         {/* Server-rendered data URL: no client JS needed to print this. */}

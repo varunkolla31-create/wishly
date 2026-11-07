@@ -14,6 +14,12 @@ import { cn } from "@/lib/utils/cn";
 
 const buttonLike =
   "inline-flex min-h-12 cursor-pointer items-center justify-center gap-2 rounded-full border border-hairline bg-canvas px-5 text-sm font-medium text-ink transition-colors hover:bg-hover";
+const quietButton =
+  "inline-flex min-h-10 items-center justify-center rounded-full border border-hairline bg-canvas px-4 text-xs font-medium text-ink transition-colors hover:bg-hover";
+const solidButton =
+  "inline-flex min-h-10 items-center justify-center rounded-full bg-ink px-4 text-xs font-medium text-canvas transition-opacity hover:opacity-90";
+
+const IDLE_LEVELS = Array.from({ length: 20 }, () => 6);
 
 function MediaTile({
   item,
@@ -94,15 +100,26 @@ export function MediaUploader({
   const [uploading, setUploading] = useState<MediaKind | null>(null);
   const [recording, setRecording] = useState(false);
   const [seconds, setSeconds] = useState(0);
+  const [levels, setLevels] = useState<number[]>(IDLE_LEVELS);
+  const [pendingVoice, setPendingVoice] = useState<File | null>(null);
+  const [pendingUrl, setPendingUrl] = useState<string | null>(null);
 
   const recorderRef = useRef<MediaRecorder | null>(null);
   const chunksRef = useRef<Blob[]>([]);
   const timerRef = useRef<number | null>(null);
+  const secondsRef = useRef(0);
+  const analyserRef = useRef<AnalyserNode | null>(null);
+  const audioContextRef = useRef<AudioContext | null>(null);
+  const frameRef = useRef<number | null>(null);
+  const pendingUrlRef = useRef<string | null>(null);
 
   useEffect(() => {
     return () => {
       if (timerRef.current) window.clearInterval(timerRef.current);
+      if (frameRef.current) window.cancelAnimationFrame(frameRef.current);
       recorderRef.current?.stream.getTracks().forEach((track) => track.stop());
+      void audioContextRef.current?.close().catch(() => undefined);
+      if (pendingUrlRef.current) URL.revokeObjectURL(pendingUrlRef.current);
     };
   }, []);
 
@@ -130,11 +147,37 @@ export function MediaUploader({
     }
   }
 
+  function stopVisualiser() {
+    if (frameRef.current) window.cancelAnimationFrame(frameRef.current);
+    frameRef.current = null;
+    void audioContextRef.current?.close().catch(() => undefined);
+    audioContextRef.current = null;
+    analyserRef.current = null;
+    setLevels(IDLE_LEVELS);
+  }
+
+  function stopRecording() {
+    const recorder = recorderRef.current;
+    if (recorder && recorder.state !== "inactive") recorder.stop();
+    recorderRef.current = null;
+    setRecording(false);
+    if (timerRef.current) {
+      window.clearInterval(timerRef.current);
+      timerRef.current = null;
+    }
+    stopVisualiser();
+  }
+
   async function startRecording() {
+    if (pendingUrlRef.current) {
+      URL.revokeObjectURL(pendingUrlRef.current);
+      pendingUrlRef.current = null;
+      setPendingUrl(null);
+      setPendingVoice(null);
+    }
+
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({
-        audio: true,
-      });
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       const recorder = new MediaRecorder(stream);
       chunksRef.current = [];
 
@@ -150,15 +193,48 @@ export function MediaUploader({
         const file = new File([blob], `voice-note-${Date.now()}.webm`, {
           type: blob.type || "audio/webm",
         });
-        void handleFiles("voice", [file]);
+        const url = URL.createObjectURL(blob);
+        pendingUrlRef.current = url;
+        setPendingVoice(file);
+        setPendingUrl(url);
       };
+
+      const AudioContextCtor =
+        window.AudioContext ??
+        (window as unknown as { webkitAudioContext?: typeof AudioContext })
+          .webkitAudioContext;
+      if (AudioContextCtor) {
+        const context = new AudioContextCtor();
+        const source = context.createMediaStreamSource(stream);
+        const analyser = context.createAnalyser();
+        analyser.fftSize = 64;
+        source.connect(analyser);
+        analyserRef.current = analyser;
+        audioContextRef.current = context;
+
+        const data = new Uint8Array(analyser.frequencyBinCount);
+        const tick = () => {
+          analyser.getByteFrequencyData(data);
+          setLevels(
+            Array.from({ length: 20 }, (_, index) => {
+              const value = data[index * 2] ?? 0;
+              return 6 + (value / 255) * 30;
+            }),
+          );
+          frameRef.current = window.requestAnimationFrame(tick);
+        };
+        frameRef.current = window.requestAnimationFrame(tick);
+      }
 
       recorder.start();
       recorderRef.current = recorder;
       setRecording(true);
       setSeconds(0);
+      secondsRef.current = 0;
       timerRef.current = window.setInterval(() => {
-        setSeconds((value) => value + 1);
+        secondsRef.current += 1;
+        setSeconds(secondsRef.current);
+        if (secondsRef.current >= 60) stopRecording();
       }, 1000);
     } catch {
       toast.error(
@@ -167,14 +243,16 @@ export function MediaUploader({
     }
   }
 
-  function stopRecording() {
-    recorderRef.current?.stop();
-    recorderRef.current = null;
-    setRecording(false);
-    if (timerRef.current) {
-      window.clearInterval(timerRef.current);
-      timerRef.current = null;
+  async function usePendingVoice() {
+    if (!pendingVoice) return;
+    const file = pendingVoice;
+    setPendingVoice(null);
+    if (pendingUrlRef.current) {
+      URL.revokeObjectURL(pendingUrlRef.current);
+      pendingUrlRef.current = null;
     }
+    setPendingUrl(null);
+    await handleFiles("voice", [file]);
   }
 
   const busy = uploading !== null;
@@ -243,8 +321,10 @@ export function MediaUploader({
 
       <div>
         <div className="flex items-center justify-between gap-3">
-          <h3 className="text-sm font-medium text-ink">Voice note</h3>
-          <span className="text-xs text-ink-muted">Up to 5MB</span>
+          <h3 className="text-sm font-medium text-ink">
+            Record a personal voice note
+          </h3>
+          <span className="text-xs text-ink-muted">Up to 60 seconds</span>
         </div>
         <div className="mt-2 flex flex-wrap gap-2">
           {recording ? (
@@ -254,7 +334,7 @@ export function MediaUploader({
               className="inline-flex min-h-12 items-center gap-2 rounded-full bg-ink px-5 text-sm font-medium text-canvas"
             >
               <Square aria-hidden="true" className="size-3.5" />
-              Stop · {seconds}s
+              Stop · {seconds}s / 60s
             </button>
           ) : (
             <button
@@ -288,6 +368,47 @@ export function MediaUploader({
             </span>
           ) : null}
         </div>
+
+        {recording ? (
+          <div
+            className="mt-3 flex h-10 items-end gap-1 rounded-media border border-hairline bg-canvas px-3 py-2"
+            aria-hidden="true"
+          >
+            {levels.map((height, index) => (
+              <span
+                key={index}
+                className="flex-1 rounded-full bg-coral-strong transition-[height] duration-75"
+                style={{ height }}
+              />
+            ))}
+          </div>
+        ) : null}
+
+        {pendingUrl ? (
+          <div className="mt-3 rounded-media border border-hairline bg-canvas p-3">
+            <audio src={pendingUrl} controls className="w-full" />
+            <div className="mt-2 flex flex-wrap gap-2">
+              <button type="button" onClick={usePendingVoice} className={solidButton}>
+                Use this voice note
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  if (pendingUrlRef.current) {
+                    URL.revokeObjectURL(pendingUrlRef.current);
+                    pendingUrlRef.current = null;
+                  }
+                  setPendingUrl(null);
+                  setPendingVoice(null);
+                  void startRecording();
+                }}
+                className={quietButton}
+              >
+                Re-record
+              </button>
+            </div>
+          </div>
+        ) : null}
       </div>
 
       {media.length > 0 ? (

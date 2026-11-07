@@ -1,8 +1,9 @@
 "use client";
 
 import { Pause, Play } from "lucide-react";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { MusicTrack, TemplatePalette } from "@/lib/catalog/types";
+import { MUSIC_DUCK_EVENT } from "@/lib/media/duck";
 
 export function MusicMiniPlayer({
   track,
@@ -13,6 +14,14 @@ export function MusicMiniPlayer({
 }) {
   const audioRef = useRef<HTMLAudioElement>(null);
   const [playing, setPlaying] = useState(false);
+
+  useEffect(() => {
+    const pauseForVoice = () => {
+      audioRef.current?.pause();
+    };
+    window.addEventListener(MUSIC_DUCK_EVENT, pauseForVoice);
+    return () => window.removeEventListener(MUSIC_DUCK_EVENT, pauseForVoice);
+  }, []);
 
   function toggle() {
     const audio = audioRef.current;

@@ -101,7 +101,7 @@ export function MemoryWall({
         {t("reveal.memoryTitle")}
       </h2>
 
-      <div className="mt-5 columns-1 gap-3 sm:columns-2">
+      <div className="mt-5 columns-1 gap-3 sm:columns-2 lg:columns-3">
         {contributions.map((item) => (
           <div key={item.contributionId} className="mb-3">
             <Tile item={item} palette={palette} />

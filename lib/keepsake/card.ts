@@ -122,7 +122,7 @@ export async function downloadKeepsakeCard(input: KeepsakeCardInput) {
   context.fillStyle = MUTED;
   context.font = `400 24px ${sans}`;
   const occasion = input.occasionName ? `${input.occasionName} · ` : "";
-  context.fillText(`${occasion}Scan to open your wish.`, WIDTH / 2, cursorY + 18);
+  context.fillText(`${occasion}Scan to open your surprise.`, WIDTH / 2, cursorY + 18);
 
   // QR
   const qr = await loadImage(input.qrDataUrl);

@@ -241,8 +241,8 @@ export function CanvaVideoGallery({
           </div>
         </div>
 
-        <div className="-mx-4 overflow-x-auto px-4 sm:mx-0 sm:px-0">
-          <div className="flex w-max gap-2 pb-1 sm:w-auto sm:flex-wrap">
+        <div className="w-full overflow-x-auto overscroll-x-contain">
+          <div className="flex w-max gap-2 pb-1 pr-4 sm:w-auto sm:flex-wrap sm:pr-0">
             <button
               type="button"
               onClick={() => reset(setCategory, "all")}
