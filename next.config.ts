@@ -9,6 +9,9 @@ const nextConfig: NextConfig = {
   serverExternalPackages: ["@node-rs/argon2", "pg"],
   poweredByHeader: false,
   outputFileTracingRoot: projectRoot,
+  images: {
+    remotePatterns: [{ protocol: "https", hostname: "template.canva.com" }],
+  },
   async headers() {
     return [
       {

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { TemplateCard } from "@/components/marketing/template-card";
 import { ButtonLink } from "@/components/ui/button";
+import { CANVA_VIDEO_TEMPLATES } from "@/lib/catalog/canva-videos";
 import { TEMPLATES } from "@/lib/catalog/templates";
 import { pageMetadata } from "@/lib/seo";
 
@@ -40,6 +41,24 @@ export default function TemplatesPage() {
               <TemplateCard key={template.id} template={template} />
             ))}
           </div>
+        </div>
+      </section>
+
+      <section className="border-t border-hairline">
+        <div className="mx-auto flex max-w-6xl flex-col gap-5 px-4 py-12 sm:px-6 md:flex-row md:items-center md:justify-between">
+          <div>
+            <h2 className="font-serif text-3xl italic leading-tight text-ink">
+              Want it in motion?
+            </h2>
+            <p className="mt-2 max-w-xl text-base leading-relaxed text-ink-muted">
+              Browse {CANVA_VIDEO_TEMPLATES.length} Canva video templates for
+              birthdays, weddings, festivals, reels and more — open any of them in
+              Canva in a new tab.
+            </p>
+          </div>
+          <ButtonLink href="/video-templates" variant="outline" size="lg">
+            Video templates
+          </ButtonLink>
         </div>
       </section>
 
