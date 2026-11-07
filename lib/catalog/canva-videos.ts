@@ -2205,3 +2205,11 @@ export const CANVA_VIDEO_CATEGORIES: CanvaVideoCategory[] = [
     "name": "Tributes"
   }
 ];
+
+const CANVA_VIDEO_MAP = new Map(
+  CANVA_VIDEO_TEMPLATES.map((template) => [template.id, template]),
+);
+
+export function getCanvaVideoTemplate(id: string): CanvaVideoTemplate | null {
+  return CANVA_VIDEO_MAP.get(id) ?? null;
+}

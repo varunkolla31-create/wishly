@@ -1,16 +1,23 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { CanvaVideoCard } from "@/components/marketing/canva-video-card";
 import type {
   CanvaVideoCategory,
   CanvaVideoTemplate,
 } from "@/lib/catalog/canva-videos";
+import {
+  emptyStats,
+  trendingScore,
+  type TemplateStatsMap,
+} from "@/lib/catalog/ranking";
 import { cn } from "@/lib/utils/cn";
 
 const PAGE_SIZE = 24;
 const ASPECTS = ["all", "16:9", "9:16", "1:1"] as const;
+const LIKED_KEY = "wishly-liked-templates";
 
 const chipClass = (active: boolean) =>
   cn(
@@ -30,9 +37,36 @@ export function CanvaVideoGallery({
   const [category, setCategory] = useState("all");
   const [aspect, setAspect] = useState<(typeof ASPECTS)[number]>("all");
   const [freeOnly, setFreeOnly] = useState(false);
+  const [sort, setSort] = useState<"curated" | "popular">("curated");
   const [query, setQuery] = useState("");
   const [visible, setVisible] = useState(PAGE_SIZE);
   const [selected, setSelected] = useState<CanvaVideoTemplate | null>(null);
+  const [stats, setStats] = useState<TemplateStatsMap>({});
+  const [liked, setLiked] = useState<Set<string>>(new Set());
+  const [sharedId, setSharedId] = useState<string | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    fetch("/api/video-templates/stats")
+      .then((response) => response.json())
+      .then((body: { ok?: boolean; data?: { stats?: TemplateStatsMap } }) => {
+        if (cancelled || !body?.ok) return;
+        setStats(body.data?.stats ?? {});
+      })
+      .catch(() => undefined);
+
+    try {
+      const raw = window.localStorage.getItem(LIKED_KEY);
+      if (raw) setLiked(new Set(JSON.parse(raw) as string[]));
+    } catch {
+      // Local storage is optional; likes still work for the session.
+    }
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   useEffect(() => {
     if (!selected) return undefined;
@@ -68,7 +102,7 @@ export function CanvaVideoGallery({
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
-    return ordered.filter((template) => {
+    const matches = ordered.filter((template) => {
       if (category !== "all" && template.category !== category) return false;
       if (aspect !== "all" && template.aspect_ratio !== aspect) return false;
       if (freeOnly && template.plan_tier !== "FREE") return false;
@@ -78,13 +112,88 @@ export function CanvaVideoGallery({
       }
       return true;
     });
-  }, [ordered, category, aspect, freeOnly, query]);
+
+    if (sort === "popular") {
+      return [...matches].sort(
+        (left, right) =>
+          (stats[right.id]?.trending ?? 0) - (stats[left.id]?.trending ?? 0),
+      );
+    }
+    return matches;
+  }, [ordered, category, aspect, freeOnly, query, sort, stats]);
 
   const shown = filtered.slice(0, visible);
 
   const reset = <T,>(setter: (value: T) => void, value: T) => {
     setter(value);
     setVisible(PAGE_SIZE);
+  };
+
+  const like = (id: string) => {
+    if (liked.has(id)) return;
+    setLiked((previous) => {
+      const next = new Set(previous);
+      next.add(id);
+      try {
+        window.localStorage.setItem(LIKED_KEY, JSON.stringify([...next]));
+      } catch {
+        // Ignore storage failures.
+      }
+      return next;
+    });
+
+    setStats((previous) => {
+      const current = previous[id] ?? emptyStats();
+      const counts = {
+        likes: current.likes + 1,
+        shares: current.shares,
+        uses: current.uses,
+      };
+      return {
+        ...previous,
+        [id]: { ...counts, trending: trendingScore(counts) },
+      };
+    });
+
+    void fetch(`/api/video-templates/${id}/like`, { method: "POST" })
+      .then((response) => response.json())
+      .then((body: { ok?: boolean; data?: { stats?: TemplateStatsMap[string] } }) => {
+        if (!body?.ok || !body.data?.stats) return;
+        const next = body.data.stats;
+        setStats((previous) => ({ ...previous, [id]: next }));
+      })
+      .catch(() => undefined);
+  };
+
+  const share = (id: string) => {
+    const url = `${window.location.origin}/studio/${id}`;
+    void navigator.clipboard?.writeText(url).catch(() => undefined);
+    setSharedId(id);
+    window.setTimeout(() => {
+      setSharedId((current) => (current === id ? null : current));
+    }, 2000);
+
+    setStats((previous) => {
+      const current = previous[id] ?? emptyStats();
+      const counts = {
+        likes: current.likes,
+        shares: current.shares + 1,
+        uses: current.uses,
+      };
+      return {
+        ...previous,
+        [id]: { ...counts, trending: trendingScore(counts) },
+      };
+    });
+
+    void fetch(`/api/video-templates/${id}/share`, { method: "POST" })
+      .then((response) => response.json())
+      .then((body: { ok?: boolean; data?: { stats?: TemplateStatsMap[string] } }) => {
+        if (!body?.ok || !body.data?.stats) return;
+        const next = body.data.stats;
+        setStats((previous) => ({ ...previous, [id]: next }));
+      })
+      .catch(() => undefined);
   };
 
   return (
@@ -120,6 +229,14 @@ export function CanvaVideoGallery({
               className={chipClass(freeOnly)}
             >
               Free only
+            </button>
+            <button
+              type="button"
+              onClick={() => reset(setSort, sort === "popular" ? "curated" : "popular")}
+              aria-pressed={sort === "popular"}
+              className={chipClass(sort === "popular")}
+            >
+              Popular
             </button>
           </div>
         </div>
@@ -168,7 +285,12 @@ export function CanvaVideoGallery({
             <CanvaVideoCard
               key={template.id}
               template={template}
+              stats={stats[template.id] ?? emptyStats()}
+              liked={liked.has(template.id)}
+              shared={sharedId === template.id}
               onSelect={setSelected}
+              onLike={like}
+              onShare={share}
             />
           ))}
         </div>
@@ -227,13 +349,16 @@ export function CanvaVideoGallery({
                   {selected.plan_tier === "FREE" ? "Free" : "Pro"}
                 </p>
               </div>
-              <span className="rounded-full border border-hairline bg-surface px-3 py-1 text-xs text-ink-muted">
-                {selected.aspect_ratio}
-              </span>
+              <Link
+                href={`/studio/${selected.id}`}
+                className="inline-flex min-h-11 items-center justify-center rounded-full bg-coral-strong px-5 text-sm font-medium text-white transition-colors hover:bg-coral-strong-hover"
+              >
+                Create in app
+              </Link>
             </div>
             <p className="mt-3 text-xs leading-relaxed text-ink-muted">
-              Preview image hosted in Wishly. The editable video template itself
-              lives in Canva.
+              Preview hosted in Wishly. Create your own version in the studio —
+              nothing opens Canva.
             </p>
           </div>
         </div>
