@@ -177,6 +177,6 @@ test.describe("YouTube music picker", () => {
     const preview = page.getByRole("button", { name: /^Preview / });
     await preview.nth(0).click();
     await preview.nth(1).click();
-    await expect(page.getByTestId("audio-player")).toHaveCount(1);
+    await expect(page.getByTestId("audio-player-preview")).toHaveCount(1);
   });
 });

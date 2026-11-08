@@ -13,6 +13,7 @@ import {
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { Equalizer } from "@/components/music/equalizer";
+import { AudioTrimmer } from "@/components/music/audio-trimmer";
 import {
   YouTubePlayer,
   type YouTubePlayerHandle,
@@ -48,18 +49,6 @@ function formatDuration(seconds: number): string {
   return `${minutes}:${String(rest).padStart(2, "0")}`;
 }
 
-function formatClock(seconds: number | null): string {
-  const safe = Math.max(0, Math.trunc(seconds ?? 0));
-  return `${Math.floor(safe / 60)}:${String(safe % 60).padStart(2, "0")}`;
-}
-
-function parseClock(value: string): number | null {
-  const match = /^(\d{1,3}):([0-5]?\d)$/.exec(value.trim());
-  if (!match) return null;
-  const seconds = Number(match[1] ?? 0) * 60 + Number(match[2] ?? 0);
-  return seconds <= 86_400 ? seconds : null;
-}
-
 export function YouTubeMusicPicker({
   value,
   legacyTrack,
@@ -91,9 +80,6 @@ export function YouTubeMusicPicker({
   const [previewPlaying, setPreviewPlaying] = useState(false);
   const [previewError, setPreviewError] = useState("");
 
-  const [startText, setStartText] = useState(
-    formatClock(value?.startAtSeconds ?? 0),
-  );
   const [pasteUrl, setPasteUrl] = useState("");
   const [pasteState, setPasteState] = useState<"idle" | "loading" | "error">(
     "idle",
@@ -190,8 +176,8 @@ export function YouTubeMusicPicker({
   }, [query]);
 
   useEffect(() => {
-    setStartText(formatClock(value?.startAtSeconds ?? 0));
-  }, [value?.videoId, value?.startAtSeconds]);
+    setPreviewPlaying(false);
+  }, [value?.videoId]);
 
   function selectItem(item: MusicListItem) {
     onChange({
@@ -203,6 +189,7 @@ export function YouTubeMusicPicker({
       sourceUrl: canonicalWatchUrl(item.videoId),
       durationSeconds: item.durationSeconds,
       startAtSeconds: 0,
+      endAtSeconds: null,
     });
   }
 
@@ -222,16 +209,6 @@ export function YouTubeMusicPicker({
     setPreviewToken((token) => token + 1);
     setPreviewPlaying(true);
     setPreviewError("");
-  }
-
-  function commitStart() {
-    if (!value) return;
-    const parsed = parseClock(startText);
-    if (parsed === null) {
-      setStartText(formatClock(value.startAtSeconds ?? 0));
-      return;
-    }
-    onChange({ ...value, startAtSeconds: parsed });
   }
 
   async function resolvePaste() {
@@ -350,32 +327,10 @@ export function YouTubeMusicPicker({
                 Remove
               </button>
             </div>
-
-            {value ? (
-              <div className="mt-3 flex flex-wrap items-center gap-3 rounded-full bg-sand/70 px-3 py-2">
-                <label
-                  htmlFor="music-start-at"
-                  className="text-[10px] font-semibold uppercase tracking-[0.12em] text-ink-muted"
-                >
-                  Start at
-                </label>
-                <input
-                  id="music-start-at"
-                  value={startText}
-                  onChange={(event) => setStartText(event.target.value)}
-                  onBlur={commitStart}
-                  onKeyDown={(event) => {
-                    if (event.key === "Enter") commitStart();
-                  }}
-                  inputMode="numeric"
-                  placeholder="mm:ss"
-                  className="min-h-8 w-20 rounded-full border border-hairline bg-canvas px-3 text-xs text-ink"
-                />
-                <span className="text-[11px] text-ink-muted">mm:ss</span>
-              </div>
-            ) : null}
           </div>
         ) : null}
+
+        {value ? <AudioTrimmer music={value} onChange={onChange} /> : null}
 
         {hiddenVideoId ? (
           <YouTubePlayer
@@ -384,6 +339,7 @@ export function YouTubeMusicPicker({
             title={cleanSongTitle(hiddenTitle)}
             playToken={previewToken}
             hidden
+            testId="audio-player-preview"
             onStateChange={(state) => setPreviewPlaying(state === 1)}
             onError={(code) => {
               if (!preview) return;

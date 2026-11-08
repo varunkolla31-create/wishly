@@ -17,6 +17,7 @@ export const musicBindingSchema = z.object({
   sourceUrl: httpsUrl,
   durationSeconds: z.number().int().min(0).max(86_400),
   startAtSeconds: z.number().int().min(0).max(86_400).nullable(),
+  endAtSeconds: z.number().int().min(0).max(86_400).nullable().optional(),
 });
 
 export type MusicBindingInput = z.infer<typeof musicBindingSchema>;

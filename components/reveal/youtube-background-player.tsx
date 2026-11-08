@@ -33,6 +33,11 @@ export function YouTubeBackgroundPlayer({
   const [muted, setMuted] = useState(false);
 
   const title = cleanSongTitle(music.title);
+  const startAt = Math.max(0, music.startAtSeconds ?? 0);
+  const configuredEnd =
+    music.endAtSeconds && music.endAtSeconds > startAt
+      ? music.endAtSeconds
+      : 0;
   const progress =
     duration > 0 ? Math.min(100, Math.max(0, (current / duration) * 100)) : 0;
 
@@ -87,6 +92,16 @@ export function YouTubeBackgroundPlayer({
         }
         if (Number.isFinite(nextCurrent) && nextCurrent >= 0) {
           setCurrent(nextCurrent);
+          const effectiveEnd = configuredEnd > 0 ? configuredEnd : nextDuration;
+          if (
+            playing &&
+            effectiveEnd > startAt &&
+            nextCurrent >= effectiveEnd - 0.25
+          ) {
+            player.seekTo(startAt);
+            player.play();
+            setCurrent(startAt);
+          }
         }
         setMuted(player.isMuted());
       } catch {
@@ -94,7 +109,7 @@ export function YouTubeBackgroundPlayer({
       }
     }, 500);
     return () => window.clearInterval(timer);
-  }, []);
+  }, [configuredEnd, playing, startAt]);
 
   useEffect(() => {
     const pause = () => {
@@ -122,6 +137,11 @@ export function YouTubeBackgroundPlayer({
       setPlaying(false);
     } else {
       autoStarted.current = true;
+      const effectiveEnd = configuredEnd > 0 ? configuredEnd : duration;
+      if (current < startAt || current >= effectiveEnd) {
+        playerRef.current?.seekTo(startAt);
+        setCurrent(startAt);
+      }
       playerRef.current?.play();
       setPlaying(true);
     }
@@ -145,14 +165,29 @@ export function YouTubeBackgroundPlayer({
         ref={playerRef}
         videoId={music.videoId}
         title={title}
-        startAtSeconds={music.startAtSeconds ?? 0}
+        startAtSeconds={startAt}
         playToken={playToken}
         autoplay={autoPlay}
-        loop
+        loop={false}
         hidden
+        testId="audio-player-recipient"
         onStateChange={(state) => {
           if (state === 1) setPlaying(true);
-          if (state === 2 || state === 0) setPlaying(false);
+          if (state === 2) setPlaying(false);
+          if (state === 0) {
+            const effectiveEnd =
+              configuredEnd > 0
+                ? configuredEnd
+                : playerRef.current?.getDuration() ?? duration;
+            if (effectiveEnd > startAt) {
+              playerRef.current?.seekTo(startAt);
+              playerRef.current?.play();
+              setPlaying(true);
+              setCurrent(startAt);
+            } else {
+              setPlaying(false);
+            }
+          }
         }}
         onError={() => setFailed(true)}
       />

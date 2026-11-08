@@ -18,9 +18,10 @@ export interface MusicCandidate {
   madeForKids?: boolean;
 }
 
-/** A candidate plus the sender's chosen offset, as stored on the wish. */
+/** A candidate plus the sender's chosen loop segment, as stored on the wish. */
 export interface MusicBinding extends MusicCandidate {
   startAtSeconds: number | null;
+  endAtSeconds?: number | null;
 }
 
 export interface MusicEmbed {

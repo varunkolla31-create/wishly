@@ -36,6 +36,7 @@ export const YouTubePlayer = forwardRef<
     loop?: boolean;
     controls?: boolean;
     hidden?: boolean;
+    testId?: string;
     className?: string;
     onError?: (code: number) => void;
     onStateChange?: (state: number) => void;
@@ -50,6 +51,7 @@ export const YouTubePlayer = forwardRef<
     loop = false,
     controls = true,
     hidden = false,
+    testId = "audio-player",
     className,
     onError,
     onStateChange,
@@ -198,7 +200,7 @@ export const YouTubePlayer = forwardRef<
       <div
         aria-label={title ? `Audio player: ${title}` : "Audio player"}
         aria-hidden="true"
-        data-testid="audio-player"
+        data-testid={testId}
         inert
         style={{
           position: "absolute",
