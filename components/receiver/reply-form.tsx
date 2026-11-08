@@ -4,9 +4,8 @@ import { motion } from "framer-motion";
 import { Check } from "lucide-react";
 import { useEffect, useState } from "react";
 import type { TemplatePalette } from "@/lib/catalog/types";
-import { t } from "@/lib/i18n";
 
-const REACTIONS = ["❤️", "🥳", "🥹", "🙏"] as const;
+const REACTIONS = ["❤️", "🥳", "🥹", "🙏", "✨"] as const;
 
 export function ReplyForm({
   wishId,
@@ -101,9 +100,7 @@ export function ReplyForm({
           <p aria-hidden="true" className="mt-3 text-3xl">
             {emoji}
           </p>
-          <h2 className="mt-2 font-serif text-2xl italic">
-            {t("reveal.replySent")}
-          </h2>
+          <h2 className="mt-2 font-serif text-2xl italic">Sent with love!</h2>
           <p className="mt-1 text-sm" style={{ color: palette.muted }}>
             They&apos;ll see it in their replies inbox.
           </p>
@@ -121,7 +118,7 @@ export function ReplyForm({
         color: palette.text,
       }}
     >
-      <h2 className="font-serif text-2xl italic">Say thanks</h2>
+      <h2 className="font-serif text-2xl italic">Say Thanks</h2>
       <p className="mt-1 text-sm" style={{ color: palette.muted }}>
         Send a quick reaction, a note, or both. No account needed.
       </p>
@@ -159,7 +156,7 @@ export function ReplyForm({
         onChange={(event) => setMessage(event.target.value)}
         rows={3}
         maxLength={1000}
-        placeholder="Say something kind — or just send the reaction…"
+        placeholder="Send a note back to the sender…"
         className="mt-4 w-full rounded-media border p-3 text-sm leading-relaxed"
         style={{
           borderColor: palette.muted,
@@ -181,7 +178,7 @@ export function ReplyForm({
         className="mt-3 min-h-12 rounded-full px-6 text-sm font-medium transition-opacity disabled:opacity-50"
         style={{ backgroundColor: palette.accent, color: palette.background }}
       >
-        {sending ? "Sending…" : "Send thanks"}
+        {sending ? "Sending…" : "Send Thanks"}
       </button>
       <p className="mt-2 text-[11px]" style={{ color: palette.muted }}>
         One thank-you per visit. The reaction alone is enough.

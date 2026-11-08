@@ -187,18 +187,25 @@ export function LockScreen({ wish }: { wish: PublicWishMeta }) {
         </p>
 
         {waiting ? (
-          <>
+          <motion.div
+            key="waiting"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: reduceMotion ? 0 : 0.35 }}
+          >
             <GiftBox reduced={reduceMotion} />
             <h1 className="mt-6 font-serif text-4xl italic leading-[1.05] text-ink sm:text-5xl">
               Not yet.
             </h1>
             <p className="mx-auto mt-3 max-w-sm text-sm leading-relaxed text-ink-muted">
-              This surprise opens on{" "}
+              This wish opens on{" "}
               <strong className="font-medium text-ink">
                 {formatUnlockDate(wish.unlockAt) || "soon"}
               </strong>
-              . Come back then — the password box appears when the timer hits
-              zero.
+              . Save this link and come back then!
+            </p>
+            <p className="mx-auto mt-2 max-w-sm text-xs text-ink-muted/80">
+              The password box appears when the countdown reaches zero.
             </p>
 
             <div
@@ -229,9 +236,14 @@ export function LockScreen({ wish }: { wish: PublicWishMeta }) {
               Opens in {parts.days} days, {parts.hours} hours, {parts.minutes}{" "}
               minutes and {parts.seconds} seconds.
             </p>
-          </>
+          </motion.div>
         ) : (
-          <>
+          <motion.div
+            key="unlock"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: reduceMotion ? 0 : 0.35 }}
+          >
             <div className="relative mx-auto mt-8 size-60 sm:size-72">
               <svg
                 viewBox="0 0 240 240"
@@ -378,7 +390,7 @@ export function LockScreen({ wish }: { wish: PublicWishMeta }) {
                 </p>
               ) : null}
             </motion.form>
-          </>
+          </motion.div>
         )}
 
         <p className="mt-8 text-xs text-ink-muted">
