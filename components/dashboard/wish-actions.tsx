@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
+import { DownloadGiftTagButton } from "@/components/keepsake/download-gift-tag-button";
 import { Dialog } from "@/components/ui/dialog";
 import type { WishStatus } from "@/lib/repos/types";
 
@@ -14,12 +15,21 @@ const actionClass =
 
 interface WishActionsProps {
   wishId: string;
+  title: string;
+  hint: string | null;
   reelTemplateId: string;
   status: WishStatus;
   mode: "solo" | "group";
 }
 
-export function WishActions({ wishId, reelTemplateId, status, mode }: WishActionsProps) {
+export function WishActions({
+  wishId,
+  title,
+  hint,
+  reelTemplateId,
+  status,
+  mode,
+}: WishActionsProps) {
   const router = useRouter();
   const [qrOpen, setQrOpen] = useState(false);
   const [qrData, setQrData] = useState<string | null>(null);
@@ -148,6 +158,17 @@ export function WishActions({ wishId, reelTemplateId, status, mode }: WishAction
           >
             <Download aria-hidden="true" className="size-[18px]" />
           </Link>
+          <DownloadGiftTagButton
+            title={title}
+            hint={hint}
+            url={
+              typeof window === "undefined"
+                ? ""
+                : `${window.location.origin}/w/${wishId}`
+            }
+            filename={`wishly-gift-tag-${wishId}.png`}
+            iconOnly
+          />
         </>
       ) : null}
 

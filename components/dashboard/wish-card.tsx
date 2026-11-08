@@ -48,6 +48,8 @@ export function WishCard({
       <div className="flex items-center justify-between border-t border-hairline px-2 py-1">
         <WishActions
           wishId={wish.wishId}
+          title={title}
+          hint={wish.passwordHint}
           reelTemplateId={
             wish.reelTemplateId ?? defaultMemoryTemplateId(wish.category)
           }

@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { DownloadCardButton } from "@/components/keepsake/download-card-button";
+import { DownloadGiftTagButton } from "@/components/keepsake/download-gift-tag-button";
 import { Button, ButtonLink } from "@/components/ui/button";
 
 const shareClass =
@@ -205,6 +206,14 @@ export function PublishSuccess({
             hint={hint}
             filename={`wishly-card-${wishId}.png`}
             label="Download card"
+          />
+          <DownloadGiftTagButton
+            title={shareTitle}
+            hint={hint}
+            url={url}
+            qrDataUrl={qr ?? ""}
+            filename={`wishly-gift-tag-${wishId}.png`}
+            label="QR gift tag"
           />
           <a
             href="/studio"
