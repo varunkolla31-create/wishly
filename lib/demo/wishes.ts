@@ -17,6 +17,20 @@ export interface DemoWishData {
  */
 export const DEMO_WISHES: DemoWishData[] = [
   {
+    id: "demo-birthday",
+    receiverName: "you",
+    title: "Happy birthday, you",
+    message:
+      "Another year of you. Another year of the good kind of trouble.\n\nI hope this one is full of the people who make you laugh until you can't breathe, the food you order twice, and the ordinary mornings you'll miss one day.\n\nBlow out the candle. Make it count.\n\nHappy birthday.",
+    bonusNote:
+      "Look in the freezer. The cake is real, and yes, I hid it from you successfully.",
+    templateId: "confetti-pop",
+    category: "birthday",
+    musicId: "bright-pop",
+    password: "birthday",
+    hint: "The occasion on this card",
+  },
+  {
     id: "demo-love",
     receiverName: "you",
     title: "For you, always",
