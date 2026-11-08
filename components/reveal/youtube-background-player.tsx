@@ -56,6 +56,7 @@ export function YouTubeBackgroundPlayer({
   autoPlay?: boolean;
 }) {
   const playerRef = useRef<YouTubePlayerHandle>(null);
+  const autoStarted = useRef(false);
   const [playing, setPlaying] = useState(false);
   const [failed, setFailed] = useState(false);
   const [playToken, setPlayToken] = useState(0);
@@ -74,12 +75,30 @@ export function YouTubeBackgroundPlayer({
   }, [autoPlay]);
 
   useEffect(() => {
-    if (!autoPlay || playing || failed) {
+    if (!autoPlay || playing || failed || autoStarted.current) {
       setShowPrompt(false);
       return undefined;
     }
     const timer = window.setTimeout(() => setShowPrompt(true), 1800);
     return () => window.clearTimeout(timer);
+  }, [autoPlay, playing, failed]);
+
+  useEffect(() => {
+    if (!autoPlay || playing || failed || autoStarted.current) {
+      return undefined;
+    }
+    const start = () => {
+      autoStarted.current = true;
+      setShowPrompt(false);
+      setPlayToken((token) => token + 1);
+      setPlaying(true);
+    };
+    document.addEventListener("pointerdown", start, { once: true });
+    document.addEventListener("keydown", start, { once: true });
+    return () => {
+      document.removeEventListener("pointerdown", start);
+      document.removeEventListener("keydown", start);
+    };
   }, [autoPlay, playing, failed]);
 
   useEffect(() => {
@@ -107,6 +126,7 @@ export function YouTubeBackgroundPlayer({
       playerRef.current?.pause();
       setPlaying(false);
     } else {
+      autoStarted.current = true;
       setPlayToken((token) => token + 1);
       setPlaying(true);
     }
@@ -193,10 +213,10 @@ export function YouTubeBackgroundPlayer({
         <button
           type="button"
           onClick={toggle}
-          className="fixed bottom-24 right-4 z-40 inline-flex items-center gap-2 rounded-full bg-ink px-4 py-3 text-xs font-medium text-canvas shadow-[0_18px_50px_rgba(0,0,0,0.3)]"
+          className="fixed bottom-24 left-1/2 z-40 inline-flex max-w-[calc(100vw-2rem)] -translate-x-1/2 items-center gap-2 rounded-full bg-ink px-4 py-3 text-xs font-medium text-canvas shadow-[0_18px_50px_rgba(0,0,0,0.3)]"
         >
-          <Play aria-hidden="true" className="size-3.5" />
-          Tap to play music
+          <Play aria-hidden="true" className="size-3.5 shrink-0" />
+          <span className="truncate">Tap anywhere to play “{music.title}”</span>
         </button>
       ) : null}
     </>

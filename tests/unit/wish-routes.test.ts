@@ -202,6 +202,36 @@ describe("wish API routes", () => {
     expect(response.status).toBe(400);
   });
 
+  it("stores the selected YouTube song on the draft", async () => {
+    const wish = await wishRepo().create({
+      ownerId: "dev_sender",
+      category: "birthday",
+      templateId: "confetti-pop",
+    });
+
+    const music = {
+      provider: "youtube" as const,
+      videoId: "dQw4w9WgXcQ",
+      title: "A song",
+      channel: "An artist",
+      thumbnailUrl: "https://i.ytimg.com/vi/dQw4w9WgXcQ/mqdefault.jpg",
+      sourceUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+      durationSeconds: 213,
+      startAtSeconds: 0,
+    };
+
+    const response = await patchWish(
+      request("PATCH", { music, musicId: null }),
+      params(wish.wishId),
+    );
+
+    expect(response.status).toBe(200);
+    const stored = await wishRepo().getById(wish.wishId);
+    expect(stored?.music?.videoId).toBe("dQw4w9WgXcQ");
+    expect(stored?.music?.title).toBe("A song");
+    expect(stored?.musicId).toBeNull();
+  });
+
   it("deletes media removed from the draft", async () => {
     const wish = await wishRepo().create({
       ownerId: "dev_sender",
