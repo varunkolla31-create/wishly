@@ -54,7 +54,7 @@ export function POST(
     const wish = await wishRepo().getById(id);
 
     if (!wish || !isPublished(wish)) {
-      await verifyPassword(null, input.password);
+      await verifyPassword(null, input.password ?? "");
       throw new HttpError(404, "not_found", "This wish isn't available.");
     }
 
@@ -62,14 +62,25 @@ export function POST(
       throw new HttpError(403, "not_yet", "This wish opens later.");
     }
 
-    const valid = await verifyPassword(wish.passwordHash, input.password);
+    const mode = wish.gateMode ?? "password";
+    const passwordOk =
+      mode === "password" || mode === "both"
+        ? await verifyPassword(wish.passwordHash, input.password ?? "")
+        : true;
+    const answerOk =
+      mode === "quiz" || mode === "both"
+        ? wish.quizAnswerIndex !== null &&
+          input.answerIndex === wish.quizAnswerIndex
+        : true;
 
-    if (!valid) {
+    if (!passwordOk || !answerOk) {
       recordFailure(rateKey);
       throw new HttpError(
         401,
-        "invalid_password",
-        "That password didn't match.",
+        mode === "quiz" ? "invalid_answer" : "invalid_password",
+        mode === "quiz"
+          ? "That answer didn't match."
+          : "That password didn't match.",
       );
     }
 

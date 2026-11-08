@@ -42,9 +42,14 @@ describe("public wish projection", () => {
     const meta = toPublicWishMeta(updated);
     expect(Object.keys(meta).sort()).toEqual([
       "category",
+      "gateMode",
+      "hasPassword",
       "hint",
       "id",
       "lockState",
+      "quizOptions",
+      "quizQuestion",
+      "quizWrongToast",
       "receiverName",
       "templateId",
       "tone",

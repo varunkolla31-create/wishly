@@ -4,7 +4,7 @@ import { mediaKindFromKey } from "@/lib/media/validate";
 import type { MediaItem } from "@/lib/media/types";
 import type { MusicBinding } from "@/lib/music/types";
 import { contributionRepo, mediaStore } from "@/lib/repos/index";
-import type { ContributionType, Wish } from "@/lib/repos/types";
+import type { ContributionType, Wish, WishGateMode } from "@/lib/repos/types";
 
 export type LockState = "locked" | "counting_down";
 
@@ -17,6 +17,11 @@ export interface PublicWishMeta {
   tone: "fun" | "calm";
   lockState: LockState;
   unlockAt: string | null;
+  gateMode: WishGateMode;
+  hasPassword: boolean;
+  quizQuestion: string | null;
+  quizOptions: string[] | null;
+  quizWrongToast: string | null;
 }
 
 export interface PublicContribution {
@@ -33,6 +38,10 @@ export interface PublicWishContent {
   title: string;
   message: string;
   bonusNote: string | null;
+  milestoneDate: string | null;
+  milestoneLabel: string | null;
+  secretScratchMessage: string | null;
+  giftVoucherCode: string | null;
   reelTemplateId: string | null;
   templateId: string;
   category: string;
@@ -66,6 +75,11 @@ export function toPublicWishMeta(
     tone: getOccasion(wish.category)?.tone ?? "fun",
     lockState: isUnlockTimeReached(wish, now) ? "locked" : "counting_down",
     unlockAt: wish.unlockAt,
+    gateMode: wish.gateMode ?? "password",
+    hasPassword: wish.passwordHash !== null,
+    quizQuestion: wish.quizQuestion,
+    quizOptions: wish.quizOptions,
+    quizWrongToast: wish.quizWrongToast,
   };
 }
 
@@ -108,6 +122,10 @@ export async function buildWishContent(
     title: wish.title,
     message: wish.message,
     bonusNote: wish.bonusNote,
+    milestoneDate: wish.milestoneDate,
+    milestoneLabel: wish.milestoneLabel,
+    secretScratchMessage: wish.secretScratchMessage,
+    giftVoucherCode: wish.giftVoucherCode,
     reelTemplateId: wish.reelTemplateId,
     templateId: wish.templateId,
     category: wish.category,

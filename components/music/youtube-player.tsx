@@ -1,6 +1,12 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import {
+  forwardRef,
+  useEffect,
+  useImperativeHandle,
+  useRef,
+  useState,
+} from "react";
 import { MUSIC_DUCK_EVENT } from "@/lib/media/duck";
 import {
   loadYouTubeIframeApi,
@@ -8,26 +14,56 @@ import {
 } from "@/lib/music/youtube-iframe";
 import { cn } from "@/lib/utils/cn";
 
-export function YouTubePlayer({
-  videoId,
-  title,
-  startAtSeconds = 0,
-  playToken = 0,
-  autoplay = false,
-  className,
-  onError,
-}: {
-  videoId: string;
-  title?: string;
-  startAtSeconds?: number;
-  playToken?: number;
-  autoplay?: boolean;
-  className?: string;
-  onError?: (code: number) => void;
-}) {
+export interface YouTubePlayerHandle {
+  play(): void;
+  pause(): void;
+}
+
+export const YouTubePlayer = forwardRef<
+  YouTubePlayerHandle,
+  {
+    videoId: string;
+    title?: string;
+    startAtSeconds?: number;
+    playToken?: number;
+    autoplay?: boolean;
+    loop?: boolean;
+    controls?: boolean;
+    className?: string;
+    onError?: (code: number) => void;
+    onStateChange?: (state: number) => void;
+  }
+>(function YouTubePlayer(
+  {
+    videoId,
+    title,
+    startAtSeconds = 0,
+    playToken = 0,
+    autoplay = false,
+    loop = false,
+    controls = true,
+    className,
+    onError,
+    onStateChange,
+  },
+  ref,
+) {
   const containerRef = useRef<HTMLDivElement>(null);
   const playerRef = useRef<YTPlayerLike | null>(null);
+  const stateRef = useRef(onStateChange);
+  const errorRef = useRef(onError);
   const [ready, setReady] = useState(false);
+  stateRef.current = onStateChange;
+  errorRef.current = onError;
+
+  useImperativeHandle(
+    ref,
+    () => ({
+      play: () => playerRef.current?.playVideo(),
+      pause: () => playerRef.current?.pauseVideo(),
+    }),
+    [],
+  );
 
   useEffect(() => {
     let cancelled = false;
@@ -42,10 +78,12 @@ export function YouTubePlayer({
           height: "100%",
           playerVars: {
             playsinline: 1,
-            controls: 1,
+            controls: controls ? 1 : 0,
             rel: 0,
             modestbranding: 1,
             autoplay: autoplay ? 1 : 0,
+            loop: loop ? 1 : 0,
+            ...(loop ? { playlist: videoId } : {}),
             origin: window.location.origin,
           },
           events: {
@@ -53,13 +91,18 @@ export function YouTubePlayer({
               setReady(true);
               if (autoplay) event.target.playVideo();
             },
+            onStateChange: (event) => {
+              if (typeof event.data === "number") {
+                stateRef.current?.(event.data);
+              }
+            },
             onError: (event) => {
-              if (typeof event.data === "number") onError?.(event.data);
+              if (typeof event.data === "number") errorRef.current?.(event.data);
             },
           },
         });
       })
-      .catch(() => onError?.(-1));
+      .catch(() => errorRef.current?.(-1));
 
     return () => {
       cancelled = true;
@@ -99,4 +142,4 @@ export function YouTubePlayer({
       <div ref={containerRef} className="size-full" />
     </div>
   );
-}
+});

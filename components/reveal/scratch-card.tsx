@@ -1,16 +1,23 @@
 "use client";
 
 import { Sparkles } from "lucide-react";
-import { useEffect, useRef, useState, type PointerEvent } from "react";
+import {
+  useEffect,
+  useRef,
+  useState,
+  type TouchEvent,
+} from "react";
 import type { TemplatePalette } from "@/lib/catalog/types";
 
-const REVEAL_THRESHOLD = 0.42;
+const REVEAL_THRESHOLD = 0.45;
 
 export function ScratchCard({
   message,
+  voucherCode,
   palette,
 }: {
   message: string;
+  voucherCode?: string | null;
   palette: TemplatePalette;
 }) {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -92,20 +99,33 @@ export function ScratchCard({
     };
   }, [revealed]);
 
-  function point(event: PointerEvent<HTMLCanvasElement>) {
-    const rect = event.currentTarget.getBoundingClientRect();
-    return { x: event.clientX - rect.left, y: event.clientY - rect.top };
+  function reveal() {
+    if (revealed) return;
+    setRevealed(true);
+    void import("canvas-confetti")
+      .then(({ default: confetti }) =>
+        confetti({
+          particleCount: 55,
+          spread: 78,
+          startVelocity: 28,
+          origin: { x: 0.5, y: 0.62 },
+          colors: ["#D6C283", "#F4E6C2", "#FFFFFF", "#FF385C"],
+          disableForReducedMotion: true,
+        }),
+      )
+      .catch(() => undefined);
   }
 
-  function scratch(event: PointerEvent<HTMLCanvasElement>) {
+  function scratchAt(clientX: number, clientY: number) {
     const canvas = canvasRef.current;
     const context = canvas?.getContext("2d");
     if (!canvas || !context) return;
-    const next = point(event);
+    const rect = canvas.getBoundingClientRect();
+    const next = { x: clientX - rect.left, y: clientY - rect.top };
     const last = lastRef.current ?? next;
 
     context.globalCompositeOperation = "destination-out";
-    context.lineWidth = 36;
+    context.lineWidth = 38;
     context.lineCap = "round";
     context.lineJoin = "round";
     context.beginPath();
@@ -113,7 +133,7 @@ export function ScratchCard({
     context.lineTo(next.x, next.y);
     context.stroke();
     context.beginPath();
-    context.arc(next.x, next.y, 18, 0, Math.PI * 2);
+    context.arc(next.x, next.y, 19, 0, Math.PI * 2);
     context.fill();
     context.globalCompositeOperation = "source-over";
     lastRef.current = next;
@@ -140,7 +160,12 @@ export function ScratchCard({
 
   function finishScratching() {
     if (revealed) return;
-    if (clearedFraction() >= REVEAL_THRESHOLD) setRevealed(true);
+    if (clearedFraction() >= REVEAL_THRESHOLD) reveal();
+  }
+
+  function touchPoint(event: TouchEvent<HTMLCanvasElement>) {
+    const touch = event.touches[0] ?? event.changedTouches[0];
+    return touch ? { clientX: touch.clientX, clientY: touch.clientY } : null;
   }
 
   return (
@@ -162,7 +187,7 @@ export function ScratchCard({
       >
         <div
           ref={containerRef}
-          className="relative flex min-h-[150px] select-none items-center justify-center overflow-hidden rounded-media px-5 py-8 text-center"
+          className="relative flex min-h-[170px] select-none flex-col items-center justify-center overflow-hidden rounded-media px-5 py-8 text-center"
         >
           <p
             className="max-w-md font-serif text-xl italic leading-relaxed sm:text-2xl"
@@ -171,6 +196,18 @@ export function ScratchCard({
           >
             {message}
           </p>
+          {revealed && voucherCode?.trim() ? (
+            <span
+              className="mt-4 inline-flex rounded-full px-4 py-2 font-mono text-sm font-semibold tracking-[0.08em]"
+              style={{
+                backgroundColor: "#D6C283",
+                color: "#2A2114",
+                fontVariantNumeric: "tabular-nums",
+              }}
+            >
+              {voucherCode.trim()}
+            </span>
+          ) : null}
 
           <canvas
             ref={canvasRef}
@@ -179,12 +216,12 @@ export function ScratchCard({
               if (revealed) return;
               event.currentTarget.setPointerCapture(event.pointerId);
               drawingRef.current = true;
-              lastRef.current = point(event);
-              scratch(event);
+              lastRef.current = null;
+              scratchAt(event.clientX, event.clientY);
             }}
             onPointerMove={(event) => {
               if (!drawingRef.current || revealed) return;
-              scratch(event);
+              scratchAt(event.clientX, event.clientY);
             }}
             onPointerUp={() => {
               drawingRef.current = false;
@@ -194,6 +231,24 @@ export function ScratchCard({
             onPointerCancel={() => {
               drawingRef.current = false;
               lastRef.current = null;
+            }}
+            onTouchStart={(event) => {
+              if (revealed) return;
+              drawingRef.current = true;
+              lastRef.current = null;
+              const point = touchPoint(event);
+              if (point) scratchAt(point.clientX, point.clientY);
+            }}
+            onTouchMove={(event) => {
+              if (!drawingRef.current || revealed) return;
+              if (event.cancelable) event.preventDefault();
+              const point = touchPoint(event);
+              if (point) scratchAt(point.clientX, point.clientY);
+            }}
+            onTouchEnd={() => {
+              drawingRef.current = false;
+              lastRef.current = null;
+              finishScratching();
             }}
             className={`absolute inset-0 size-full cursor-grab touch-none rounded-media transition-opacity duration-500 ${
               revealed ? "pointer-events-none opacity-0" : "opacity-100"
@@ -208,7 +263,7 @@ export function ScratchCard({
           {!revealed ? (
             <button
               type="button"
-              onClick={() => setRevealed(true)}
+              onClick={reveal}
               className="min-h-9 shrink-0 rounded-full border px-3 text-xs font-medium"
               style={{
                 borderColor: `${palette.muted}55`,
@@ -221,7 +276,9 @@ export function ScratchCard({
         </div>
 
         <p role="status" aria-live="polite" className="sr-only">
-          {revealed ? `Bonus note revealed: ${message}` : ""}
+          {revealed
+            ? `Secret revealed: ${message}${voucherCode?.trim() ? `. Voucher: ${voucherCode.trim()}` : ""}`
+            : ""}
         </p>
       </div>
     </section>

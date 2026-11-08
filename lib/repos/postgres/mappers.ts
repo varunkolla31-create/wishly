@@ -5,6 +5,7 @@ import type {
   ContributionType,
   Reply,
   Wish,
+  WishGateMode,
   WishMode,
   WishStatus,
 } from "@/lib/repos/types";
@@ -27,6 +28,15 @@ export interface WishRow {
   title: string;
   message: string;
   bonus_note: string | null;
+  milestone_date: Date | string | null;
+  milestone_label: string | null;
+  secret_scratch_message: string | null;
+  gift_voucher_code: string | null;
+  quiz_question: string | null;
+  quiz_options: string[] | null;
+  quiz_answer_index: number | null;
+  quiz_wrong_toast: string | null;
+  gate_mode: string | null;
   reel_template_id: string | null;
   media_keys: string[] | null;
   /** Reserved for the parked music refactor; unused by the current types. */
@@ -55,6 +65,15 @@ export function toWish(row: WishRow): Wish {
     title: row.title,
     message: row.message,
     bonusNote: row.bonus_note,
+    milestoneDate: toIso(row.milestone_date),
+    milestoneLabel: row.milestone_label,
+    secretScratchMessage: row.secret_scratch_message,
+    giftVoucherCode: row.gift_voucher_code,
+    quizQuestion: row.quiz_question,
+    quizOptions: row.quiz_options ?? null,
+    quizAnswerIndex: row.quiz_answer_index,
+    quizWrongToast: row.quiz_wrong_toast,
+    gateMode: (row.gate_mode as WishGateMode | null) ?? "password",
     reelTemplateId: row.reel_template_id,
     music: (row.music as MusicBinding | null) ?? null,
     mediaKeys: row.media_keys ?? [],

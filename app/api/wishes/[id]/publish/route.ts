@@ -28,11 +28,25 @@ export function POST(
         "Add a message before publishing.",
       );
     }
-    if (!wish.passwordHash) {
+    const gateMode = wish.gateMode ?? "password";
+    const quizReady =
+      Boolean(wish.quizQuestion?.trim()) &&
+      Array.isArray(wish.quizOptions) &&
+      wish.quizOptions.length === 3 &&
+      wish.quizAnswerIndex !== null;
+
+    if ((gateMode === "password" || gateMode === "both") && !wish.passwordHash) {
       throw new HttpError(
         400,
         "missing_password",
         "Set a password before publishing.",
+      );
+    }
+    if ((gateMode === "quiz" || gateMode === "both") && !quizReady) {
+      throw new HttpError(
+        400,
+        "missing_quiz",
+        "Finish the memory quiz before publishing.",
       );
     }
 

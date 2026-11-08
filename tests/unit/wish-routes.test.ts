@@ -85,6 +85,15 @@ describe("wish API routes", () => {
       passwordHash: "$argon2id$secret",
       passwordHint: "A sweet",
       mediaKeys: ["wishes/x/photo/a.jpg"],
+      milestoneDate: "2024-02-14T00:00:00.000Z",
+      milestoneLabel: "Every second since we met",
+      secretScratchMessage: "The good year",
+      giftVoucherCode: "COFFEE-DATE",
+      quizQuestion: "Where did we meet?",
+      quizOptions: ["Goa", "Delhi", "Home"],
+      quizAnswerIndex: 0,
+      quizWrongToast: "That was the cat.",
+      gateMode: "both",
       status: "published",
     });
 
@@ -101,6 +110,11 @@ describe("wish API routes", () => {
     expect(payload.data.status).toBe("draft");
     expect(payload.data.passwordHint).toBe("A sweet");
     expect(payload.data.mediaKeys).toEqual([]);
+    expect(payload.data.milestoneLabel).toBe("Every second since we met");
+    expect(payload.data.secretScratchMessage).toBe("The good year");
+    expect(payload.data.giftVoucherCode).toBe("COFFEE-DATE");
+    expect(payload.data.quizAnswerIndex).toBe(0);
+    expect(payload.data.gateMode).toBe("both");
     expect(payload.data).not.toHaveProperty("passwordHash");
   });
 
@@ -218,18 +232,18 @@ describe("wish API routes", () => {
     });
 
     const response = await setPassword(
-      request("POST", { password: "open sesame 42", hint: "A phrase" }),
+      request("POST", { password: "4821", hint: "A phrase" }),
       params(wish.wishId),
     );
 
     expect(response.status).toBe(200);
     const stored = await wishRepo().getById(wish.wishId);
     expect(stored?.passwordHash?.startsWith("$argon2id$")).toBe(true);
-    expect(stored?.passwordHash).not.toContain("open sesame");
+    expect(stored?.passwordHash).not.toContain("4821");
     expect(stored?.passwordHint).toBe("A phrase");
     expect(stored?.passwordVersion).toBe(2);
     await expect(
-      verifyPassword(stored?.passwordHash ?? null, "open sesame 42"),
+      verifyPassword(stored?.passwordHash ?? null, "4821"),
     ).resolves.toBe(true);
   });
 

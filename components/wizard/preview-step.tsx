@@ -38,10 +38,16 @@ export function PreviewStep({
             receiverName: values.receiverName,
             title: values.title,
             message: values.message,
-            bonusNote: values.bonusNote,
+            milestoneDate: values.milestoneDate
+              ? new Date(values.milestoneDate).toISOString()
+              : null,
+            milestoneLabel: values.milestoneLabel,
+            secretScratchMessage: values.secretScratchMessage,
+            giftVoucherCode: values.giftVoucherCode,
             template,
             music,
             youtubeMusic: values.music,
+            autoPlayMusic: false,
             media: visibleMedia,
           }}
         />

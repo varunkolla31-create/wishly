@@ -124,26 +124,72 @@ export function ContentStep({
             </div>
           </div>
 
+          <div className="mt-5 grid gap-4 sm:grid-cols-2">
+            <div>
+              <label htmlFor="milestoneDate" className={labelClass}>
+                Count up from a special date (optional)
+              </label>
+              <input
+                id="milestoneDate"
+                type="date"
+                {...form.register("milestoneDate")}
+                className={`mt-1 ${inputClass}`}
+              />
+              <p className={hintClass}>
+                The reveal page ticks live: years, days, hours, minutes,
+                seconds.
+              </p>
+            </div>
+            <div>
+              <label htmlFor="milestoneLabel" className={labelClass}>
+                Counter label
+              </label>
+              <input
+                id="milestoneLabel"
+                {...form.register("milestoneLabel")}
+                maxLength={60}
+                placeholder="Time since you brightened the world"
+                className={`mt-1 ${inputClass}`}
+              />
+            </div>
+          </div>
+
           <div className="mt-5">
-            <label htmlFor="bonusNote" className={labelClass}>
-              Secret bonus note or gift code (optional)
+            <label htmlFor="secretScratchMessage" className={labelClass}>
+              Secret scratch card message (optional)
             </label>
             <textarea
-              id="bonusNote"
-              {...form.register("bonusNote")}
+              id="secretScratchMessage"
+              {...form.register("secretScratchMessage")}
               rows={3}
               maxLength={300}
-              placeholder="A hidden message or a gift code they scratch to reveal."
+              placeholder="A hidden message they scratch off with a finger."
               className="mt-1 w-full rounded-card border border-hairline bg-canvas px-4 py-3 text-sm leading-relaxed text-ink placeholder:text-ink-muted/70"
             />
             <div className="mt-1 flex items-center justify-between gap-3">
               <p className={hintClass}>
-                Hidden behind gold foil on the reveal page.
+                Hidden behind shimmering gold foil on the reveal page.
               </p>
               <span className="text-xs text-ink-muted">
-                {values.bonusNote.length}/300
+                {values.secretScratchMessage.length}/300
               </span>
             </div>
+            <label
+              htmlFor="giftVoucherCode"
+              className={`${labelClass} mt-4`}
+            >
+              Gift voucher code (optional)
+            </label>
+            <input
+              id="giftVoucherCode"
+              {...form.register("giftVoucherCode")}
+              maxLength={80}
+              placeholder="AMAZON-XXXX or COFFEE-DATE"
+              className={`mt-1 ${inputClass}`}
+            />
+            <p className={hintClass}>
+              Revealed in a gold pill after the scratch card is cleared.
+            </p>
           </div>
 
           <div className="mt-5">

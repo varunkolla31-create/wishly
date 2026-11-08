@@ -15,6 +15,19 @@ export const draftPatchSchema = z.object({
   title: z.string().trim().max(120).optional(),
   message: z.string().max(4000).optional(),
   bonusNote: z.string().trim().max(300).nullable().optional(),
+  milestoneDate: isoDate.nullable().optional(),
+  milestoneLabel: z.string().trim().max(60).nullable().optional(),
+  secretScratchMessage: z.string().trim().max(300).nullable().optional(),
+  giftVoucherCode: z.string().trim().max(80).nullable().optional(),
+  quizQuestion: z.string().trim().max(140).nullable().optional(),
+  quizOptions: z
+    .array(z.string().trim().min(1).max(60))
+    .length(3)
+    .nullable()
+    .optional(),
+  quizAnswerIndex: z.number().int().min(0).max(2).nullable().optional(),
+  quizWrongToast: z.string().trim().max(120).nullable().optional(),
+  gateMode: z.enum(["password", "quiz", "both"]).optional(),
   reelTemplateId: z.string().max(60).nullable().optional(),
   /** YouTube music binding. Never both this and musicId. */
   music: musicBindingSchema.nullable().optional(),
@@ -35,7 +48,6 @@ export type DraftPatch = z.infer<typeof draftPatchSchema>;
 export const setPasswordSchema = z.object({
   password: z
     .string()
-    .min(6, "Use at least 6 characters.")
-    .max(128, "Keep it under 128 characters."),
+    .regex(/^\d{4,6}$/, "Use 4 to 6 digits."),
   hint: z.string().trim().max(80).optional(),
 });

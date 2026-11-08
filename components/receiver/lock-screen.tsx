@@ -33,6 +33,7 @@ export function LockScreen({ wish }: { wish: PublicWishMeta }) {
   const target = wish.unlockAt ? Date.parse(wish.unlockAt) : null;
   const [now, setNow] = useState<number | null>(null);
   const [password, setPassword] = useState("");
+  const [answerIndex, setAnswerIndex] = useState<number | null>(null);
   const [visible, setVisible] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -67,6 +68,15 @@ export function LockScreen({ wish }: { wish: PublicWishMeta }) {
     target !== null && now !== null ? Math.max(0, target - now) : 0;
   const waiting = remaining > 0;
   const progress = Math.min(password.length / 12, 1);
+  const needsPassword = wish.gateMode !== "quiz";
+  const needsAnswer =
+    wish.gateMode !== "password" && Boolean(wish.quizOptions?.length);
+  const ready =
+    (!needsPassword || password.length > 0) &&
+    (!needsAnswer || answerIndex !== null) &&
+    !waiting &&
+    !submitting &&
+    cooldown === 0;
 
   function shake() {
     if (reduceMotion) return;
@@ -78,7 +88,7 @@ export function LockScreen({ wish }: { wish: PublicWishMeta }) {
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (!password || waiting || submitting || cooldown > 0) return;
+    if (!ready) return;
 
     setSubmitting(true);
     setError(null);
@@ -87,7 +97,10 @@ export function LockScreen({ wish }: { wish: PublicWishMeta }) {
       const response = await fetch(`/api/w/${wish.id}/unlock`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ password }),
+        body: JSON.stringify({
+          ...(needsPassword ? { password } : {}),
+          ...(needsAnswer ? { answerIndex } : {}),
+        }),
       });
 
       if (response.ok) {
@@ -110,7 +123,7 @@ export function LockScreen({ wish }: { wish: PublicWishMeta }) {
       }
 
       setAttempts((value) => value + 1);
-      setError(t("lock.error.mismatch"));
+      setError(wish.quizWrongToast?.trim() || t("lock.error.mismatch"));
       shake();
     } catch {
       setError(t("lock.error.generic"));
@@ -193,7 +206,7 @@ export function LockScreen({ wish }: { wish: PublicWishMeta }) {
           {t("lock.heading")}
         </h1>
 
-        {wish.hint ? (
+        {needsPassword && wish.hint ? (
           <p className="mt-3 text-sm text-ink-muted">
             {t("lock.hint")}: {wish.hint}
           </p>
@@ -204,35 +217,71 @@ export function LockScreen({ wish }: { wish: PublicWishMeta }) {
           onSubmit={submit}
           className="mt-8 space-y-3 text-left"
         >
-          <label htmlFor="wish-password" className="sr-only">
-            Password
-          </label>
-          <div className="relative">
-            <input
-              id="wish-password"
-              type={visible ? "text" : "password"}
-              value={password}
-              onChange={(event) => setPassword(event.target.value)}
-              autoComplete="off"
-              maxLength={128}
-              aria-invalid={Boolean(error)}
-              aria-describedby={error ? "unlock-error" : undefined}
-              placeholder={t("lock.placeholder")}
-              className="min-h-14 w-full rounded-full border border-hairline bg-surface px-5 pr-14 text-base text-ink placeholder:text-ink-muted/70"
-            />
-            <button
-              type="button"
-              onClick={() => setVisible((value) => !value)}
-              aria-label={visible ? "Hide password" : "Show password"}
-              className="absolute right-1 top-1 flex size-12 items-center justify-center rounded-full text-ink-muted transition-colors hover:bg-hover hover:text-ink"
-            >
-              {visible ? (
-                <EyeOff aria-hidden="true" className="size-4" />
-              ) : (
-                <Eye aria-hidden="true" className="size-4" />
-              )}
-            </button>
-          </div>
+          {needsAnswer ? (
+            <div className="space-y-3">
+              <p className="text-sm font-medium text-ink">
+                {wish.quizQuestion}
+              </p>
+              <div className="grid gap-2">
+                {wish.quizOptions?.map((option, index) => {
+                  const selected = answerIndex === index;
+                  return (
+                    <button
+                      key={`${option}-${index}`}
+                      type="button"
+                      onClick={() => setAnswerIndex(index)}
+                      aria-pressed={selected}
+                      className={`min-h-12 rounded-full border px-4 text-sm transition-colors ${
+                        selected
+                          ? "border-ink bg-ink text-canvas"
+                          : "border-hairline bg-surface text-ink hover:bg-hover"
+                      }`}
+                    >
+                      {option}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          ) : null}
+
+          {needsPassword ? (
+            <>
+              <label htmlFor="wish-password" className="sr-only">
+                Password
+              </label>
+              <div className="relative">
+                <input
+                  id="wish-password"
+                  type={visible ? "text" : "password"}
+                  value={password}
+                  onChange={(event) =>
+                    setPassword(event.target.value.replace(/\D/g, "").slice(0, 6))
+                  }
+                  inputMode="numeric"
+                  pattern="[0-9]*"
+                  autoComplete="off"
+                  maxLength={6}
+                  aria-invalid={Boolean(error)}
+                  aria-describedby={error ? "unlock-error" : undefined}
+                  placeholder={t("lock.placeholder")}
+                  className="min-h-14 w-full rounded-full border border-hairline bg-surface px-5 pr-14 text-base text-ink placeholder:text-ink-muted/70"
+                />
+                <button
+                  type="button"
+                  onClick={() => setVisible((value) => !value)}
+                  aria-label={visible ? "Hide password" : "Show password"}
+                  className="absolute right-1 top-1 flex size-12 items-center justify-center rounded-full text-ink-muted transition-colors hover:bg-hover hover:text-ink"
+                >
+                  {visible ? (
+                    <EyeOff aria-hidden="true" className="size-4" />
+                  ) : (
+                    <Eye aria-hidden="true" className="size-4" />
+                  )}
+                </button>
+              </div>
+            </>
+          ) : null}
 
           {error ? (
             <p id="unlock-error" role="alert" className="text-sm text-error">
@@ -244,9 +293,7 @@ export function LockScreen({ wish }: { wish: PublicWishMeta }) {
             type="submit"
             size="lg"
             className="w-full"
-            disabled={
-              !password || waiting || submitting || cooldown > 0
-            }
+            disabled={!ready}
           >
             {cooldown > 0
               ? `Try again in ${cooldown}s`

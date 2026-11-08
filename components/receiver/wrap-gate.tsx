@@ -4,6 +4,7 @@ import { motion, useReducedMotion } from "framer-motion";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { ReplyForm } from "@/components/receiver/reply-form";
+import { BirthdayCandle } from "@/components/reveal/birthday-candle";
 import { RevealExperience } from "@/components/reveal/reveal-experience";
 import { DownloadReelButton } from "@/src/components/three-memory/download-reel-button";
 import { MemoryPreview } from "@/src/components/three-memory/memory-preview";
@@ -67,9 +68,14 @@ export function WrapGate({ content }: { content: PublicWishContent }) {
             title: content.title,
             message: content.message,
             bonusNote: content.bonusNote,
+            milestoneDate: content.milestoneDate,
+            milestoneLabel: content.milestoneLabel,
+            secretScratchMessage: content.secretScratchMessage,
+            giftVoucherCode: content.giftVoucherCode,
             template,
             music,
             youtubeMusic: content.music,
+            autoPlayMusic: true,
             media: content.media,
             contributions: content.contributions,
           }}
@@ -153,9 +159,22 @@ export function WrapGate({ content }: { content: PublicWishContent }) {
           {t("reveal.subheading")}
         </p>
 
-        <Button size="lg" className="mt-8" onClick={() => setUnwrapped(true)}>
-          {t("reveal.action")}
-        </Button>
+        {content.category === "birthday" ? (
+          <div className="mt-8">
+            <BirthdayCandle onBlown={() => setUnwrapped(true)} />
+            <button
+              type="button"
+              onClick={() => setUnwrapped(true)}
+              className="mx-auto mt-2 block text-xs text-ink-muted underline underline-offset-4 hover:text-ink"
+            >
+              Skip the candle
+            </button>
+          </div>
+        ) : (
+          <Button size="lg" className="mt-8" onClick={() => setUnwrapped(true)}>
+            {t("reveal.action")}
+          </Button>
+        )}
 
         <p className="mt-12 text-xs text-ink-muted">{t("common.madeWith")}</p>
       </div>

@@ -15,6 +15,7 @@ import { TemplateStep } from "@/components/wizard/template-step";
 import { WizardStepper } from "@/components/wizard/stepper";
 import {
   fromLocalDateTimeInput,
+  toLocalDateInput,
   toLocalDateTimeInput,
   WIZARD_STEPS,
   type DraftValues,
@@ -35,7 +36,17 @@ function initialValues(wish: SenderWish): DraftValues {
     receiverName: wish.receiverName,
     title: wish.title,
     message: wish.message,
-    bonusNote: wish.bonusNote ?? "",
+    milestoneDate: toLocalDateInput(wish.milestoneDate),
+    milestoneLabel: wish.milestoneLabel ?? "",
+    secretScratchMessage: wish.secretScratchMessage ?? wish.bonusNote ?? "",
+    giftVoucherCode: wish.giftVoucherCode ?? "",
+    quizQuestion: wish.quizQuestion ?? "",
+    quizOption0: wish.quizOptions?.[0] ?? "",
+    quizOption1: wish.quizOptions?.[1] ?? "",
+    quizOption2: wish.quizOptions?.[2] ?? "",
+    quizAnswerIndex: wish.quizAnswerIndex ?? 0,
+    quizWrongToast: wish.quizWrongToast ?? "",
+    gateMode: wish.gateMode ?? "password",
     reelTemplateId: wish.reelTemplateId ?? defaultMemoryTemplateId(wish.category),
     mediaKeys: wish.mediaKeys,
     musicId: wish.musicId,
@@ -46,6 +57,14 @@ function initialValues(wish: SenderWish): DraftValues {
 
 function toPatch(values: DraftValues) {
   const music = values.music ?? null;
+  const quizOptions = [
+    values.quizOption0,
+    values.quizOption1,
+    values.quizOption2,
+  ].map((option) => option.trim());
+  const quizReady =
+    Boolean(values.quizQuestion.trim()) && quizOptions.every(Boolean);
+
   return {
     category: values.category,
     templateId: values.templateId,
@@ -53,7 +72,23 @@ function toPatch(values: DraftValues) {
     receiverName: values.receiverName,
     title: values.title,
     message: values.message,
-    bonusNote: values.bonusNote.trim() ? values.bonusNote.trim() : null,
+    milestoneDate: fromLocalDateTimeInput(values.milestoneDate),
+    milestoneLabel: values.milestoneLabel.trim()
+      ? values.milestoneLabel.trim()
+      : null,
+    secretScratchMessage: values.secretScratchMessage.trim()
+      ? values.secretScratchMessage.trim()
+      : null,
+    giftVoucherCode: values.giftVoucherCode.trim()
+      ? values.giftVoucherCode.trim()
+      : null,
+    quizQuestion: quizReady ? values.quizQuestion.trim() : null,
+    quizOptions: quizReady ? quizOptions : null,
+    quizAnswerIndex: quizReady ? values.quizAnswerIndex : null,
+    quizWrongToast: values.quizWrongToast.trim()
+      ? values.quizWrongToast.trim()
+      : null,
+    gateMode: values.gateMode,
     reelTemplateId: values.reelTemplateId || null,
     mediaKeys: values.mediaKeys,
     musicId: music ? null : values.musicId,
@@ -212,9 +247,21 @@ export function WishWizard({
   }
 
   const occasion = getOccasion(values.category);
+  const quizReady =
+    Boolean(values.quizQuestion.trim()) &&
+    [values.quizOption0, values.quizOption1, values.quizOption2].every(
+      (option) => option.trim().length > 0,
+    ) &&
+    values.quizAnswerIndex >= 0;
+  const gateReady =
+    values.gateMode === "password"
+      ? hasPassword
+      : values.gateMode === "quiz"
+        ? quizReady
+        : hasPassword && quizReady;
   const canPublish =
     values.message.trim().length > 0 &&
-    hasPassword &&
+    gateReady &&
     (values.title.trim().length > 0 || values.receiverName.trim().length > 0);
   const saveLabel =
     saveState === "saving"
@@ -328,6 +375,7 @@ export function WishWizard({
 
         {stepIndex === 4 ? (
           <PasswordStep
+            form={form}
             wishId={wish.wishId}
             hasPassword={hasPassword}
             initialHint={wish.passwordHint}

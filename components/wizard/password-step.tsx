@@ -1,21 +1,43 @@
 "use client";
 
-import { Eye, EyeOff, Wand2 } from "lucide-react";
+import { Eye, EyeOff, RefreshCw } from "lucide-react";
 import { useState } from "react";
+import type { UseFormReturn } from "react-hook-form";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { StrengthMeter } from "@/components/wizard/strength-meter";
-import { generatePassphrase } from "@/lib/utils/passphrase";
+import type { DraftValues } from "@/components/wizard/types";
+import { cn } from "@/lib/utils/cn";
 
 const inputClass =
   "min-h-12 w-full rounded-full border border-hairline bg-canvas px-4 text-sm text-ink placeholder:text-ink-muted/70";
 
+const GATE_OPTIONS = [
+  {
+    value: "password" as const,
+    label: "Password",
+    hint: "The classic. Send it separately from the link.",
+  },
+  {
+    value: "quiz" as const,
+    label: "Memory quiz",
+    hint: "One question only they can answer. No password to share.",
+  },
+  {
+    value: "both" as const,
+    label: "Both",
+    hint: "Password plus the quiz. The most locked-down option.",
+  },
+];
+
 export function PasswordStep({
+  form,
   wishId,
   hasPassword,
   initialHint,
   onSaved,
 }: {
+  form: UseFormReturn<DraftValues>;
   wishId: string;
   hasPassword: boolean;
   initialHint: string | null;
@@ -29,11 +51,14 @@ export function PasswordStep({
   const [error, setError] = useState<string | null>(null);
   const [saved, setSaved] = useState(false);
 
+  const gateMode = form.watch("gateMode");
+  const quizAnswerIndex = form.watch("quizAnswerIndex");
+
   async function save() {
     setError(null);
 
-    if (password.length < 6) {
-      setError("Use at least 6 characters.");
+    if (!/^\d{4,6}$/.test(password)) {
+      setError("Use 4 to 6 digits.");
       return;
     }
     if (password !== confirm) {
@@ -71,9 +96,9 @@ export function PasswordStep({
   }
 
   function generate() {
-    const passphrase = generatePassphrase();
-    setPassword(passphrase);
-    setConfirm(passphrase);
+    const pin = String(Math.floor(100000 + Math.random() * 900000));
+    setPassword(pin);
+    setConfirm(pin);
     setVisible(true);
     setError(null);
   }
@@ -81,115 +106,243 @@ export function PasswordStep({
   return (
     <div className="max-w-xl">
       <h2 className="font-serif text-3xl italic leading-tight text-ink">
-        Lock it with a password.
+        Lock it. Make it theirs.
       </h2>
       <p className="mt-2 text-sm leading-relaxed text-ink-muted">
-        You&apos;ll send this to them separately from the link. We only store a
-        one-way hash — nobody at Wishly can read it back.
+        Choose how they open it. A password is sent separately from the link; a
+        memory quiz asks one question only they can answer.
       </p>
 
-      <div className="mt-6 space-y-5 rounded-card border border-hairline bg-surface p-5">
-        {hasPassword ? (
-          <p className="flex items-center gap-2 rounded-full bg-sand px-4 py-2 text-xs text-ink">
-            <span
-              aria-hidden="true"
-              className="size-1.5 rounded-full bg-success"
-            />
-            A password is set. Type a new one to replace it.
-          </p>
+      <div className="mt-6 space-y-5">
+        <div className="grid gap-2 sm:grid-cols-3">
+          {GATE_OPTIONS.map((option) => {
+            const active = gateMode === option.value;
+            return (
+              <button
+                key={option.value}
+                type="button"
+                onClick={() =>
+                  form.setValue("gateMode", option.value, {
+                    shouldDirty: true,
+                  })
+                }
+                aria-pressed={active}
+                className={cn(
+                  "rounded-card border px-4 py-3 text-left transition-colors",
+                  active
+                    ? "border-ink bg-canvas"
+                    : "border-hairline bg-surface hover:bg-hover",
+                )}
+              >
+                <span className="block text-sm font-medium text-ink">
+                  {option.label}
+                </span>
+                <span className="mt-1 block text-[11px] leading-snug text-ink-muted">
+                  {option.hint}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+
+        {gateMode !== "quiz" ? (
+          <div className="space-y-5 rounded-card border border-hairline bg-surface p-5">
+            {hasPassword ? (
+              <p className="flex items-center gap-2 rounded-full bg-sand px-4 py-2 text-xs text-ink">
+                <span
+                  aria-hidden="true"
+                  className="size-1.5 rounded-full bg-success"
+                />
+                A password is set. Type a new one to replace it.
+              </p>
+            ) : null}
+
+            <div>
+              <label
+                htmlFor="password"
+                className="block text-xs font-medium text-ink-muted"
+              >
+                Password
+              </label>
+              <div className="relative mt-1">
+                <input
+                  id="password"
+                  type={visible ? "text" : "password"}
+                  value={password}
+                  onChange={(event) => {
+                    setPassword(event.target.value.replace(/\D/g, "").slice(0, 6));
+                    setSaved(false);
+                  }}
+                  inputMode="numeric"
+                  pattern="[0-9]*"
+                  autoComplete="new-password"
+                  maxLength={6}
+                  className={`${inputClass} pr-14`}
+                />
+                <button
+                  type="button"
+                  onClick={() => setVisible((value) => !value)}
+                  aria-label={visible ? "Hide password" : "Show password"}
+                  className="absolute right-1 top-1 flex size-10 items-center justify-center rounded-full text-ink-muted hover:bg-hover hover:text-ink"
+                >
+                  {visible ? (
+                    <EyeOff aria-hidden="true" className="size-4" />
+                  ) : (
+                    <Eye aria-hidden="true" className="size-4" />
+                  )}
+                </button>
+              </div>
+              <div className="mt-2">
+                <StrengthMeter password={password} />
+              </div>
+              <button
+                type="button"
+                onClick={generate}
+                className="mt-2 inline-flex min-h-10 items-center gap-1.5 text-xs font-medium text-coral-strong hover:text-coral-hover"
+              >
+                <RefreshCw aria-hidden="true" className="size-3.5" />
+                Suggest a 6-digit PIN
+              </button>
+            </div>
+
+            <div>
+              <label
+                htmlFor="confirm"
+                className="block text-xs font-medium text-ink-muted"
+              >
+                Once more
+              </label>
+              <input
+                id="confirm"
+                type={visible ? "text" : "password"}
+                value={confirm}
+                onChange={(event) =>
+                  setConfirm(event.target.value.replace(/\D/g, "").slice(0, 6))
+                }
+                inputMode="numeric"
+                pattern="[0-9]*"
+                autoComplete="new-password"
+                maxLength={6}
+                className={`mt-1 ${inputClass}`}
+              />
+            </div>
+
+            <div>
+              <label
+                htmlFor="hint"
+                className="block text-xs font-medium text-ink-muted"
+              >
+                Hint (optional, shown before unlock)
+              </label>
+              <input
+                id="hint"
+                value={hint}
+                onChange={(event) => setHint(event.target.value)}
+                maxLength={80}
+                placeholder="Your favourite sweet"
+                className={`mt-1 ${inputClass}`}
+              />
+              <p className="mt-1 text-xs text-ink-muted">
+                A nudge, not the answer. This is visible to anyone with the
+                link.
+              </p>
+            </div>
+
+            {error ? (
+              <p role="alert" className="text-sm text-error">
+                {error}
+              </p>
+            ) : null}
+
+            <div className="flex flex-wrap items-center gap-3">
+              <Button type="button" onClick={save} disabled={saving}>
+                {saving
+                  ? "Saving…"
+                  : hasPassword
+                    ? "Replace password"
+                    : "Save password"}
+              </Button>
+              {saved ? (
+                <span className="text-xs text-ink-muted" role="status">
+                  Saved. Keep it somewhere safe.
+                </span>
+              ) : null}
+            </div>
+          </div>
         ) : null}
 
-        <div>
-          <label htmlFor="password" className="block text-xs font-medium text-ink-muted">
-            Password
-          </label>
-          <div className="relative mt-1">
-            <input
-              id="password"
-              type={visible ? "text" : "password"}
-              value={password}
-              onChange={(event) => {
-                setPassword(event.target.value);
-                setSaved(false);
-              }}
-              autoComplete="new-password"
-              maxLength={128}
-              className={`${inputClass} pr-14`}
-            />
-            <button
-              type="button"
-              onClick={() => setVisible((value) => !value)}
-              aria-label={visible ? "Hide password" : "Show password"}
-              className="absolute right-1 top-1 flex size-10 items-center justify-center rounded-full text-ink-muted hover:bg-hover hover:text-ink"
-            >
-              {visible ? (
-                <EyeOff aria-hidden="true" className="size-4" />
-              ) : (
-                <Eye aria-hidden="true" className="size-4" />
+        {gateMode !== "password" ? (
+          <div className="space-y-4 rounded-card border border-hairline bg-surface p-5">
+            <div>
+              <label
+                htmlFor="quizQuestion"
+                className="block text-xs font-medium text-ink-muted"
+              >
+                Memory question
+              </label>
+              <input
+                id="quizQuestion"
+                {...form.register("quizQuestion")}
+                maxLength={140}
+                placeholder="Where did we first meet?"
+                className={`mt-1 ${inputClass}`}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <span className="block text-xs font-medium text-ink-muted">
+                Three answer pills
+              </span>
+              {(["quizOption0", "quizOption1", "quizOption2"] as const).map(
+                (field, index) => (
+                  <label
+                    key={field}
+                    className="flex items-center gap-3 rounded-full border border-hairline bg-canvas px-4 py-2"
+                  >
+                    <input
+                      type="radio"
+                      name="quizAnswerIndex"
+                      checked={quizAnswerIndex === index}
+                      onChange={() =>
+                        form.setValue("quizAnswerIndex", index, {
+                          shouldDirty: true,
+                        })
+                      }
+                      aria-label={`Correct answer is option ${index + 1}`}
+                    />
+                    <input
+                      {...form.register(field)}
+                      maxLength={60}
+                      placeholder={`Answer ${index + 1}`}
+                      className="min-w-0 flex-1 bg-transparent text-sm text-ink placeholder:text-ink-muted/70 focus:outline-none"
+                    />
+                    {quizAnswerIndex === index ? (
+                      <span className="text-[10px] font-semibold uppercase tracking-[0.12em] text-coral-strong">
+                        Correct
+                      </span>
+                    ) : null}
+                  </label>
+                ),
               )}
-            </button>
+            </div>
+
+            <div>
+              <label
+                htmlFor="quizWrongToast"
+                className="block text-xs font-medium text-ink-muted"
+              >
+                Funny wrong-answer message
+              </label>
+              <input
+                id="quizWrongToast"
+                {...form.register("quizWrongToast")}
+                maxLength={120}
+                placeholder="Close! But that was the cat's name."
+                className={`mt-1 ${inputClass}`}
+              />
+            </div>
           </div>
-          <div className="mt-2">
-            <StrengthMeter password={password} />
-          </div>
-          <button
-            type="button"
-            onClick={generate}
-            className="mt-2 inline-flex min-h-10 items-center gap-1.5 text-xs font-medium text-coral-strong hover:text-coral-hover"
-          >
-            <Wand2 aria-hidden="true" className="size-3.5" />
-            Suggest a strong one
-          </button>
-        </div>
-
-        <div>
-          <label htmlFor="confirm" className="block text-xs font-medium text-ink-muted">
-            Once more
-          </label>
-          <input
-            id="confirm"
-            type={visible ? "text" : "password"}
-            value={confirm}
-            onChange={(event) => setConfirm(event.target.value)}
-            autoComplete="new-password"
-            maxLength={128}
-            className={`mt-1 ${inputClass}`}
-          />
-        </div>
-
-        <div>
-          <label htmlFor="hint" className="block text-xs font-medium text-ink-muted">
-            Hint (optional, shown before unlock)
-          </label>
-          <input
-            id="hint"
-            value={hint}
-            onChange={(event) => setHint(event.target.value)}
-            maxLength={80}
-            placeholder="Your favourite sweet"
-            className={`mt-1 ${inputClass}`}
-          />
-          <p className="mt-1 text-xs text-ink-muted">
-            A nudge, not the answer. This is visible to anyone with the link.
-          </p>
-        </div>
-
-        {error ? (
-          <p role="alert" className="text-sm text-error">
-            {error}
-          </p>
         ) : null}
-
-        <div className="flex flex-wrap items-center gap-3">
-          <Button type="button" onClick={save} disabled={saving}>
-            {saving ? "Saving…" : hasPassword ? "Replace password" : "Save password"}
-          </Button>
-          {saved ? (
-            <span className="text-xs text-ink-muted" role="status">
-              Saved. Keep it somewhere safe.
-            </span>
-          ) : null}
-        </div>
       </div>
     </div>
   );

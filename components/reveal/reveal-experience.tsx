@@ -1,11 +1,12 @@
 "use client";
 
 import { MemoryWall } from "@/components/reveal/memory-wall";
+import { MilestoneCounter } from "@/components/reveal/milestone-counter";
 import { MusicMiniPlayer } from "@/components/reveal/music-mini-player";
 import { RevealGallery } from "@/components/reveal/reveal-gallery";
 import { ScratchCard } from "@/components/reveal/scratch-card";
 import { TypedMessage } from "@/components/reveal/typed-message";
-import { YouTubeMusicCard } from "@/components/reveal/youtube-music-card";
+import { YouTubeBackgroundPlayer } from "@/components/reveal/youtube-background-player";
 import type {
   MusicTrack,
   TemplateDefinition,
@@ -20,9 +21,14 @@ export interface RevealContent {
   title: string;
   message: string;
   bonusNote?: string | null;
+  milestoneDate?: string | null;
+  milestoneLabel?: string | null;
+  secretScratchMessage?: string | null;
+  giftVoucherCode?: string | null;
   template: TemplateDefinition;
   music: MusicTrack | null;
   youtubeMusic?: MusicBinding | null;
+  autoPlayMusic?: boolean;
   media: MediaItem[];
   contributions?: PublicContribution[];
 }
@@ -39,6 +45,8 @@ export function RevealExperience({
   const { template, music, media } = content;
   const { palette } = template;
   const midnight = template.id === "midnight-glow";
+  const scratchMessage =
+    content.secretScratchMessage?.trim() || content.bonusNote?.trim() || null;
 
   const letter = (
     <>
@@ -67,14 +75,18 @@ export function RevealExperience({
         style={{ backgroundColor: palette.accent }}
       />
 
+      {content.milestoneDate ? (
+        <MilestoneCounter
+          date={content.milestoneDate}
+          label={content.milestoneLabel}
+          palette={palette}
+        />
+      ) : null}
+
       <TypedMessage
         text={content.message || "Your message will appear here."}
         className="mt-8"
       />
-
-      {content.youtubeMusic ? (
-        <YouTubeMusicCard music={content.youtubeMusic} palette={palette} />
-      ) : null}
     </>
   );
 
@@ -92,13 +104,17 @@ export function RevealExperience({
       />
 
       {midnight ? (
-        <div className="relative z-10 mx-auto w-full max-w-6xl flex-1 px-5 pb-24 pt-12 sm:px-8 sm:pt-16">
+        <div className="relative z-10 mx-auto w-full max-w-6xl flex-1 px-5 pb-28 pt-12 sm:px-8 sm:pt-16">
           <div className="grid gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.9fr)]">
             <div className="lg:sticky lg:top-10 lg:self-start">{letter}</div>
             <RevealGallery media={media} template={template} />
           </div>
-          {content.bonusNote ? (
-            <ScratchCard message={content.bonusNote} palette={palette} />
+          {scratchMessage ? (
+            <ScratchCard
+              message={scratchMessage}
+              voucherCode={content.giftVoucherCode}
+              palette={palette}
+            />
           ) : null}
           <MemoryWall
             contributions={content.contributions ?? []}
@@ -107,11 +123,15 @@ export function RevealExperience({
           {children}
         </div>
       ) : (
-        <div className="relative z-10 mx-auto w-full max-w-2xl flex-1 px-5 pb-24 pt-12 sm:px-8 sm:pt-16">
+        <div className="relative z-10 mx-auto w-full max-w-2xl flex-1 px-5 pb-28 pt-12 sm:px-8 sm:pt-16">
           {letter}
           <RevealGallery media={media} template={template} />
-          {content.bonusNote ? (
-            <ScratchCard message={content.bonusNote} palette={palette} />
+          {scratchMessage ? (
+            <ScratchCard
+              message={scratchMessage}
+              voucherCode={content.giftVoucherCode}
+              palette={palette}
+            />
           ) : null}
           <MemoryWall
             contributions={content.contributions ?? []}
@@ -121,7 +141,13 @@ export function RevealExperience({
         </div>
       )}
 
-      {!content.youtubeMusic && music ? (
+      {content.youtubeMusic ? (
+        <YouTubeBackgroundPlayer
+          music={content.youtubeMusic}
+          palette={palette}
+          autoPlay={content.autoPlayMusic}
+        />
+      ) : music ? (
         <MusicMiniPlayer track={music} palette={palette} />
       ) : null}
     </div>

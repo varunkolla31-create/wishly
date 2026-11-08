@@ -24,6 +24,18 @@ export function POST(
 
     const updated = await wishRepo().update(copy.wishId, {
       message: wish.message,
+      bonusNote: wish.bonusNote,
+      milestoneDate: wish.milestoneDate,
+      milestoneLabel: wish.milestoneLabel,
+      secretScratchMessage: wish.secretScratchMessage,
+      giftVoucherCode: wish.giftVoucherCode,
+      quizQuestion: wish.quizQuestion,
+      quizOptions: wish.quizOptions,
+      quizAnswerIndex: wish.quizAnswerIndex,
+      quizWrongToast: wish.quizWrongToast,
+      gateMode: wish.gateMode,
+      reelTemplateId: wish.reelTemplateId,
+      music: wish.music,
       musicId: wish.musicId,
       unlockAt: wish.unlockAt,
       passwordHint: wish.passwordHint,

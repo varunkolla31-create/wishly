@@ -13,6 +13,15 @@ const COLUMNS: Record<string, string> = {
   title: "title",
   message: "message",
   bonusNote: "bonus_note",
+  milestoneDate: "milestone_date",
+  milestoneLabel: "milestone_label",
+  secretScratchMessage: "secret_scratch_message",
+  giftVoucherCode: "gift_voucher_code",
+  quizQuestion: "quiz_question",
+  quizOptions: "quiz_options",
+  quizAnswerIndex: "quiz_answer_index",
+  quizWrongToast: "quiz_wrong_toast",
+  gateMode: "gate_mode",
   reelTemplateId: "reel_template_id",
   music: "music",
   mediaKeys: "media_keys",
@@ -26,9 +35,10 @@ const COLUMNS: Record<string, string> = {
   contributorTokenRevokedAt: "contributor_token_revoked_at",
 };
 
-/** media_keys and music are jsonb; pg would otherwise mis-encode them. */
+/** media_keys, music and quiz_options are jsonb; pg would otherwise mis-encode them. */
 function encode(key: string, value: unknown): unknown {
   if (key === "mediaKeys" && Array.isArray(value)) return JSON.stringify(value);
+  if (key === "quizOptions" && Array.isArray(value)) return JSON.stringify(value);
   if (key === "music" && value !== null && typeof value === "object") {
     return JSON.stringify(value);
   }

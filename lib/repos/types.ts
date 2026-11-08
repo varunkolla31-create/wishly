@@ -3,6 +3,7 @@ import type { MusicBinding } from "@/lib/music/types";
 
 export type WishStatus = "draft" | "collecting" | "published" | "locked";
 export type WishMode = "solo" | "group";
+export type WishGateMode = "password" | "quiz" | "both";
 
 export interface Wish {
   wishId: string;
@@ -15,6 +16,18 @@ export interface Wish {
   message: string;
   /** Optional scratch-to-reveal note or gift code. */
   bonusNote: string | null;
+  /** Live "time since" milestone shown on the reveal page. */
+  milestoneDate: string | null;
+  milestoneLabel: string | null;
+  /** Gold-foil scratch card copy and optional voucher code. */
+  secretScratchMessage: string | null;
+  giftVoucherCode: string | null;
+  /** Optional one-question memory quiz gate. */
+  quizQuestion: string | null;
+  quizOptions: string[] | null;
+  quizAnswerIndex: number | null;
+  quizWrongToast: string | null;
+  gateMode: WishGateMode;
   /** Native 3D memory reel template id. */
   reelTemplateId: string | null;
   /** YouTube music binding. Never both this and musicId. */
