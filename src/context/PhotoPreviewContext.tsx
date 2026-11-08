@@ -16,6 +16,7 @@ const MAX_EDGE = 900;
 
 interface PhotoPreviewValue {
   photos: string[];
+  hasUploads: boolean;
   addFiles: (files: FileList | File[]) => Promise<void>;
   clear: () => void;
   consume: () => string[];
@@ -70,10 +71,14 @@ export function PhotoPreviewProvider({
   children: React.ReactNode;
 }) {
   const [photos, setPhotos] = useState<string[]>(() => SAMPLE_PHOTOS.slice(0, 5));
+  const [hasUploads, setHasUploads] = useState(false);
 
   useEffect(() => {
     const stored = readStored();
-    if (stored.length > 0) setPhotos(stored);
+    if (stored.length > 0) {
+      setPhotos(stored);
+      setHasUploads(true);
+    }
   }, []);
 
   const persist = useCallback((next: string[]) => {
@@ -89,20 +94,23 @@ export function PhotoPreviewProvider({
     async (files: FileList | File[]) => {
       const list = Array.from(files).slice(0, MAX_PHOTOS);
       const urls = await Promise.all(list.map((file) => fileToDataUrl(file)));
-      persist(urls.filter((url): url is string => Boolean(url)));
+      const next = urls.filter((url): url is string => Boolean(url));
+      persist(next);
+      setHasUploads(next.length > 0);
     },
     [persist],
   );
 
   const clear = useCallback(() => {
     persist(SAMPLE_PHOTOS.slice(0, 5));
+    setHasUploads(false);
   }, [persist]);
 
   const consume = useCallback(() => readStored(), []);
 
   const value = useMemo(
-    () => ({ photos, addFiles, clear, consume }),
-    [photos, addFiles, clear, consume],
+    () => ({ photos, hasUploads, addFiles, clear, consume }),
+    [photos, hasUploads, addFiles, clear, consume],
   );
 
   return (

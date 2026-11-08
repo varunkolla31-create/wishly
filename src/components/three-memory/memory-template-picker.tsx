@@ -4,25 +4,32 @@ import {
   memoryTemplatesForCategory,
   type MemoryTemplate,
 } from "@/src/components/three-memory/catalog";
-import { MemoryPoster } from "@/src/components/three-memory/memory-poster";
+import { MemoryCardArt } from "@/src/components/three-memory/memory-card-art";
 import { usePhotoPreview } from "@/src/context/PhotoPreviewContext";
 import { cn } from "@/lib/utils/cn";
 
 export function MemoryTemplatePicker({
   category,
   value,
+  photos,
   onChange,
   onConfirm,
 }: {
   category: string;
   value: string;
+  photos?: string[];
   onChange: (template: MemoryTemplate) => void;
   /** Double-click a reel to select it and move on. */
   onConfirm?: (template: MemoryTemplate) => void;
 }) {
   const options = memoryTemplatesForCategory(category);
-  const { photos } = usePhotoPreview();
-  const previewPhotos = photos.length > 0 ? photos : undefined;
+  const { photos: galleryPhotos } = usePhotoPreview();
+  const previewPhotos =
+    photos && photos.length > 0
+      ? photos
+      : galleryPhotos.length > 0
+        ? galleryPhotos
+        : undefined;
 
   return (
     <div>
@@ -30,8 +37,9 @@ export function MemoryTemplatePicker({
         <div>
           <h3 className="text-sm font-medium text-ink">3D memory reel</h3>
           <p className="mt-1 text-xs leading-relaxed text-ink-muted">
-            Made for {category.replaceAll("-", " ")}. Tap to select, or
-            double-click a reel to select it and continue.
+            Made for {category.replaceAll("-", " ")}. Tap a reel to add your
+            photos and videos. On desktop, double-click or press Continue to
+            select it and move on.
           </p>
         </div>
       </div>
@@ -45,11 +53,12 @@ export function MemoryTemplatePicker({
                 type="button"
                 onClick={() => onChange(template)}
                 onDoubleClick={() => {
+                  if (window.matchMedia("(pointer: coarse)").matches) return;
                   onChange(template);
                   onConfirm?.(template);
                 }}
                 aria-pressed={active}
-                title="Double-click to select and continue"
+                title="Select this reel"
                 className={cn(
                   "block w-full rounded-card p-1 text-left transition",
                   active
@@ -57,13 +66,9 @@ export function MemoryTemplatePicker({
                     : "hover:bg-hover focus-visible:bg-hover",
                 )}
               >
-                <MemoryPoster
-                  input={{
-                    templateId: template.id,
-                    photos: previewPhotos ?? template.samplePhotos,
-                    title: template.name,
-                    receiverName: "you",
-                  }}
+                <MemoryCardArt
+                  template={template}
+                  photos={previewPhotos}
                 />
                 <span className="mt-2 block px-1 text-xs font-medium text-ink">
                   {template.name}

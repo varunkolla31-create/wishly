@@ -18,7 +18,6 @@ import type { MusicBinding } from "@/lib/music/types";
 import {
   defaultMemoryTemplateId,
   getMemoryTemplate,
-  SAMPLE_PHOTOS,
   type MemoryTemplate,
 } from "@/src/components/three-memory/catalog";
 import { MemoryPreview } from "@/src/components/three-memory/memory-preview";
@@ -103,7 +102,7 @@ export function GuestWizard({
   resuming: boolean;
 }) {
   const router = useRouter();
-  const { photos: previewPhotos, consume } = usePhotoPreview();
+  const { photos: previewPhotos, hasUploads, consume } = usePhotoPreview();
   const guestMedia = useGuestMedia();
   const [draft, setDraft] = useState<GuestDraft>(EMPTY_DRAFT);
   const [step, setStep] = useState(resuming ? STEPS.length - 1 : 0);
@@ -177,11 +176,12 @@ export function GuestWizard({
   const guestVideoFrames = guestMedia.media
     .filter((item) => item.kind === "video" && item.poster)
     .map((item) => item.poster as string);
-  const reelSources = [...guestPhotos, ...guestVideoFrames, ...previewPhotos];
-  const reelPhotos =
-    reelSources.length >= 3
-      ? reelSources.slice(0, 10)
-      : [...reelSources, ...SAMPLE_PHOTOS].slice(0, 6);
+  const reelSources = [
+    ...guestPhotos,
+    ...guestVideoFrames,
+    ...(hasUploads ? previewPhotos : []),
+  ];
+  const reelPhotos = reelSources.slice(0, 10);
   const quizReady =
     Boolean(draft.quizQuestion.trim()) &&
     [draft.quizOption0, draft.quizOption1, draft.quizOption2].every((option) =>
@@ -484,6 +484,7 @@ export function GuestWizard({
           <TemplateStep
             category={draft.category}
             reelTemplateId={draft.reelTemplateId}
+            photos={reelPhotos}
             onReelSelect={(selected: MemoryTemplate) =>
               update("reelTemplateId", selected.id)
             }
@@ -537,19 +538,25 @@ export function GuestWizard({
               </div>
 
               <div className="mt-4 grid gap-4 sm:grid-cols-[170px_1fr] sm:items-start">
-                <MemoryPreview
-                  input={{
-                    templateId: draft.reelTemplateId,
-                    photos: reelPhotos,
-                    title: draft.title || "A memory for you",
-                    receiverName: draft.receiverName,
-                  }}
-                />
+                {reelPhotos.length > 0 ? (
+                  <MemoryPreview
+                    input={{
+                      templateId: draft.reelTemplateId,
+                      photos: reelPhotos,
+                      title: draft.title || "A memory for you",
+                      receiverName: draft.receiverName,
+                    }}
+                  />
+                ) : (
+                  <div className="flex aspect-[9/16] w-full items-center justify-center rounded-card border border-dashed border-hairline bg-[#0B1418] p-4 text-center text-xs leading-relaxed text-white/60">
+                    Add a photo or video to see your reel.
+                  </div>
+                )}
                 <div className="space-y-2 text-xs leading-relaxed text-ink-muted">
                   <p>
-                    {guestPhotos.length + guestVideoFrames.length >= 3
-                      ? `${guestPhotos.length} photo${guestPhotos.length === 1 ? "" : "s"} and ${guestVideoFrames.length} video frame${guestVideoFrames.length === 1 ? "" : "s"} in the reel.`
-                      : `Add ${Math.max(0, 3 - guestPhotos.length - guestVideoFrames.length)} more to fill the reel.`}
+                    {reelPhotos.length > 0
+                      ? `${reelPhotos.length} ${reelPhotos.length === 1 ? "memory" : "memories"} in the reel.`
+                      : "Your uploaded photos and video frames will appear here."}
                   </p>
                   <p>
                     Everything stays private. Photos, videos and frames upload

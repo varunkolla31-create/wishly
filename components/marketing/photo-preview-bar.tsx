@@ -5,7 +5,8 @@ import Image from "next/image";
 import { MAX_PHOTOS, usePhotoPreview } from "@/src/context/PhotoPreviewContext";
 
 export function PhotoPreviewBar() {
-  const { photos, addFiles, clear } = usePhotoPreview();
+  const { photos, hasUploads, addFiles, clear } = usePhotoPreview();
+  const displayPhotos = hasUploads ? photos : [];
 
   return (
     <div className="sticky top-16 z-30 border-b border-hairline bg-canvas/95 backdrop-blur">
@@ -26,7 +27,7 @@ export function PhotoPreviewBar() {
         </label>
 
         <div className="flex min-w-0 flex-1 items-center gap-1.5 overflow-x-auto">
-          {photos.slice(0, MAX_PHOTOS).map((photo, index) => (
+          {displayPhotos.slice(0, MAX_PHOTOS).map((photo, index) => (
             <Image
               key={`${photo.slice(-24)}-${index}`}
               src={photo}
@@ -37,7 +38,7 @@ export function PhotoPreviewBar() {
               className="h-14 w-11 shrink-0 rounded-md border border-hairline object-cover"
             />
           ))}
-          {photos.length === 0 ? (
+          {displayPhotos.length === 0 ? (
             <span className="text-xs text-ink-muted">
               Add photos once and every reel below updates instantly.
             </span>
@@ -45,10 +46,10 @@ export function PhotoPreviewBar() {
         </div>
 
         <span className="text-xs text-ink-muted">
-          {photos.length}/{MAX_PHOTOS} · live in every reel
+          {displayPhotos.length}/{MAX_PHOTOS} · live in every reel
         </span>
 
-        {photos.length > 0 ? (
+        {hasUploads ? (
           <button
             type="button"
             onClick={clear}
