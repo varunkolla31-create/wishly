@@ -7,10 +7,12 @@ export function TemplateStep({
   category,
   reelTemplateId,
   onReelSelect,
+  onReelConfirm,
 }: {
   category: string;
   reelTemplateId: string;
   onReelSelect: (template: MemoryTemplate) => void;
+  onReelConfirm?: (template: MemoryTemplate) => void;
 }) {
   return (
     <div>
@@ -27,6 +29,7 @@ export function TemplateStep({
           category={category}
           value={reelTemplateId}
           onChange={onReelSelect}
+          onConfirm={onReelConfirm}
         />
       </div>
     </div>

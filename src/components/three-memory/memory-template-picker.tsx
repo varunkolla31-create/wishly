@@ -12,10 +12,13 @@ export function MemoryTemplatePicker({
   category,
   value,
   onChange,
+  onConfirm,
 }: {
   category: string;
   value: string;
   onChange: (template: MemoryTemplate) => void;
+  /** Double-click a reel to select it and move on. */
+  onConfirm?: (template: MemoryTemplate) => void;
 }) {
   const options = memoryTemplatesForCategory(category);
   const { photos } = usePhotoPreview();
@@ -27,8 +30,8 @@ export function MemoryTemplatePicker({
         <div>
           <h3 className="text-sm font-medium text-ink">3D memory reel</h3>
           <p className="mt-1 text-xs leading-relaxed text-ink-muted">
-            Made for {category.replaceAll("-", " ")}. Add 3–10 photos and the
-            reel renders itself.
+            Made for {category.replaceAll("-", " ")}. Tap to select, or
+            double-click a reel to select it and continue.
           </p>
         </div>
       </div>
@@ -41,7 +44,12 @@ export function MemoryTemplatePicker({
               <button
                 type="button"
                 onClick={() => onChange(template)}
+                onDoubleClick={() => {
+                  onChange(template);
+                  onConfirm?.(template);
+                }}
                 aria-pressed={active}
+                title="Double-click to select and continue"
                 className={cn(
                   "block w-full rounded-card p-1 text-left transition",
                   active

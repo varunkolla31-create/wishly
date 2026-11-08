@@ -423,6 +423,7 @@ export function GuestWizard({
             onReelSelect={(selected: MemoryTemplate) =>
               update("reelTemplateId", selected.id)
             }
+            onReelConfirm={() => go(1)}
           />
         ) : null}
 

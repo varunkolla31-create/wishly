@@ -343,6 +343,7 @@ export function WishWizard({
                 shouldDirty: true,
               })
             }
+            onReelConfirm={() => goTo(stepIndex + 1)}
           />
         ) : null}
 
