@@ -6,17 +6,24 @@ import { ImagePlus, RotateCcw } from "lucide-react";
 import { DownloadReelButton } from "@/src/components/three-memory/download-reel-button";
 import { MemoryPreview } from "@/src/components/three-memory/memory-preview";
 import type { MemoryTemplate } from "@/src/components/three-memory/catalog";
+import { usePhotoPreview } from "@/src/context/PhotoPreviewContext";
 
 const inputClass =
   "mt-1 min-h-11 w-full rounded-xl border border-hairline bg-surface px-3 text-sm text-ink placeholder:text-ink-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral";
 
 export function MemoryStudio({ template }: { template: MemoryTemplate }) {
+  const { consume } = usePhotoPreview();
   const [photos, setPhotos] = useState<string[]>(template.samplePhotos.slice(0, 5));
   const [title, setTitle] = useState("A memory for you");
   const [receiverName, setReceiverName] = useState("");
   const [senderName, setSenderName] = useState("");
   const [message, setMessage] = useState("");
   const owned = useRef<string[]>([]);
+
+  useEffect(() => {
+    const carried = consume();
+    if (carried.length > 0) setPhotos(carried.slice(0, 10));
+  }, [consume]);
 
   useEffect(
     () => () => {

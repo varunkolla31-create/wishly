@@ -10,16 +10,21 @@ import {
 import { OCCASIONS } from "@/lib/catalog/occasions";
 
 describe("3D memory reel catalog", () => {
-  it("ships exactly six unique native templates", () => {
+  it("ships 120 unique rig × atmosphere templates", () => {
     const ids = MEMORY_TEMPLATES.map((template) => template.id);
-    expect(ids).toHaveLength(6);
-    expect(new Set(ids).size).toBe(6);
+    expect(ids).toHaveLength(120);
+    expect(new Set(ids).size).toBe(120);
+    expect(new Set(MEMORY_TEMPLATES.map((template) => template.rig)).size).toBe(8);
+    expect(new Set(MEMORY_TEMPLATES.map((template) => template.preset)).size).toBe(15);
     for (const template of MEMORY_TEMPLATES) {
       expect(getMemoryTemplate(template.id)?.name).toBe(template.name);
       expect(template.samplePhotos.length).toBeGreaterThanOrEqual(3);
       expect(template.samplePhotos.length).toBeLessThanOrEqual(10);
     }
     expect(getMemoryTemplate("not-a-template")).toBeNull();
+    expect(getMemoryTemplate("3d-polaroid-clothesline")?.rig).toBe(
+      "3d-polaroid-clothesline",
+    );
   });
 
   it("covers every occasion with a filtered reel", () => {

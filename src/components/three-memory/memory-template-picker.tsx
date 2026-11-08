@@ -5,6 +5,7 @@ import {
   type MemoryTemplate,
 } from "@/src/components/three-memory/catalog";
 import { MemoryPoster } from "@/src/components/three-memory/memory-poster";
+import { usePhotoPreview } from "@/src/context/PhotoPreviewContext";
 import { cn } from "@/lib/utils/cn";
 
 export function MemoryTemplatePicker({
@@ -17,6 +18,8 @@ export function MemoryTemplatePicker({
   onChange: (template: MemoryTemplate) => void;
 }) {
   const options = memoryTemplatesForCategory(category);
+  const { photos } = usePhotoPreview();
+  const previewPhotos = photos.length > 0 ? photos : undefined;
 
   return (
     <div>
@@ -49,7 +52,7 @@ export function MemoryTemplatePicker({
                 <MemoryPoster
                   input={{
                     templateId: template.id,
-                    photos: template.samplePhotos,
+                    photos: previewPhotos ?? template.samplePhotos,
                     title: template.name,
                     receiverName: "you",
                   }}

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { InteractiveTemplateCard } from "@/components/marketing/interactive-template-card";
-import { MemoryTemplateCard } from "@/src/components/three-memory/memory-template-card";
-import { MEMORY_TEMPLATES } from "@/src/components/three-memory/catalog";
+import { MemoryReelGallery } from "@/components/marketing/memory-reel-gallery";
+import { PhotoPreviewBar } from "@/components/marketing/photo-preview-bar";
 import { ButtonLink } from "@/components/ui/button";
 import { TEMPLATES } from "@/lib/catalog/templates";
 import { pageMetadata } from "@/lib/seo";
@@ -9,13 +9,14 @@ import { pageMetadata } from "@/lib/seo";
 export const metadata: Metadata = pageMetadata({
   title: "Templates",
   description:
-    "Eight native wish page templates and six original 3D memory reels. Pick a look, add photos and download a 9:16 reel, all inside Wishly.",
+    "Eight native wish page templates and eight original 3D memory reels. Pick a look, add photos and download a 9:16 reel, all inside Wishly.",
   path: "/templates",
 });
 
 export default function TemplatesPage() {
   return (
     <>
+      <PhotoPreviewBar />
       <section className="mx-auto max-w-6xl px-4 pb-12 pt-14 sm:px-6 lg:pt-20">
         <p className="text-xs font-semibold uppercase tracking-[0.12em] text-ink-muted">
           Templates
@@ -24,9 +25,9 @@ export default function TemplatesPage() {
           A page, and a little world.
         </h1>
         <p className="mt-5 max-w-2xl text-lg leading-relaxed text-ink-muted">
-          Eight wish page looks and six original 3D memory reels. Every template
-          is made by Wishly and previews right here — no redirects, no other
-          editor.
+          Eight wish page looks and eight original 3D memory reels. Every
+          template is made by Wishly and previews right here — no redirects, no
+          other editor.
         </p>
         <div className="mt-8 flex flex-wrap gap-3">
           <ButtonLink href="/create" size="lg">
@@ -74,11 +75,7 @@ export default function TemplatesPage() {
           </p>
         </div>
         <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
-          <div className="grid grid-cols-2 gap-x-5 gap-y-10 md:grid-cols-3">
-            {MEMORY_TEMPLATES.map((template) => (
-              <MemoryTemplateCard key={template.id} template={template} />
-            ))}
-          </div>
+          <MemoryReelGallery />
         </div>
       </section>
 

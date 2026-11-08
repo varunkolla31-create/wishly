@@ -4,6 +4,7 @@ import { ClerkProvider } from "@clerk/nextjs";
 import { ThemeProvider } from "next-themes";
 import { useEffect } from "react";
 import { Toaster } from "sonner";
+import { PhotoPreviewProvider } from "@/src/context/PhotoPreviewContext";
 
 const publishableKey = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY;
 
@@ -38,9 +39,11 @@ export function Providers({ children }: { children: React.ReactNode }) {
       enableSystem={false}
       disableTransitionOnChange
     >
-      {children}
-      <Toaster position="top-center" closeButton />
-      <ServiceWorker />
+      <PhotoPreviewProvider>
+        {children}
+        <Toaster position="top-center" closeButton />
+        <ServiceWorker />
+      </PhotoPreviewProvider>
     </ThemeProvider>
   );
 

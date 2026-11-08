@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   drawMemoryFrame,
   loadMemoryImages,
@@ -17,9 +17,30 @@ export function MemoryPoster({
   className?: string;
 }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [visible, setVisible] = useState(false);
   const key = `${input.templateId ?? ""}|${input.photos.join("|")}|${input.title}`;
 
   useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas || typeof IntersectionObserver === "undefined") {
+      setVisible(true);
+      return undefined;
+    }
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((entry) => entry.isIntersecting)) {
+          setVisible(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin: "500px" },
+    );
+    observer.observe(canvas);
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (!visible) return undefined;
     let cancelled = false;
     const canvas = canvasRef.current;
     const context = canvas?.getContext("2d");
@@ -39,7 +60,7 @@ export function MemoryPoster({
     return () => {
       cancelled = true;
     };
-  }, [key, input]);
+  }, [visible, key, input]);
 
   return (
     <canvas

@@ -70,7 +70,7 @@ export function wishlyContract(
           title: "Fifty years",
           message: "A letter",
           bonusNote: "Scratch: WISH-42",
-          reelTemplateId: "3d-tunnel",
+          reelTemplateId: "3d-polaroid-clothesline",
           mediaKeys: ["wishes/a/photo/one.png", "wishes/a/voice/two.webm"],
           musicId: "warm-glow",
           passwordHash: "$argon2id$fake",
@@ -87,7 +87,7 @@ export function wishlyContract(
         expect(updated?.title).toBe("Fifty years");
         expect(updated?.message).toBe("A letter");
         expect(updated?.bonusNote).toBe("Scratch: WISH-42");
-        expect(updated?.reelTemplateId).toBe("3d-tunnel");
+        expect(updated?.reelTemplateId).toBe("3d-polaroid-clothesline");
         expect(updated?.mediaKeys).toEqual([
           "wishes/a/photo/one.png",
           "wishes/a/voice/two.webm",

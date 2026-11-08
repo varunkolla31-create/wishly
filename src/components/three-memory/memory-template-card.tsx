@@ -7,11 +7,19 @@ import { MemoryPoster } from "@/src/components/three-memory/memory-poster";
 import { MemoryPreview } from "@/src/components/three-memory/memory-preview";
 import type { MemoryTemplate } from "@/src/components/three-memory/catalog";
 
-export function MemoryTemplateCard({ template }: { template: MemoryTemplate }) {
+export function MemoryTemplateCard({
+  template,
+  photos,
+}: {
+  template: MemoryTemplate;
+  photos?: string[];
+}) {
   const [open, setOpen] = useState(false);
+  const samplePhotos =
+    photos && photos.length > 0 ? photos.slice(0, 10) : template.samplePhotos;
   const sampleInput = {
     templateId: template.id,
-    photos: template.samplePhotos,
+    photos: samplePhotos,
     title: template.name,
     receiverName: "you",
   };

@@ -148,7 +148,7 @@ export default function LandingPage() {
             </div>
             <MemoryPreview
               input={{
-                templateId: "3d-cylinder-ring",
+                templateId: "3d-vinyl-turntable",
                 photos: SAMPLE_PHOTOS,
                 title: "For you, always",
                 receiverName: "you",
