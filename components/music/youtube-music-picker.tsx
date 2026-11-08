@@ -25,8 +25,6 @@ import type { MusicBinding } from "@/lib/music/types";
 import { canonicalWatchUrl } from "@/lib/music/youtube-url";
 import { cn } from "@/lib/utils/cn";
 
-type TopSource = "youtube" | "cache" | "fallback";
-type TopState = "loading" | "ready" | "error";
 type SearchState =
   | "idle"
   | "short"
@@ -38,7 +36,7 @@ type SearchState =
 
 interface ListResponse {
   ok: boolean;
-  data?: { source: TopSource; items: MusicListItem[] };
+  data?: { items: MusicListItem[] };
   error?: { code?: string; message?: string };
 }
 
@@ -63,10 +61,6 @@ export function YouTubeMusicPicker({
   const abortRef = useRef<AbortController | null>(null);
   const requestRef = useRef(0);
 
-  const [top, setTop] = useState<MusicListItem[]>([]);
-  const [topSource, setTopSource] = useState<TopSource>("youtube");
-  const [topState, setTopState] = useState<TopState>("loading");
-
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<MusicListItem[]>([]);
   const [searchState, setSearchState] = useState<SearchState>("idle");
@@ -85,23 +79,6 @@ export function YouTubeMusicPicker({
     "idle",
   );
   const [pasteMessage, setPasteMessage] = useState("");
-
-  useEffect(() => {
-    const controller = new AbortController();
-    setTopState("loading");
-    void fetch("/api/music/top", { signal: controller.signal })
-      .then((response) => response.json() as Promise<ListResponse>)
-      .then((body) => {
-        if (!body.ok || !body.data) throw new Error("top_failed");
-        setTop(body.data.items);
-        setTopSource(body.data.source);
-        setTopState("ready");
-      })
-      .catch(() => {
-        if (!controller.signal.aborted) setTopState("error");
-      });
-    return () => controller.abort();
-  }, []);
 
   useEffect(() => {
     const trimmed = query.trim();
@@ -164,7 +141,7 @@ export function YouTubeMusicPicker({
           if (requestId !== requestRef.current) return;
           setSearchState("error");
           setSearchMessage(
-            "Couldn't search right now. Try the Top 10 or paste a link.",
+            "Couldn't search right now. Try again or paste a link.",
           );
         });
     }, 400);
@@ -240,14 +217,13 @@ export function YouTubeMusicPicker({
     }
   }
 
-  const showTop = query.trim().length === 0;
-  const items = showTop ? top : results;
+  const items = results;
   const searchEnabled = searchState !== "quota";
   const selectedTitle = value ? cleanSongTitle(value.title) : legacyTrack?.title;
   const hiddenVideoId =
-    preview?.videoId ?? top[0]?.videoId ?? results[0]?.videoId ?? "";
+    preview?.videoId ?? results[0]?.videoId ?? "";
   const hiddenTitle =
-    preview?.title ?? top[0]?.title ?? results[0]?.title ?? "Audio";
+    preview?.title ?? results[0]?.title ?? "Audio";
 
   return (
     <div
@@ -268,8 +244,7 @@ export function YouTubeMusicPicker({
               The soundtrack
             </h3>
             <p className="mt-0.5 text-xs leading-relaxed text-ink-muted">
-              One song plays while they read. Pick from the chart, search, or
-              paste a link.
+              One song plays while they read. Search by name, or paste a link.
             </p>
           </div>
         </div>
@@ -379,7 +354,7 @@ export function YouTubeMusicPicker({
                 setQuery("");
                 searchInputRef.current?.focus();
               }}
-              aria-label="Clear search and return to the Top 10"
+              aria-label="Clear search"
               className="absolute right-1.5 top-1.5 flex size-9 items-center justify-center rounded-full text-white/60 transition-colors hover:bg-white/10 hover:text-white"
             >
               <X aria-hidden="true" className="size-4" />
@@ -390,52 +365,29 @@ export function YouTubeMusicPicker({
         <div className="flex items-center justify-between gap-3">
           <h3 className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-[0.12em] text-ink">
             <Sparkles aria-hidden="true" className="size-3.5 text-gold" />
-            {showTop
-              ? topSource === "fallback"
-                ? "Wishly picks"
-                : "Top 10 right now"
-              : "Search results"}
+            {query.trim().length > 0 ? "Search results" : "Find a song"}
           </h3>
           <span className="rounded-full bg-canvas/70 px-2.5 py-1 text-[10px] font-medium text-ink-muted">
-            {showTop
-              ? topSource === "cache"
-                ? "Cached chart"
-                : "Updated live"
-              : `${items.length} result${items.length === 1 ? "" : "s"}`}
+            {query.trim().length > 0
+              ? `${items.length} result${items.length === 1 ? "" : "s"}`
+              : "Search by name"}
           </span>
         </div>
 
-        {showTop && topSource === "fallback" ? (
-          <p className="text-xs leading-relaxed text-ink-muted">
-            The chart isn&apos;t reachable right now, so these are Wishly picks.
-            Search and paste a link are still available.
+        {query.trim().length === 0 ? (
+          <p className="rounded-media border border-hairline bg-surface px-4 py-3 text-sm leading-relaxed text-ink-muted">
+            Search for a song by name, or paste a link below. Just the one
+            they&apos;ll hear.
           </p>
         ) : null}
 
-        {showTop && topState === "loading" ? (
-          <ul className="space-y-1" aria-busy="true">
-            {Array.from({ length: 5 }).map((_, index) => (
-              <li
-                key={index}
-                className="h-14 animate-pulse rounded-xl bg-sand"
-              />
-            ))}
-          </ul>
-        ) : null}
-
-        {showTop && topState === "error" ? (
-          <p className="rounded-media border border-hairline bg-surface px-4 py-3 text-sm text-ink-muted">
-            The chart is unavailable right now. Search or paste a link.
-          </p>
-        ) : null}
-
-        {!showTop && searchState === "short" ? (
+        {searchState === "short" ? (
           <p className="rounded-media border border-hairline bg-surface px-4 py-3 text-sm text-ink-muted">
             Type at least 3 characters to search.
           </p>
         ) : null}
 
-        {!showTop && searchState === "loading" ? (
+        {searchState === "loading" ? (
           <ul className="space-y-1" aria-busy="true">
             {Array.from({ length: 5 }).map((_, index) => (
               <li
@@ -446,13 +398,13 @@ export function YouTubeMusicPicker({
           </ul>
         ) : null}
 
-        {!showTop && searchState === "empty" ? (
+        {searchState === "empty" ? (
           <p className="rounded-media border border-hairline bg-surface px-4 py-3 text-sm text-ink-muted">
             No songs found, try another name.
           </p>
         ) : null}
 
-        {!showTop && searchState === "error" ? (
+        {searchState === "error" ? (
           <p
             role="alert"
             className="rounded-media border border-error/40 bg-error/10 px-4 py-3 text-sm text-error"
@@ -461,18 +413,18 @@ export function YouTubeMusicPicker({
           </p>
         ) : null}
 
-        {!showTop && searchState === "quota" ? (
+        {searchState === "quota" ? (
           <p
             role="status"
             className="rounded-media border border-warning/40 bg-warning/10 px-4 py-3 text-sm text-ink"
           >
-            Search is busy right now. Pick from the Top 10 or paste a link.
+            Search is busy right now. Try again or paste a link.
           </p>
         ) : null}
 
-        {items.length > 0 && (showTop || searchState === "ready") ? (
+        {items.length > 0 && searchState === "ready" ? (
           <ul className="space-y-0.5">
-            {items.map((item, index) => {
+            {items.map((item) => {
               const selected = value?.videoId === item.videoId;
               const previewing = preview?.videoId === item.videoId;
               const title = cleanSongTitle(item.title);
@@ -485,11 +437,6 @@ export function YouTubeMusicPicker({
                     selected ? "bg-coral/10" : "hover:bg-canvas",
                   )}
                 >
-                  {showTop ? (
-                    <span className="w-4 shrink-0 text-center text-[11px] font-medium text-ink-muted">
-                      {index + 1}
-                    </span>
-                  ) : null}
                   <button
                     type="button"
                     onClick={() => previewItem(item)}

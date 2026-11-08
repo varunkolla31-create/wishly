@@ -278,8 +278,8 @@ export function ContentStep({
         <div className="rounded-card border border-hairline bg-surface p-5">
           <h2 className="text-sm font-medium text-ink">Music</h2>
           <p className="mt-1 text-xs leading-relaxed text-ink-muted">
-            The Top 10 plays while they read. Pick one song — choosing another
-            replaces it.
+            One song plays while they read. Search for it or paste a link —
+            choosing another replaces it.
           </p>
           <div className="mt-4">
             <YouTubeMusicPicker

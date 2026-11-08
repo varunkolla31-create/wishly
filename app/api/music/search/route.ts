@@ -68,7 +68,7 @@ export function GET(request: Request) {
       throw new HttpError(
         429,
         "quota_busy",
-        "Search is busy right now. Pick from the Top 10 or paste a link.",
+        "Search is busy right now. Try again or paste a link.",
       );
     }
     await incrementMusicSearchCount();
@@ -82,21 +82,21 @@ export function GET(request: Request) {
           throw new HttpError(
             429,
             "quota_busy",
-            "Search is busy right now. Pick from the Top 10 or paste a link.",
+            "Search is busy right now. Try again or paste a link.",
           );
         }
         if (error.code === "search_disabled") {
           throw new HttpError(
             503,
             "search_unavailable",
-            "Search isn't configured. Pick from the Top 10 or paste a link.",
+            "Search isn't configured. Paste a link instead.",
           );
         }
       }
       throw new HttpError(
         502,
         "upstream",
-        "Search is unavailable right now. Try the Top 10 or paste a link.",
+        "Search is unavailable right now. Try again or paste a link.",
       );
     }
 

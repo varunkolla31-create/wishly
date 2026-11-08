@@ -23,10 +23,6 @@ function makeItem(id: string, title: string): Item {
   };
 }
 
-const topItems = Array.from({ length: 10 }, (_, index) =>
-  makeItem(`top${index}`, `Top song ${index + 1}`),
-);
-
 function searchItem(query: string): Item {
   const title =
     query === "firstquery"
@@ -38,15 +34,6 @@ function searchItem(query: string): Item {
 }
 
 async function openMusicStep(page: Page) {
-  await page.route("**/api/music/top", (route) =>
-    route.fulfill({
-      contentType: "application/json",
-      body: JSON.stringify({
-        ok: true,
-        data: { source: "youtube", items: topItems },
-      }),
-    }),
-  );
   await page.route("https://i.ytimg.com/**", (route) =>
     route.fulfill({ status: 200, contentType: "image/png", body: THUMB }),
   );
@@ -68,8 +55,7 @@ async function openMusicStep(page: Page) {
           ok: false,
           error: {
             code: "quota_busy",
-            message:
-              "Search is busy right now. Pick from the Top 10 or paste a link.",
+            message: "Search is busy right now. Try again or paste a link.",
           },
         }),
       });
@@ -80,7 +66,7 @@ async function openMusicStep(page: Page) {
       contentType: "application/json",
       body: JSON.stringify({
         ok: true,
-        data: { source: "youtube", items: [searchItem(query)] },
+        data: { items: [searchItem(query)] },
       }),
     });
   });
@@ -89,16 +75,13 @@ async function openMusicStep(page: Page) {
   await page.getByRole("button", { name: "4. Words" }).click();
   await expect(page.getByTestId("music-section")).toBeVisible();
   await page.getByTestId("music-section").scrollIntoViewIfNeeded();
-  await expect(page.getByText("Top 10 right now")).toBeVisible();
+  await expect(page.getByText("Find a song")).toBeVisible();
 }
 
 test.describe("YouTube music picker", () => {
-  test("shows the Top 10 by default and search replaces the list", async ({
-    page,
-  }) => {
+  test("starts empty and searches for a song", async ({ page }) => {
     await openMusicStep(page);
-    await expect(page.getByTestId("music-row")).toHaveCount(10);
-    await expect(page.getByText("Top song 1", { exact: true })).toBeVisible();
+    await expect(page.getByTestId("music-row")).toHaveCount(0);
 
     const search = page.getByRole("searchbox", {
       name: "Search songs",
@@ -106,15 +89,11 @@ test.describe("YouTube music picker", () => {
     await search.fill("golden");
     await expect(page.getByText("Result for golden")).toBeVisible();
     await expect(page.getByTestId("music-row")).toHaveCount(1);
-    await expect(
-      page.getByText("Top song 1", { exact: true }),
-    ).toHaveCount(0);
+    await expect(page.getByText(/^Top song/)).toHaveCount(0);
 
-    await page
-      .getByRole("button", { name: "Clear search and return to the Top 10" })
-      .click();
-    await expect(page.getByText("Top 10 right now")).toBeVisible();
-    await expect(page.getByTestId("music-row")).toHaveCount(10);
+    await page.getByRole("button", { name: "Clear search" }).click();
+    await expect(page.getByTestId("music-row")).toHaveCount(0);
+    await expect(page.getByText("Find a song")).toBeVisible();
   });
 
   test("a slow older query cannot overwrite a newer one", async ({ page }) => {
@@ -139,44 +118,64 @@ test.describe("YouTube music picker", () => {
     page,
   }) => {
     await openMusicStep(page);
-    const rows = page.getByTestId("music-row");
+    const search = page.getByRole("searchbox", {
+      name: "Search songs",
+    });
 
-    await rows.nth(0).getByRole("button", { name: "Select" }).click();
+    await search.fill("firstquery");
+    await expect(page.getByText("FirstQueryResult")).toBeVisible();
+    await page
+      .getByTestId("music-row")
+      .getByRole("button", { name: "Select" })
+      .click();
     const selected = page.getByTestId("now-selected");
-    await expect(selected).toContainText("Top song 1");
+    await expect(selected).toContainText("FirstQueryResult");
 
-    await rows.nth(1).getByRole("button", { name: "Select" }).click();
-    await expect(selected).toContainText("Top song 2");
-    await expect(selected).not.toContainText("Top song 1");
+    await search.fill("secondquery");
+    await expect(page.getByText("SecondQueryResult")).toBeVisible();
+    await page
+      .getByTestId("music-row")
+      .getByRole("button", { name: "Select" })
+      .click();
+    await expect(selected).toContainText("SecondQueryResult");
+    await expect(selected).not.toContainText("FirstQueryResult");
 
     await selected.getByRole("button", { name: "Remove" }).click();
     await expect(page.getByTestId("now-selected")).toHaveCount(0);
   });
 
-  test("quota busy keeps the Top 10 and paste available", async ({ page }) => {
+  test("quota busy keeps paste available and clears to empty", async ({
+    page,
+  }) => {
     await openMusicStep(page);
     const search = page.getByRole("searchbox", {
       name: "Search songs",
     });
     await search.fill("quota");
     await expect(
-      page.getByText(
-        "Search is busy right now. Pick from the Top 10 or paste a link.",
-      ),
+      page.getByText("Search is busy right now. Try again or paste a link."),
     ).toBeVisible();
     await expect(page.locator("#music-paste-link")).toBeVisible();
 
-    await page
-      .getByRole("button", { name: "Clear search and return to the Top 10" })
-      .click();
-    await expect(page.getByTestId("music-row")).toHaveCount(10);
+    await page.getByRole("button", { name: "Clear search" }).click();
+    await expect(page.getByTestId("music-row")).toHaveCount(0);
+    await expect(page.getByText("Find a song")).toBeVisible();
   });
 
   test("only one visible preview player exists at a time", async ({ page }) => {
     await openMusicStep(page);
-    const preview = page.getByRole("button", { name: /^Preview / });
-    await preview.nth(0).click();
-    await preview.nth(1).click();
+    const search = page.getByRole("searchbox", {
+      name: "Search songs",
+    });
+
+    await search.fill("firstquery");
+    await page.getByRole("button", { name: "Preview FirstQueryResult" }).click();
+    await expect(page.getByTestId("audio-player-preview")).toHaveCount(1);
+
+    await search.fill("secondquery");
+    await page
+      .getByRole("button", { name: "Preview SecondQueryResult" })
+      .click();
     await expect(page.getByTestId("audio-player-preview")).toHaveCount(1);
   });
 });

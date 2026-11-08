@@ -95,7 +95,7 @@ async function getJson<T>(url: string): Promise<T> {
     ) {
       throw new MusicError(
         "quota",
-        "Search is busy right now. Pick from the Top 10 or paste a link.",
+        "Search is busy right now. Try again or paste a link.",
       );
     }
     throw new MusicError(
