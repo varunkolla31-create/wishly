@@ -1,6 +1,6 @@
 "use client";
 
-import { Link2, Music2, Play, X } from "lucide-react";
+import { Check, Link2, Music2, Play, Search, Sparkles, X } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { YouTubePlayer } from "@/components/music/youtube-player";
@@ -222,14 +222,41 @@ export function YouTubeMusicPicker({
   const searchEnabled = searchState !== "quota";
 
   return (
-    <div className="space-y-4">
+    <div className="relative overflow-hidden rounded-card border border-hairline bg-gradient-to-br from-[#FFF9F2] via-surface to-sand p-4 shadow-soft sm:p-5">
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute -right-20 -top-20 size-52 rounded-full bg-coral/10 blur-3xl"
+      />
+      <div className="relative space-y-4">
+        <div className="flex items-start gap-3">
+          <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-coral to-[#A51444] text-white shadow-glow">
+            <Music2 aria-hidden="true" className="size-4" />
+          </span>
+          <div className="min-w-0 flex-1">
+            <h3 className="font-serif text-xl italic leading-tight text-ink">
+              The soundtrack
+            </h3>
+            <p className="mt-0.5 text-xs leading-relaxed text-ink-muted">
+              One song plays while they read. Pick from the chart, search, or
+              paste a link.
+            </p>
+          </div>
+          <span className="shrink-0 rounded-full border border-hairline bg-canvas/80 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.12em] text-ink-muted">
+            YouTube
+          </span>
+        </div>
+
       {value || legacyTrack ? (
         <div
           data-testid="now-selected"
-          className="rounded-card border border-hairline bg-canvas p-4"
+          className="relative overflow-hidden rounded-media border border-coral/25 bg-canvas/85 p-4 shadow-soft"
         >
-          <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-ink-muted">
-            Now selected
+          <div
+            aria-hidden="true"
+            className="absolute inset-x-0 top-0 h-0.5 bg-gradient-to-r from-coral via-gold to-coral"
+          />
+          <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-coral-strong">
+            Now playing
           </p>
           <div className="mt-3 flex items-center gap-3">
             {value ? (
@@ -239,10 +266,10 @@ export function YouTubeMusicPicker({
                 width={112}
                 height={63}
                 unoptimized
-                className="h-12 w-20 rounded object-cover"
+                className="h-14 w-24 shrink-0 rounded-xl object-cover shadow-md ring-1 ring-black/5"
               />
             ) : (
-              <span className="flex size-12 items-center justify-center rounded-full bg-sand text-ink-muted">
+              <span className="flex size-14 items-center justify-center rounded-xl bg-sand text-ink-muted">
                 <Music2 aria-hidden="true" className="size-5" />
               </span>
             )}
@@ -260,23 +287,23 @@ export function YouTubeMusicPicker({
                 setQuery("");
                 searchInputRef.current?.focus();
               }}
-              className="min-h-9 rounded-full border border-hairline px-3 text-xs font-medium text-ink hover:bg-hover"
+              className="min-h-8 rounded-full bg-ink px-3 text-[11px] font-semibold text-canvas transition-opacity hover:opacity-90"
             >
               Change
             </button>
             <button
               type="button"
               onClick={() => onChange(null)}
-              className="min-h-9 rounded-full border border-hairline px-3 text-xs font-medium text-ink hover:bg-hover"
+              className="min-h-8 rounded-full border border-hairline bg-canvas px-3 text-[11px] font-medium text-ink transition-colors hover:bg-hover"
             >
               Remove
             </button>
           </div>
           {value ? (
-            <div className="mt-3 flex flex-wrap items-center gap-3">
+            <div className="mt-4 flex flex-wrap items-center gap-3 rounded-full bg-sand/70 px-3 py-2">
               <label
                 htmlFor="music-start-at"
-                className="text-xs font-medium text-ink-muted"
+                className="text-[10px] font-semibold uppercase tracking-[0.12em] text-ink-muted"
               >
                 Start at
               </label>
@@ -290,14 +317,14 @@ export function YouTubeMusicPicker({
                 }}
                 inputMode="numeric"
                 placeholder="mm:ss"
-                className="min-h-9 w-20 rounded-full border border-hairline bg-surface px-3 text-xs text-ink"
+                className="min-h-8 w-20 rounded-full border border-hairline bg-canvas px-3 text-xs text-ink"
               />
-              <span className="text-xs text-ink-muted">mm:ss</span>
+              <span className="text-[11px] text-ink-muted">mm:ss</span>
               <a
                 href={`https://www.youtube.com/watch?v=${value.videoId}`}
                 target="_blank"
                 rel="noreferrer"
-                className="ml-auto text-xs font-medium text-coral-strong hover:text-coral-hover"
+                className="ml-auto text-[11px] font-medium text-coral-strong hover:text-coral-hover"
               >
                 Watch on YouTube
               </a>
@@ -331,6 +358,10 @@ export function YouTubeMusicPicker({
       ) : null}
 
       <div className="relative">
+        <Search
+          aria-hidden="true"
+          className="pointer-events-none absolute left-4 top-1/2 size-4 -translate-y-1/2 text-ink-muted"
+        />
         <input
           ref={searchInputRef}
           type="search"
@@ -338,7 +369,7 @@ export function YouTubeMusicPicker({
           onChange={(event) => setQuery(event.target.value)}
           placeholder="Search songs on YouTube"
           aria-label="Search songs on YouTube"
-          className="min-h-12 w-full rounded-full border border-hairline bg-surface px-4 pr-11 text-sm text-ink placeholder:text-ink-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral"
+          className="min-h-12 w-full rounded-full border border-hairline bg-canvas pl-11 pr-11 text-sm text-ink shadow-sm placeholder:text-ink-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral"
         />
         {query ? (
           <button
@@ -348,23 +379,28 @@ export function YouTubeMusicPicker({
               searchInputRef.current?.focus();
             }}
             aria-label="Clear search and return to the Top 10"
-            className="absolute right-1 top-1 flex size-10 items-center justify-center rounded-full text-ink-muted hover:bg-hover hover:text-ink"
+            className="absolute right-1.5 top-1.5 flex size-9 items-center justify-center rounded-full text-ink-muted transition-colors hover:bg-hover hover:text-ink"
           >
             <X aria-hidden="true" className="size-4" />
           </button>
         ) : null}
       </div>
 
-      <div className="flex items-baseline justify-between gap-3">
-        <h3 className="text-sm font-medium text-ink">
+      <div className="flex items-center justify-between gap-3">
+        <h3 className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-[0.12em] text-ink">
+          <Sparkles aria-hidden="true" className="size-3.5 text-gold" />
           {showTop
             ? topSource === "fallback"
               ? "Wishly picks"
               : "Top 10 on YouTube"
             : "Search results"}
         </h3>
-        <span className="text-[11px] text-ink-muted">
-          {showTop && topSource === "cache" ? "Cached chart" : ""}
+        <span className="rounded-full bg-canvas/70 px-2.5 py-1 text-[10px] font-medium text-ink-muted">
+          {showTop
+            ? topSource === "cache"
+              ? "Cached chart"
+              : "Updated live"
+            : `${items.length} result${items.length === 1 ? "" : "s"}`}
         </span>
       </div>
 
@@ -430,14 +466,21 @@ export function YouTubeMusicPicker({
                 key={item.videoId}
                 data-testid="music-row"
                 className={cn(
-                  "flex items-center gap-3 rounded-media border px-3 py-2.5",
+                  "group flex items-center gap-3 rounded-media border px-3 py-2.5 transition-all duration-200",
                   selected
-                    ? "border-ink bg-canvas"
-                    : "border-hairline bg-surface",
+                    ? "border-coral/35 bg-gradient-to-r from-coral/10 via-canvas to-canvas shadow-[0_10px_30px_rgba(255,56,92,0.08)]"
+                    : "border-hairline bg-canvas/80 hover:-translate-y-0.5 hover:border-ink/15 hover:bg-canvas hover:shadow-soft",
                 )}
               >
                 {showTop ? (
-                  <span className="w-5 shrink-0 text-center text-xs font-semibold text-ink-muted">
+                  <span
+                    className={cn(
+                      "flex size-6 shrink-0 items-center justify-center rounded-full text-[11px] font-semibold",
+                      index < 3
+                        ? "bg-gradient-to-br from-gold to-[#B08A3E] text-[#2A2114] shadow-sm"
+                        : "bg-sand text-ink-muted",
+                    )}
+                  >
                     {index + 1}
                   </span>
                 ) : null}
@@ -447,7 +490,7 @@ export function YouTubeMusicPicker({
                   width={96}
                   height={54}
                   unoptimized
-                  className="h-12 w-20 shrink-0 rounded object-cover"
+                  className="h-12 w-20 shrink-0 rounded-lg object-cover ring-1 ring-black/5"
                 />
                 <div className="min-w-0 flex-1">
                   <a
@@ -466,7 +509,7 @@ export function YouTubeMusicPicker({
                   type="button"
                   onClick={() => previewItem(item)}
                   aria-label={`Preview ${item.title}`}
-                  className="flex size-9 shrink-0 items-center justify-center rounded-full border border-hairline bg-canvas text-ink hover:bg-hover"
+                  className="flex size-9 shrink-0 items-center justify-center rounded-full border border-hairline bg-canvas text-ink transition-colors hover:border-ink/20 hover:bg-hover"
                 >
                   <Play aria-hidden="true" className="ml-0.5 size-4" />
                 </button>
@@ -475,13 +518,20 @@ export function YouTubeMusicPicker({
                   onClick={() => selectItem(item)}
                   aria-pressed={selected}
                   className={cn(
-                    "min-h-9 shrink-0 rounded-full px-3 text-xs font-medium",
+                    "inline-flex min-h-9 shrink-0 items-center gap-1 rounded-full px-3 text-[11px] font-semibold transition-colors",
                     selected
-                      ? "bg-ink text-canvas"
-                      : "border border-hairline bg-canvas text-ink hover:bg-hover",
+                      ? "bg-coral text-white shadow-[0_6px_18px_rgba(255,56,92,0.25)]"
+                      : "border border-hairline bg-canvas text-ink hover:border-ink hover:bg-ink hover:text-canvas",
                   )}
                 >
-                  {selected ? "Selected" : "Select"}
+                  {selected ? (
+                    <>
+                      <Check aria-hidden="true" className="size-3" />
+                      Selected
+                    </>
+                  ) : (
+                    "Select"
+                  )}
                 </button>
               </li>
             );
@@ -489,21 +539,25 @@ export function YouTubeMusicPicker({
         </ul>
       ) : null}
 
-      <div className="rounded-media border border-hairline bg-surface p-3">
-        <label
-          htmlFor="music-paste-link"
-          className="flex items-center gap-2 text-xs font-medium text-ink-muted"
-        >
-          <Link2 aria-hidden="true" className="size-3.5" />
-          Paste a link
-        </label>
+      <div className="rounded-media border border-dashed border-hairline bg-canvas/60 p-3.5">
+        <div className="flex items-center gap-2">
+          <span aria-hidden="true" className="h-px flex-1 bg-hairline" />
+          <label
+            htmlFor="music-paste-link"
+            className="flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.12em] text-ink-muted"
+          >
+            <Link2 aria-hidden="true" className="size-3.5" />
+            Or paste a link
+          </label>
+          <span aria-hidden="true" className="h-px flex-1 bg-hairline" />
+        </div>
         <div className="mt-2 flex gap-2">
           <input
             id="music-paste-link"
             value={pasteUrl}
             onChange={(event) => setPasteUrl(event.target.value)}
             placeholder="https://youtu.be/…"
-            className="min-h-10 min-w-0 flex-1 rounded-full border border-hairline bg-canvas px-3 text-xs text-ink"
+            className="min-h-10 min-w-0 flex-1 rounded-full border border-hairline bg-canvas px-3 text-xs text-ink shadow-sm"
           />
           <button
             type="button"
@@ -534,6 +588,7 @@ export function YouTubeMusicPicker({
         . {searchEnabled ? "" : "Search is limited right now. "}
         One song per wish.
       </p>
+      </div>
     </div>
   );
 }
