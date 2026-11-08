@@ -83,6 +83,17 @@ describe("unlock route", () => {
     expect(cookie).toContain("Max-Age=7200");
   });
 
+  it("accepts a 4–6 digit PIN", async () => {
+    const wish = await createPublishedWish("4821");
+
+    const response = await unlockWish(
+      attempt("4821", wish.wishId, "198.51.100.15"),
+      params(wish.wishId),
+    );
+
+    expect(response.status).toBe(200);
+  });
+
   it("hides unknown wishes and spends comparable work", async () => {
     const response = await unlockWish(
       attempt("anything", "doesnotexist123456789", "198.51.100.12"),

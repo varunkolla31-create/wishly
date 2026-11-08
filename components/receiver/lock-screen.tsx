@@ -335,15 +335,9 @@ export function LockScreen({ wish }: { wish: PublicWishMeta }) {
                       id="wish-password"
                       type={visible ? "text" : "password"}
                       value={password}
-                      onChange={(event) =>
-                        setPassword(
-                          event.target.value.replace(/\D/g, "").slice(0, 6),
-                        )
-                      }
-                      inputMode="numeric"
-                      pattern="[0-9]*"
-                      autoComplete="off"
-                      maxLength={6}
+                      onChange={(event) => setPassword(event.target.value)}
+                      autoComplete="current-password"
+                      maxLength={128}
                       aria-invalid={Boolean(error)}
                       aria-describedby={error ? "unlock-error" : undefined}
                       placeholder={t("lock.placeholder")}
