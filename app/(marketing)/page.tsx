@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { OccasionGrid } from "@/components/marketing/occasion-grid";
-import { TemplateCard } from "@/components/marketing/template-card";
 import { TemplatePreview } from "@/components/marketing/template-preview";
 import { MemoryPreview } from "@/src/components/three-memory/memory-preview";
 import { SAMPLE_PHOTOS } from "@/src/components/three-memory/catalog";
@@ -21,13 +20,6 @@ const HERO_TEMPLATES = [
   requireTemplate("confetti-pop"),
   requireTemplate("midnight-glow"),
 ] as const;
-
-const FEATURED_TEMPLATES = [
-  requireTemplate("clean-white"),
-  requireTemplate("confetti-pop"),
-  requireTemplate("golden-hour"),
-  requireTemplate("midnight-glow"),
-];
 
 const HOW_IT_WORKS = [
   {
@@ -205,36 +197,6 @@ export default function LandingPage() {
         </div>
         <div className="mt-8">
           <OccasionGrid occasions={OCCASIONS} />
-        </div>
-      </section>
-
-      <section className="border-y border-hairline bg-cream">
-        <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:py-20">
-          <div className="max-w-xl">
-            <p className="text-xs font-semibold uppercase tracking-[0.12em] text-ink-muted">
-              Page looks
-            </p>
-            <h2 className="mt-3 font-serif text-3xl italic leading-tight text-ink sm:text-4xl">
-              A look for every feeling.
-            </h2>
-            <p className="mt-3 text-base leading-relaxed text-ink-muted">
-              Start with one, then make it yours. Clean and quiet, warm and
-              golden, or dark and cinematic.
-            </p>
-          </div>
-          <div className="mt-10 grid grid-cols-2 gap-6 md:grid-cols-4">
-            {FEATURED_TEMPLATES.map((template) => (
-              <TemplateCard key={template.id} template={template} />
-            ))}
-          </div>
-          <div className="mt-8">
-            <Link
-              href="/templates#page-looks"
-              className="text-sm font-medium text-coral-strong hover:text-coral-hover"
-            >
-              See all page looks →
-            </Link>
-          </div>
         </div>
       </section>
 

@@ -1,9 +1,7 @@
 import type { Metadata } from "next";
-import { InteractiveTemplateCard } from "@/components/marketing/interactive-template-card";
 import { MemoryReelGallery } from "@/components/marketing/memory-reel-gallery";
 import { PhotoPreviewBar } from "@/components/marketing/photo-preview-bar";
 import { ButtonLink } from "@/components/ui/button";
-import { TEMPLATES } from "@/lib/catalog/templates";
 import { pageMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = pageMetadata({
@@ -56,31 +54,6 @@ export default function TemplatesPage() {
         </div>
         <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
           <MemoryReelGallery />
-        </div>
-      </section>
-
-      <section
-        id="page-looks"
-        className="scroll-mt-32 border-t border-hairline bg-sand"
-      >
-        <div className="mx-auto max-w-6xl px-4 pb-2 pt-12 sm:px-6">
-          <p className="text-xs font-semibold uppercase tracking-[0.12em] text-ink-muted">
-            Then pick a page look
-          </p>
-          <h2 className="mt-2 font-serif text-3xl italic leading-tight text-ink">
-            The page around the reel.
-          </h2>
-          <p className="mt-3 max-w-2xl text-base leading-relaxed text-ink-muted">
-            Eight wish page looks for the lock screen and the letter. The reel
-            stays the main event.
-          </p>
-        </div>
-        <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
-          <div className="grid grid-cols-2 gap-x-6 gap-y-10 md:grid-cols-3 lg:grid-cols-4">
-            {TEMPLATES.map((template) => (
-              <InteractiveTemplateCard key={template.id} template={template} />
-            ))}
-          </div>
         </div>
       </section>
 

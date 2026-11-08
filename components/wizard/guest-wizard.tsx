@@ -418,11 +418,8 @@ export function GuestWizard({
 
         {step === 1 ? (
           <TemplateStep
-            selected={draft.templateId}
             category={draft.category}
             reelTemplateId={draft.reelTemplateId}
-            title={draft.title || draft.receiverName}
-            onSelect={(selected) => update("templateId", selected.id)}
             onReelSelect={(selected: MemoryTemplate) =>
               update("reelTemplateId", selected.id)
             }

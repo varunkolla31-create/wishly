@@ -336,13 +336,8 @@ export function WishWizard({
 
         {stepIndex === 1 ? (
           <TemplateStep
-            selected={values.templateId}
             category={values.category}
             reelTemplateId={values.reelTemplateId}
-            title={values.title || values.receiverName}
-            onSelect={(template) =>
-              form.setValue("templateId", template.id, { shouldDirty: true })
-            }
             onReelSelect={(template) =>
               form.setValue("reelTemplateId", template.id, {
                 shouldDirty: true,
