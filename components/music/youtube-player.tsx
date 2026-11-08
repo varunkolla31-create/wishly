@@ -17,6 +17,12 @@ import { cn } from "@/lib/utils/cn";
 export interface YouTubePlayerHandle {
   play(): void;
   pause(): void;
+  mute(): void;
+  unmute(): void;
+  isMuted(): boolean;
+  getCurrentTime(): number;
+  getDuration(): number;
+  seekTo(seconds: number): void;
 }
 
 export const YouTubePlayer = forwardRef<
@@ -29,6 +35,7 @@ export const YouTubePlayer = forwardRef<
     autoplay?: boolean;
     loop?: boolean;
     controls?: boolean;
+    hidden?: boolean;
     className?: string;
     onError?: (code: number) => void;
     onStateChange?: (state: number) => void;
@@ -42,6 +49,7 @@ export const YouTubePlayer = forwardRef<
     autoplay = false,
     loop = false,
     controls = true,
+    hidden = false,
     className,
     onError,
     onStateChange,
@@ -59,8 +67,62 @@ export const YouTubePlayer = forwardRef<
   useImperativeHandle(
     ref,
     () => ({
-      play: () => playerRef.current?.playVideo(),
-      pause: () => playerRef.current?.pauseVideo(),
+      play: () => {
+        try {
+          playerRef.current?.playVideo();
+        } catch {
+          // The player may not be ready yet.
+        }
+      },
+      pause: () => {
+        try {
+          playerRef.current?.pauseVideo();
+        } catch {
+          // The player may not be ready yet.
+        }
+      },
+      mute: () => {
+        try {
+          playerRef.current?.mute();
+        } catch {
+          // The player may not be ready yet.
+        }
+      },
+      unmute: () => {
+        try {
+          playerRef.current?.unMute();
+        } catch {
+          // The player may not be ready yet.
+        }
+      },
+      isMuted: () => {
+        try {
+          return playerRef.current?.isMuted() ?? false;
+        } catch {
+          return false;
+        }
+      },
+      getCurrentTime: () => {
+        try {
+          return playerRef.current?.getCurrentTime() ?? 0;
+        } catch {
+          return 0;
+        }
+      },
+      getDuration: () => {
+        try {
+          return playerRef.current?.getDuration() ?? 0;
+        } catch {
+          return 0;
+        }
+      },
+      seekTo: (seconds: number) => {
+        try {
+          playerRef.current?.seekTo(Math.max(0, seconds), true);
+        } catch {
+          // The player may not be ready yet.
+        }
+      },
     }),
     [],
   );
@@ -78,7 +140,7 @@ export const YouTubePlayer = forwardRef<
           height: "100%",
           playerVars: {
             playsinline: 1,
-            controls: controls ? 1 : 0,
+            controls: controls && !hidden ? 1 : 0,
             rel: 0,
             modestbranding: 1,
             autoplay: autoplay ? 1 : 0,
@@ -131,13 +193,34 @@ export const YouTubePlayer = forwardRef<
     return () => window.removeEventListener(MUSIC_DUCK_EVENT, pauseForVoice);
   }, []);
 
+  if (hidden) {
+    return (
+      <div
+        aria-label={title ? `Audio player: ${title}` : "Audio player"}
+        aria-hidden="true"
+        data-testid="audio-player"
+        inert
+        style={{
+          position: "absolute",
+          width: 0,
+          height: 0,
+          opacity: 0,
+          pointerEvents: "none",
+          overflow: "hidden",
+        }}
+      >
+        <div ref={containerRef} style={{ width: 1, height: 1 }} />
+      </div>
+    );
+  }
+
   return (
     <div
       className={cn(
         "relative aspect-video w-full overflow-hidden rounded-media bg-black",
         className,
       )}
-      aria-label={title ? `YouTube player: ${title}` : "YouTube player"}
+      aria-label={title ? `Audio player: ${title}` : "Audio player"}
     >
       <div ref={containerRef} className="size-full" />
     </div>

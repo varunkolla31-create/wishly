@@ -109,3 +109,39 @@
 html[data-env="production"] [data-clerk-dev-mode-notice] {
   display: none !important;
 }
+
+.spotify-scrubber {
+  appearance: none;
+  -webkit-appearance: none;
+  height: 3px;
+  border-radius: 9999px;
+  outline: none;
+  cursor: pointer;
+}
+
+.spotify-scrubber::-webkit-slider-thumb {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 10px;
+  height: 10px;
+  border-radius: 9999px;
+  background: #ffffff;
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.75);
+  opacity: 0;
+  transition: opacity 150ms ease;
+}
+
+.spotify-scrubber:hover::-webkit-slider-thumb,
+.spotify-scrubber:focus-visible::-webkit-slider-thumb {
+  opacity: 1;
+}
+
+.spotify-scrubber::-moz-range-thumb {
+  width: 10px;
+  height: 10px;
+  border: none;
+  border-radius: 9999px;
+  background: #ffffff;
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.75);
+}
+

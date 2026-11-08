@@ -255,7 +255,7 @@ export function ContentStep({
               </p>
               <p>
                 The download is a silent 9:16 video for Stories, Reels and
-                WhatsApp Status. No Spotify or YouTube audio is included.
+                WhatsApp Status. No external audio is included.
               </p>
               <p>
                 The receiver can open the same 3D scene and download their own
@@ -266,7 +266,7 @@ export function ContentStep({
         </div>
 
         <div className="rounded-card border border-hairline bg-surface p-5">
-          <h2 className="text-sm font-medium text-ink">Music from YouTube</h2>
+          <h2 className="text-sm font-medium text-ink">Music</h2>
           <p className="mt-1 text-xs leading-relaxed text-ink-muted">
             The Top 10 plays while they read. Pick one song — choosing another
             replaces it.

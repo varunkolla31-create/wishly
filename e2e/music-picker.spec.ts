@@ -87,9 +87,9 @@ async function openMusicStep(page: Page) {
 
   await page.goto("/create");
   await page.getByRole("button", { name: "3. Words" }).click();
-  await expect(page.getByText("Music from YouTube")).toBeVisible();
-  await page.getByText("Music from YouTube").scrollIntoViewIfNeeded();
-  await expect(page.getByText("Top 10 on YouTube")).toBeVisible();
+  await expect(page.getByTestId("music-section")).toBeVisible();
+  await page.getByTestId("music-section").scrollIntoViewIfNeeded();
+  await expect(page.getByText("Top 10 right now")).toBeVisible();
 }
 
 test.describe("YouTube music picker", () => {
@@ -101,7 +101,7 @@ test.describe("YouTube music picker", () => {
     await expect(page.getByText("Top song 1", { exact: true })).toBeVisible();
 
     const search = page.getByRole("searchbox", {
-      name: "Search songs on YouTube",
+      name: "Search songs",
     });
     await search.fill("golden");
     await expect(page.getByText("Result for golden")).toBeVisible();
@@ -113,14 +113,14 @@ test.describe("YouTube music picker", () => {
     await page
       .getByRole("button", { name: "Clear search and return to the Top 10" })
       .click();
-    await expect(page.getByText("Top 10 on YouTube")).toBeVisible();
+    await expect(page.getByText("Top 10 right now")).toBeVisible();
     await expect(page.getByTestId("music-row")).toHaveCount(10);
   });
 
   test("a slow older query cannot overwrite a newer one", async ({ page }) => {
     await openMusicStep(page);
     const search = page.getByRole("searchbox", {
-      name: "Search songs on YouTube",
+      name: "Search songs",
     });
 
     await search.fill("firstquery");
@@ -156,7 +156,7 @@ test.describe("YouTube music picker", () => {
   test("quota busy keeps the Top 10 and paste available", async ({ page }) => {
     await openMusicStep(page);
     const search = page.getByRole("searchbox", {
-      name: "Search songs on YouTube",
+      name: "Search songs",
     });
     await search.fill("quota");
     await expect(
@@ -177,6 +177,6 @@ test.describe("YouTube music picker", () => {
     const preview = page.getByRole("button", { name: /^Preview / });
     await preview.nth(0).click();
     await preview.nth(1).click();
-    await expect(page.locator('[aria-label^="YouTube player"]')).toHaveCount(1);
+    await expect(page.getByTestId("audio-player")).toHaveCount(1);
   });
 });

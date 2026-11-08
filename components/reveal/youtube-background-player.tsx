@@ -1,50 +1,15 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { Music2, Pause, Play } from "lucide-react";
+import { Pause, Play, Volume2, VolumeX } from "lucide-react";
+import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import {
   YouTubePlayer,
   type YouTubePlayerHandle,
 } from "@/components/music/youtube-player";
 import type { TemplatePalette } from "@/lib/catalog/types";
+import { cleanSongTitle } from "@/lib/music/clean-title";
 import type { MusicBinding } from "@/lib/music/types";
-
-function Equalizer({
-  playing,
-  color,
-}: {
-  playing: boolean;
-  color: string;
-}) {
-  return (
-    <span className="flex h-5 items-end gap-0.5" aria-hidden="true">
-      {[8, 16, 10, 20].map((height, index) => (
-        <motion.span
-          key={index}
-          className="w-1 rounded-full"
-          style={{
-            height,
-            backgroundColor: color,
-            transformOrigin: "bottom",
-          }}
-          animate={playing ? { scaleY: [0.35, 1, 0.55] } : { scaleY: 0.3 }}
-          transition={
-            playing
-              ? {
-                  duration: 0.85,
-                  repeat: Infinity,
-                  repeatType: "mirror",
-                  delay: index * 0.09,
-                  ease: "easeInOut",
-                }
-              : { duration: 0.2 }
-          }
-        />
-      ))}
-    </span>
-  );
-}
 
 export function YouTubeBackgroundPlayer({
   music,
@@ -61,6 +26,15 @@ export function YouTubeBackgroundPlayer({
   const [failed, setFailed] = useState(false);
   const [playToken, setPlayToken] = useState(0);
   const [showPrompt, setShowPrompt] = useState(false);
+  const [current, setCurrent] = useState(0);
+  const [duration, setDuration] = useState(
+    Math.max(0, music.durationSeconds || 0),
+  );
+  const [muted, setMuted] = useState(false);
+
+  const title = cleanSongTitle(music.title);
+  const progress =
+    duration > 0 ? Math.min(100, Math.max(0, (current / duration) * 100)) : 0;
 
   useEffect(() => {
     let unlocked = false;
@@ -90,7 +64,7 @@ export function YouTubeBackgroundPlayer({
     const start = () => {
       autoStarted.current = true;
       setShowPrompt(false);
-      setPlayToken((token) => token + 1);
+      playerRef.current?.play();
       setPlaying(true);
     };
     document.addEventListener("pointerdown", start, { once: true });
@@ -100,6 +74,27 @@ export function YouTubeBackgroundPlayer({
       document.removeEventListener("keydown", start);
     };
   }, [autoPlay, playing, failed]);
+
+  useEffect(() => {
+    const timer = window.setInterval(() => {
+      const player = playerRef.current;
+      if (!player) return;
+      try {
+        const nextDuration = player.getDuration();
+        const nextCurrent = player.getCurrentTime();
+        if (Number.isFinite(nextDuration) && nextDuration > 0) {
+          setDuration(nextDuration);
+        }
+        if (Number.isFinite(nextCurrent) && nextCurrent >= 0) {
+          setCurrent(nextCurrent);
+        }
+        setMuted(player.isMuted());
+      } catch {
+        // The player may still be initialising.
+      }
+    }, 500);
+    return () => window.clearInterval(timer);
+  }, []);
 
   useEffect(() => {
     const pause = () => {
@@ -127,52 +122,79 @@ export function YouTubeBackgroundPlayer({
       setPlaying(false);
     } else {
       autoStarted.current = true;
-      setPlayToken((token) => token + 1);
+      playerRef.current?.play();
       setPlaying(true);
     }
   }
 
+  function toggleMute() {
+    const next = !muted;
+    if (next) playerRef.current?.mute();
+    else playerRef.current?.unmute();
+    setMuted(next);
+  }
+
+  function seek(value: number) {
+    setCurrent(value);
+    playerRef.current?.seekTo(value);
+  }
+
   return (
     <>
-      <div className="fixed bottom-4 right-4 z-40 max-w-[calc(100vw-2rem)]">
-        <div
-          className="flex items-center gap-2 rounded-full border p-1.5 pr-3 shadow-[0_18px_50px_rgba(0,0,0,0.28)] backdrop-blur"
-          style={{
-            backgroundColor: palette.surface,
-            borderColor: `${palette.muted}44`,
-            color: palette.text,
-          }}
-        >
-          <div className="w-16 shrink-0 overflow-hidden rounded-full bg-black sm:w-20">
-            <YouTubePlayer
-              ref={playerRef}
-              videoId={music.videoId}
-              title={music.title}
-              startAtSeconds={music.startAtSeconds ?? 0}
-              playToken={playToken}
-              autoplay={autoPlay}
-              loop
-              controls={false}
-              onStateChange={(state) => {
-                if (state === 1) setPlaying(true);
-                if (state === 2 || state === 0) setPlaying(false);
+      <YouTubePlayer
+        ref={playerRef}
+        videoId={music.videoId}
+        title={title}
+        startAtSeconds={music.startAtSeconds ?? 0}
+        playToken={playToken}
+        autoplay={autoPlay}
+        loop
+        hidden
+        onStateChange={(state) => {
+          if (state === 1) setPlaying(true);
+          if (state === 2 || state === 0) setPlaying(false);
+        }}
+        onError={() => setFailed(true)}
+      />
+
+      <div className="fixed bottom-4 right-4 z-40 w-[min(360px,calc(100vw-2rem))]">
+        <div className="flex items-center gap-3 rounded-2xl border border-white/10 bg-black/80 p-3 text-white shadow-2xl backdrop-blur-md">
+          <Image
+            src={music.thumbnailUrl}
+            alt=""
+            width={88}
+            height={88}
+            unoptimized
+            className="size-11 shrink-0 rounded-md object-cover ring-1 ring-white/10"
+            style={{ boxShadow: `0 0 22px ${palette.accent}44` }}
+          />
+
+          <div className="min-w-0 flex-1">
+            <p className="truncate text-sm font-semibold">{title}</p>
+            <p className="truncate text-[11px] text-white/60">
+              {failed ? "Can't play here" : music.channel || "Unknown artist"}
+            </p>
+            <input
+              type="range"
+              min={0}
+              max={Math.max(1, duration)}
+              step={1}
+              value={Math.min(current, Math.max(1, duration))}
+              onChange={(event) => seek(Number(event.target.value))}
+              aria-label="Seek"
+              className="spotify-scrubber mt-1.5 w-full"
+              style={{
+                background: `linear-gradient(to right, #ffffff ${progress}%, rgba(255,255,255,0.22) ${progress}%)`,
               }}
-              onError={() => setFailed(true)}
-              className="rounded-full"
             />
           </div>
 
           <button
             type="button"
             onClick={toggle}
-            aria-label={
-              playing ? "Pause background music" : "Play background music"
-            }
-            className="flex size-10 shrink-0 items-center justify-center rounded-full transition-transform hover:scale-105"
-            style={{
-              backgroundColor: palette.accent,
-              color: palette.background,
-            }}
+            disabled={failed}
+            aria-label={playing ? "Pause background music" : "Play background music"}
+            className="flex size-9 shrink-0 items-center justify-center rounded-full bg-white text-black transition-transform hover:scale-105 disabled:opacity-50"
           >
             {playing ? (
               <Pause aria-hidden="true" className="size-4" />
@@ -181,31 +203,19 @@ export function YouTubeBackgroundPlayer({
             )}
           </button>
 
-          <div className="min-w-0 max-w-[100px] sm:max-w-[170px]">
-            <p className="flex items-center gap-1 truncate text-xs font-medium">
-              <Music2
-                aria-hidden="true"
-                className="size-3 shrink-0 opacity-60"
-              />
-              {music.title}
-            </p>
-            <p className="truncate text-[10px] opacity-60">
-              {failed
-                ? "Open on YouTube"
-                : music.channel || "Background music"}
-            </p>
-          </div>
-
-          <Equalizer playing={playing} color={palette.accent} />
-
-          <a
-            href={music.sourceUrl}
-            target="_blank"
-            rel="noreferrer"
-            className="shrink-0 text-[10px] font-medium underline underline-offset-4 opacity-60 hover:opacity-100"
+          <button
+            type="button"
+            onClick={toggleMute}
+            disabled={failed}
+            aria-label={muted ? "Unmute music" : "Mute music"}
+            className="flex size-8 shrink-0 items-center justify-center rounded-full text-white/70 transition-colors hover:text-white disabled:opacity-50"
           >
-            YT
-          </a>
+            {muted ? (
+              <VolumeX aria-hidden="true" className="size-4" />
+            ) : (
+              <Volume2 aria-hidden="true" className="size-4" />
+            )}
+          </button>
         </div>
       </div>
 
@@ -213,10 +223,10 @@ export function YouTubeBackgroundPlayer({
         <button
           type="button"
           onClick={toggle}
-          className="fixed bottom-24 left-1/2 z-40 inline-flex max-w-[calc(100vw-2rem)] -translate-x-1/2 items-center gap-2 rounded-full bg-ink px-4 py-3 text-xs font-medium text-canvas shadow-[0_18px_50px_rgba(0,0,0,0.3)]"
+          className="fixed bottom-24 right-4 z-40 inline-flex max-w-[calc(100vw-2rem)] items-center gap-2 rounded-full bg-white px-4 py-3 text-xs font-semibold text-black shadow-[0_18px_50px_rgba(0,0,0,0.35)]"
         >
           <Play aria-hidden="true" className="size-3.5 shrink-0" />
-          <span className="truncate">Tap anywhere to play “{music.title}”</span>
+          <span className="truncate">Tap to play music</span>
         </button>
       ) : null}
     </>

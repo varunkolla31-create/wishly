@@ -566,7 +566,7 @@ export function GuestWizard({
               </div>
 
               <div>
-                <span className={labelClass}>Music from YouTube</span>
+                <span className={labelClass}>Music</span>
                 <div className="mt-2">
                   <YouTubeMusicPicker
                     value={draft.music}
