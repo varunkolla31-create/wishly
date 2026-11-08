@@ -75,6 +75,27 @@ export function PublishSuccess({
     await copy(url, "link");
   }
 
+  async function shareInstagram() {
+    if (typeof navigator.share === "function") {
+      try {
+        await navigator.share({ title: shareTitle, text: shareText, url });
+        return;
+      } catch {
+        return;
+      }
+    }
+
+    try {
+      await navigator.clipboard.writeText(url);
+      toast.success("Link copied — paste it into Instagram.");
+    } catch {
+      toast.error("Couldn't copy the link.");
+      return;
+    }
+
+    window.open("https://www.instagram.com/", "_blank", "noopener,noreferrer");
+  }
+
   const shareText = password
     ? `${shareTitle} — ${url}\nPassword: ${password}`
     : `${shareTitle} — ${url}`;
@@ -170,27 +191,69 @@ export function PublishSuccess({
           </div>
         </div>
 
-        <div className="mt-8 flex flex-wrap gap-2">
-          <a
-            href={`https://wa.me/?text=${encodeURIComponent(shareText)}`}
-            target="_blank"
-            rel="noreferrer"
-            className={shareClass}
-          >
-            WhatsApp
-          </a>
-          <a
-            href={`https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(shareTitle)}`}
-            target="_blank"
-            rel="noreferrer"
-            className={shareClass}
-          >
-            Telegram
-          </a>
-          <button type="button" onClick={share} className={shareClass}>
-            <Share2 aria-hidden="true" className="size-4" />
-            Share
-          </button>
+        <div className="mt-8">
+          <h2 className="text-xs font-semibold uppercase tracking-[0.12em] text-ink-muted">
+            Share it
+          </h2>
+          <p className="mt-1 text-sm text-ink-muted">
+            Choose an app, or copy the link above.
+          </p>
+          <div className="mt-3 flex flex-wrap gap-2">
+            <a
+              href={`https://wa.me/?text=${encodeURIComponent(shareText)}`}
+              target="_blank"
+              rel="noreferrer"
+              className={shareClass}
+            >
+              WhatsApp
+            </a>
+            <a
+              href={`https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(shareTitle)}`}
+              target="_blank"
+              rel="noreferrer"
+              className={shareClass}
+            >
+              Telegram
+            </a>
+            <button type="button" onClick={shareInstagram} className={shareClass}>
+              Instagram
+            </button>
+            <a
+              href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`}
+              target="_blank"
+              rel="noreferrer"
+              className={shareClass}
+            >
+              Facebook
+            </a>
+            <a
+              href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(shareTitle)}&url=${encodeURIComponent(url)}`}
+              target="_blank"
+              rel="noreferrer"
+              className={shareClass}
+            >
+              X
+            </a>
+            <a
+              href={`mailto:?subject=${encodeURIComponent(shareTitle)}&body=${encodeURIComponent(shareText)}`}
+              className={shareClass}
+            >
+              Email
+            </a>
+            <a
+              href={`sms:?&body=${encodeURIComponent(shareText)}`}
+              className={shareClass}
+            >
+              SMS
+            </a>
+            <button type="button" onClick={share} className={shareClass}>
+              <Share2 aria-hidden="true" className="size-4" />
+              More apps
+            </button>
+          </div>
+        </div>
+
+        <div className="mt-6 flex flex-wrap gap-2">
           <a
             href={`/dashboard/wishes/${wishId}/card`}
             className={shareClass}

@@ -43,15 +43,15 @@ test("publishes from the wizard, unlocks, reveals, and replies", async ({
   request,
   browser,
 }) => {
-  const wishId = await createPublishedWish(request, "Golden-Orchid-42!");
+  const wishId = await createPublishedWish(request, "4821");
 
   await page.goto(`/dashboard/wishes/${wishId}/edit?step=5`);
   await expect(
     page.getByRole("heading", { name: "Lock it with a password." }),
   ).toBeVisible();
 
-  await page.getByLabel("Password", { exact: true }).fill("Golden-Orchid-42!");
-  await page.getByLabel("Once more").fill("Golden-Orchid-42!");
+  await page.getByLabel("Password", { exact: true }).fill("4821");
+  await page.getByLabel("Once more").fill("4821");
   await page.getByLabel(/Hint/).fill("A flower and a number");
   await page.getByRole("button", { name: "Replace password" }).click();
   await expect(
@@ -71,10 +71,14 @@ test("publishes from the wizard, unlocks, reveals, and replies", async ({
   const link = await page.locator("#published-link").inputValue();
   const password = await page.locator("#published-password").inputValue();
   expect(link).toContain(`/w/${wishId}`);
-  expect(password).toBe("Golden-Orchid-42!");
+  expect(password).toBe("4821");
   await expect(
     page.getByRole("img", { name: "QR code for the wish link" }),
   ).toBeVisible();
+  await expect(page.getByRole("link", { name: "WhatsApp" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Instagram" })).toBeVisible();
+  await expect(page.getByRole("link", { name: "Facebook" })).toBeVisible();
+  await expect(page.getByRole("link", { name: "Email" })).toBeVisible();
 
   const receiverContext = await browser.newContext();
   const receiver = await receiverContext.newPage();
@@ -123,7 +127,7 @@ test("publishes from the wizard, unlocks, reveals, and replies", async ({
       receiver.getByText("That password didn't match. Try again."),
     ).toBeVisible();
 
-    await receiver.getByLabel("Password", { exact: true }).fill("Golden-Orchid-42!");
+    await receiver.getByLabel("Password", { exact: true }).fill("4821");
     await receiver.getByRole("button", { name: "Unlock" }).click();
     await expect(receiver).toHaveURL(new RegExp(`/w/${wishId}/reveal`));
 
@@ -168,7 +172,7 @@ test("publishes from the wizard, unlocks, reveals, and replies", async ({
 });
 
 test("rate limits unlock attempts per wish", async ({ request }) => {
-  const wishId = await createPublishedWish(request, "correct horse battery");
+  const wishId = await createPublishedWish(request, "9137");
 
   for (let attempt = 0; attempt < 5; attempt += 1) {
     const response = await request.post(`/api/w/${wishId}/unlock`, {
@@ -178,7 +182,7 @@ test("rate limits unlock attempts per wish", async ({ request }) => {
   }
 
   const blocked = await request.post(`/api/w/${wishId}/unlock`, {
-    data: { password: "correct horse battery" },
+    data: { password: "9137" },
   });
   expect(blocked.status()).toBe(429);
   expect(Number(blocked.headers()["retry-after"])).toBeGreaterThan(0);

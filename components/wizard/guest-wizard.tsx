@@ -2,13 +2,13 @@
 
 import { ArrowLeft, ArrowRight, Lock } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { OccasionStep } from "@/components/wizard/occasion-step";
 import { TemplateStep } from "@/components/wizard/template-step";
 import { GuestMediaUploader } from "@/components/wizard/guest-media-uploader";
 import { useGuestMedia } from "@/components/wizard/use-guest-media";
+import { PublishSuccess } from "@/components/wizard/publish-success";
 import { YouTubeMusicPicker } from "@/components/music/youtube-music-picker";
 import { WriteWithAi } from "@/components/wizard/write-with-ai";
 import { getMusicTrack } from "@/lib/catalog/music";
@@ -101,13 +101,19 @@ export function GuestWizard({
   authEnabled: boolean;
   resuming: boolean;
 }) {
-  const router = useRouter();
   const { photos: previewPhotos, hasUploads, consume } = usePhotoPreview();
   const guestMedia = useGuestMedia();
   const [draft, setDraft] = useState<GuestDraft>(EMPTY_DRAFT);
   const [step, setStep] = useState(resuming ? STEPS.length - 1 : 0);
   const [loaded, setLoaded] = useState(false);
   const [publishing, setPublishing] = useState(false);
+  const [published, setPublished] = useState<{
+    wishId: string;
+    title: string;
+    password: string | null;
+    occasionName: string | null;
+    hint: string | null;
+  } | null>(null);
 
   useEffect(() => {
     let stored: Partial<GuestDraft> = {};
@@ -377,7 +383,14 @@ export function GuestWizard({
         toast.success("Your wish is live");
       }
       await guestMedia.clear();
-      router.push(`/dashboard/wishes/${wishId}/card`);
+      setPublished({
+        wishId,
+        title:
+          draft.title.trim() || draft.receiverName.trim() || "A wish for you",
+        password: draft.gateMode === "quiz" ? null : draft.password,
+        occasionName: occasion?.name ?? null,
+        hint: draft.hint.trim() || null,
+      });
     } catch (error) {
       toast.error(
         error instanceof Error && error.message === "password_failed"
@@ -397,6 +410,10 @@ export function GuestWizard({
     ],
     [occasion?.name, template.name, draft.receiverName, draft.title],
   );
+
+  if (published) {
+    return <PublishSuccess {...published} />;
+  }
 
   return (
     <main className="mx-auto max-w-3xl px-4 pb-20 pt-10 sm:px-6 lg:pt-16">
