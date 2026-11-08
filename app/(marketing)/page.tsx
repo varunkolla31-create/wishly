@@ -81,32 +81,41 @@ export default function LandingPage() {
               <Link
                 href="/w/demo-love"
                 aria-label="Open the For you, always demo"
-                className="hidden -rotate-6 opacity-90 transition hover:z-20 hover:opacity-100 sm:block sm:translate-y-4"
+                className="relative hidden -rotate-6 opacity-90 transition hover:z-20 hover:opacity-100 sm:block sm:translate-y-4"
               >
                 <TemplatePreview
                   template={HERO_TEMPLATES[0]}
                   title="For you, always"
                 />
+                <span className="pointer-events-none absolute right-2.5 top-2.5 rounded-full bg-canvas/90 px-2.5 py-1 text-[10px] font-semibold text-ink shadow-sm backdrop-blur">
+                  Password: always
+                </span>
               </Link>
               <Link
                 href="/w/demo-amma"
                 aria-label="Open the Happy birthday, Amma demo"
-                className="z-10 mx-auto block w-full max-w-[220px] transition hover:-translate-y-0.5 sm:max-w-none sm:scale-105"
+                className="relative z-10 mx-auto block w-full max-w-[220px] transition hover:-translate-y-0.5 sm:max-w-none sm:scale-105"
               >
                 <TemplatePreview
                   template={HERO_TEMPLATES[1]}
                   title="Happy birthday, Amma"
                 />
+                <span className="pointer-events-none absolute right-2.5 top-2.5 rounded-full bg-canvas/90 px-2.5 py-1 text-[10px] font-semibold text-ink shadow-sm backdrop-blur">
+                  Password: amma
+                </span>
               </Link>
               <Link
                 href="/w/demo-midnight"
                 aria-label="Open the See you at midnight demo"
-                className="hidden rotate-6 opacity-90 transition hover:z-20 hover:opacity-100 sm:block sm:translate-y-4"
+                className="relative hidden rotate-6 opacity-90 transition hover:z-20 hover:opacity-100 sm:block sm:translate-y-4"
               >
                 <TemplatePreview
                   template={HERO_TEMPLATES[2]}
                   title="See you at midnight"
                 />
+                <span className="pointer-events-none absolute right-2.5 top-2.5 rounded-full bg-canvas/90 px-2.5 py-1 text-[10px] font-semibold text-ink shadow-sm backdrop-blur">
+                  Password: midnight
+                </span>
               </Link>
             </div>
           </div>

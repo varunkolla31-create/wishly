@@ -1,4 +1,4 @@
-import { clerkMiddleware } from "@clerk/nextjs/server";
+import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 
 const hasClerkKeys = Boolean(
@@ -6,8 +6,30 @@ const hasClerkKeys = Boolean(
     process.env.CLERK_SECRET_KEY,
 );
 
+const isPublicRoute = createRouteMatcher([
+  "/",
+  "/create(.*)",
+  "/templates(.*)",
+  "/studio(.*)",
+  "/occasions(.*)",
+  "/w(.*)",
+  "/pricing(.*)",
+  "/privacy(.*)",
+  "/terms(.*)",
+  "/report(.*)",
+  "/offline(.*)",
+  "/sign-in(.*)",
+  "/sign-up(.*)",
+  "/c(.*)",
+  "/contribute(.*)",
+  "/api(.*)",
+]);
+
 const middleware = hasClerkKeys
-  ? clerkMiddleware()
+  ? clerkMiddleware(async (auth, request) => {
+      if (isPublicRoute(request)) return;
+      await auth.protect();
+    })
   : () => NextResponse.next();
 
 export default middleware;

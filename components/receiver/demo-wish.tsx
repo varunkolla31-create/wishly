@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, useReducedMotion } from "framer-motion";
-import { Eye, EyeOff, Lock } from "lucide-react";
+import { Eye, EyeOff, Lock, Sparkles } from "lucide-react";
 import Link from "next/link";
 import { useState, type FormEvent } from "react";
 import { RevealExperience } from "@/components/reveal/reveal-experience";
@@ -192,9 +192,20 @@ export function DemoWish({ wish }: { wish: DemoWishData }) {
         <p className="mt-3 text-sm text-ink-muted">
           Hint: {wish.hint}
         </p>
-        <p className="mt-1 text-xs text-ink-muted">
-          Demo password: <span className="font-medium text-ink">{wish.password}</span>
-        </p>
+        <button
+          type="button"
+          onClick={() => {
+            setPassword(wish.password);
+            setError(false);
+            requestAnimationFrame(() => {
+              document.getElementById("demo-password")?.focus();
+            });
+          }}
+          className="mt-3 inline-flex min-h-10 items-center gap-2 rounded-full border border-gold/50 bg-gold/15 px-4 text-xs font-medium text-ink transition-colors hover:bg-gold/25"
+        >
+          <Sparkles aria-hidden="true" className="size-3.5 text-gold" />
+          Demo mode: Click to auto-fill password (&apos;{wish.password}&apos;)
+        </button>
 
         <form onSubmit={submit} className="mt-8 space-y-3 text-left">
           <label htmlFor="demo-password" className="sr-only">

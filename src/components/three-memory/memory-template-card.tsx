@@ -1,11 +1,69 @@
 "use client";
 
 import { ArrowRight, X } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { MemoryPoster } from "@/src/components/three-memory/memory-poster";
 import { MemoryPreview } from "@/src/components/three-memory/memory-preview";
 import type { MemoryTemplate } from "@/src/components/three-memory/catalog";
+
+function MemoryCardArt({
+  template,
+  photos,
+}: {
+  template: MemoryTemplate;
+  photos?: string[];
+}) {
+  const sources = (
+    photos && photos.length > 0 ? photos : template.samplePhotos
+  ).slice(0, 3);
+
+  return (
+    <div
+      className="relative aspect-[9/16] w-full overflow-hidden rounded-card"
+      style={{
+        background: `radial-gradient(120% 75% at 50% 18%, ${template.accent}55 0%, ${template.background} 68%)`,
+      }}
+    >
+      <span
+        aria-hidden="true"
+        className="absolute inset-x-0 top-0 h-1/2"
+        style={{
+          background: `radial-gradient(60% 100% at 50% 0%, ${template.accent}33, transparent 70%)`,
+        }}
+      />
+
+      {sources.map((src, index) => (
+        <Image
+          key={`${src}-${index}`}
+          src={src}
+          alt=""
+          width={220}
+          height={300}
+          unoptimized
+          loading="lazy"
+          className="absolute left-1/2 top-1/2 h-[42%] w-[54%] rounded-md border border-white/20 object-cover shadow-[0_20px_50px_rgba(0,0,0,0.45)]"
+          style={{
+            transform: `translate(-50%, -50%) translate(${(index - 1) * 24}px, ${index === 1 ? -12 : 30}px) rotate(${(index - 1) * 8}deg)`,
+            zIndex: index === 1 ? 3 : index === 0 ? 2 : 1,
+          }}
+        />
+      ))}
+
+      <span className="absolute left-3 top-3 rounded-full bg-black/30 px-2 py-1 text-[9px] font-semibold uppercase tracking-[0.1em] text-white/85 backdrop-blur">
+        3D reel
+      </span>
+      <span className="absolute inset-x-3 bottom-3 truncate rounded-full bg-black/40 px-3 py-1.5 text-center text-[10px] font-medium capitalize text-white/90 backdrop-blur">
+        {template.rig.replace("3d-", "").replaceAll("-", " ")}
+      </span>
+      <span className="pointer-events-none absolute inset-0 flex items-center justify-center bg-black/0 opacity-0 transition-all duration-300 group-hover:bg-black/25 group-hover:opacity-100">
+        <span className="rounded-full bg-white/95 px-3 py-1.5 text-[10px] font-semibold text-ink shadow">
+          Open live 3D
+        </span>
+      </span>
+    </div>
+  );
+}
 
 export function MemoryTemplateCard({
   template,
@@ -44,9 +102,9 @@ export function MemoryTemplateCard({
         type="button"
         onClick={() => setOpen(true)}
         aria-label={`Live 3D preview of ${template.name}`}
-        className="block w-full overflow-hidden rounded-card ring-1 ring-black/5 transition duration-300 ease-out hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral"
+        className="block w-full overflow-hidden rounded-card text-left ring-1 ring-black/5 transition duration-300 ease-out hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral"
       >
-        <MemoryPoster input={sampleInput} />
+        <MemoryCardArt template={template} photos={photos} />
       </button>
       <div className="mt-3">
         <h3 className="text-sm font-medium text-ink">{template.name}</h3>
