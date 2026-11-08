@@ -41,7 +41,7 @@ export function YouTubeBackgroundPlayer({
   }, [autoPlay]);
 
   useEffect(() => {
-    if (!autoPlay || playing || failed || autoStarted.current) {
+    if (playing || failed || autoStarted.current) {
       return undefined;
     }
     const start = () => {
@@ -57,7 +57,7 @@ export function YouTubeBackgroundPlayer({
       document.removeEventListener("pointerdown", start);
       document.removeEventListener("keydown", start);
     };
-  }, [autoPlay, playing, failed]);
+  }, [playing, failed]);
 
   useEffect(() => {
     const timer = window.setInterval(() => {

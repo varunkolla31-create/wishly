@@ -11,6 +11,17 @@ export function MusicMiniPlayer({ track }: { track: MusicTrack }) {
     const audio = audioRef.current;
     if (!audio) return;
     let started = false;
+    try {
+      if (window.sessionStorage.getItem("wishly_unlock_autoplay") === "1") {
+        window.sessionStorage.removeItem("wishly_unlock_autoplay");
+        started = true;
+        void audio.play().catch(() => {
+          started = false;
+        });
+      }
+    } catch {
+      // Session storage is a convenience.
+    }
     const start = () => {
       if (started) return;
       started = true;
