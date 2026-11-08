@@ -2,7 +2,7 @@ import Link from "next/link";
 import { Logo } from "@/components/marketing/logo";
 
 const FOOTER_LINKS = [
-  { href: "/occasions/birthday", label: "Occasions" },
+  { href: "/occasions", label: "Occasions" },
   { href: "/templates", label: "3D reels" },
   { href: "/studio", label: "Studio" },
   { href: "/pricing", label: "Pricing" },
