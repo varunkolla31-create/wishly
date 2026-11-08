@@ -1,5 +1,5 @@
 /* Wishly service worker — network-first for pages, cache-first for static assets. */
-const VERSION = "wishly-v1";
+const VERSION = "wishly-v2";
 const SHELL = `${VERSION}-shell`;
 const MEDIA = `${VERSION}-media`;
 
