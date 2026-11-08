@@ -4,6 +4,7 @@ import Link from "next/link";
 import type { UseFormReturn } from "react-hook-form";
 import { AiIdeaPanel } from "@/components/wizard/ai-idea-panel";
 import { MediaUploader } from "@/components/wizard/media-uploader";
+import { WriteWithAi } from "@/components/wizard/write-with-ai";
 import type { DraftValues } from "@/components/wizard/types";
 import { YouTubeMusicPicker } from "@/components/music/youtube-music-picker";
 import { getMusicTrack } from "@/lib/catalog/music";
@@ -101,13 +102,22 @@ export function ContentStep({
             </label>
             <div className="mt-1 grid gap-4 lg:grid-cols-[1fr_320px]">
               <div>
+                <WriteWithAi
+                  occasion={values.category}
+                  recipientName={values.receiverName}
+                  onUse={(message) =>
+                    form.setValue("message", message.slice(0, 4000), {
+                      shouldDirty: true,
+                    })
+                  }
+                />
                 <textarea
                   id="message"
                   {...form.register("message")}
                   rows={8}
                   maxLength={4000}
                   placeholder="Write like you're talking to them."
-                  className="min-h-48 w-full rounded-card border border-hairline bg-canvas px-4 py-3 text-sm leading-relaxed text-ink placeholder:text-ink-muted/70"
+                  className="mt-2 min-h-48 w-full rounded-card border border-hairline bg-canvas px-4 py-3 text-sm leading-relaxed text-ink placeholder:text-ink-muted/70"
                 />
                 <div className="mt-1 flex items-center justify-between gap-3">
                   <p className={hintClass}>Line breaks are kept.</p>

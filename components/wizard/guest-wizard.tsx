@@ -8,6 +8,7 @@ import { toast } from "sonner";
 import { OccasionStep } from "@/components/wizard/occasion-step";
 import { TemplateStep } from "@/components/wizard/template-step";
 import { YouTubeMusicPicker } from "@/components/music/youtube-music-picker";
+import { WriteWithAi } from "@/components/wizard/write-with-ai";
 import { getMusicTrack } from "@/lib/catalog/music";
 import { uploadMedia } from "@/lib/media/client";
 import { usePhotoPreview } from "@/src/context/PhotoPreviewContext";
@@ -468,13 +469,22 @@ export function GuestWizard({
                 <label htmlFor="guest-message" className={labelClass}>
                   Your message
                 </label>
+                <div className="mt-1">
+                  <WriteWithAi
+                    occasion={draft.category}
+                    recipientName={draft.receiverName}
+                    onUse={(message) =>
+                      update("message", message.slice(0, 4000))
+                    }
+                  />
+                </div>
                 <textarea
                   id="guest-message"
                   value={draft.message}
                   onChange={(event) => update("message", event.target.value.slice(0, 4000))}
                   rows={8}
                   placeholder="Write like you're talking to them."
-                  className="mt-1 min-h-48 w-full rounded-card border border-hairline bg-canvas px-4 py-3 text-sm leading-relaxed text-ink placeholder:text-ink-muted/70"
+                  className="mt-2 min-h-48 w-full rounded-card border border-hairline bg-canvas px-4 py-3 text-sm leading-relaxed text-ink placeholder:text-ink-muted/70"
                 />
                 <div className="mt-1 flex justify-between">
                   <p className={hintClass}>Line breaks are kept.</p>

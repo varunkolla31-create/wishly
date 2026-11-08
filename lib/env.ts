@@ -37,7 +37,7 @@ const envSchema = z.object({
   NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: z.string().optional(),
 
   GEMINI_API_KEY: z.string().optional(),
-  GEMINI_MODEL: z.string().min(1).default("gemini-2.0-flash"),
+  GEMINI_MODEL: z.string().min(1).default("gemini-3.6-flash"),
 
   YOUTUBE_API_KEY: z.string().optional(),
   YOUTUBE_DAILY_SEARCH_LIMIT: intFromEnv(80, 1, 100),
