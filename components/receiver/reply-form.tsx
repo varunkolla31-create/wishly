@@ -1,10 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { motion } from "framer-motion";
+import { Check } from "lucide-react";
+import { useEffect, useState } from "react";
 import type { TemplatePalette } from "@/lib/catalog/types";
 import { t } from "@/lib/i18n";
 
-const REACTIONS = ["❤️", "🥹", "💛", "🎉", "🙏", "😊"] as const;
+const REACTIONS = ["❤️", "🥳", "🥹", "🙏"] as const;
 
 export function ReplyForm({
   wishId,
@@ -13,14 +15,23 @@ export function ReplyForm({
   wishId: string;
   palette: TemplatePalette;
 }) {
-  const [emoji, setEmoji] = useState<string>("💛");
+  const storageKey = `wishly_reply_sent_${wishId}`;
+  const [emoji, setEmoji] = useState<string>("❤️");
   const [message, setMessage] = useState("");
   const [sending, setSending] = useState(false);
   const [sent, setSent] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  useEffect(() => {
+    try {
+      if (window.sessionStorage.getItem(storageKey) === "1") setSent(true);
+    } catch {
+      // Session storage is a convenience.
+    }
+  }, [storageKey]);
+
   async function send() {
-    if (!message.trim() || sending) return;
+    if (sending) return;
     setSending(true);
     setError(null);
 
@@ -28,10 +39,18 @@ export function ReplyForm({
       const response = await fetch(`/api/w/${wishId}/reply`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: message.trim(), emoji }),
+        body: JSON.stringify({
+          message: message.trim() || "Thank you!",
+          emoji,
+        }),
       });
 
       if (!response.ok) throw new Error("reply_failed");
+      try {
+        window.sessionStorage.setItem(storageKey, "1");
+      } catch {
+        // Still show the confirmation for this view.
+      }
       setSent(true);
     } catch {
       setError("That didn't send. Try once more.");
@@ -44,22 +63,51 @@ export function ReplyForm({
     return (
       <section
         aria-live="polite"
-        className="mt-12 rounded-card border p-6 text-center"
+        className="relative mt-12 overflow-hidden rounded-card border p-6 text-center"
         style={{
           borderColor: palette.muted,
           backgroundColor: palette.surface,
           color: palette.text,
         }}
       >
-        <p aria-hidden="true" className="text-3xl">
-          {emoji}
-        </p>
-        <h2 className="mt-2 font-serif text-2xl italic">
-          {t("reveal.replySent")}
-        </h2>
-        <p className="mt-1 text-sm" style={{ color: palette.muted }}>
-          They&apos;ll see it in their replies inbox.
-        </p>
+        <div className="pointer-events-none absolute inset-0" aria-hidden="true">
+          {Array.from({ length: 6 }).map((_, index) => (
+            <motion.span
+              key={index}
+              className="absolute text-2xl"
+              style={{ left: `${10 + index * 15}%`, bottom: 0 }}
+              initial={{ y: 0, opacity: 0 }}
+              animate={{ y: -150 - (index % 3) * 26, opacity: [0, 1, 0] }}
+              transition={{
+                duration: 2.2,
+                delay: index * 0.18,
+                repeat: Infinity,
+                repeatDelay: 1.6,
+                ease: "easeOut",
+              }}
+            >
+              {emoji}
+            </motion.span>
+          ))}
+        </div>
+
+        <div className="relative">
+          <span
+            className="mx-auto flex size-14 items-center justify-center rounded-full"
+            style={{ backgroundColor: palette.accent, color: palette.background }}
+          >
+            <Check aria-hidden="true" className="size-7" />
+          </span>
+          <p aria-hidden="true" className="mt-3 text-3xl">
+            {emoji}
+          </p>
+          <h2 className="mt-2 font-serif text-2xl italic">
+            {t("reveal.replySent")}
+          </h2>
+          <p className="mt-1 text-sm" style={{ color: palette.muted }}>
+            They&apos;ll see it in their replies inbox.
+          </p>
+        </div>
       </section>
     );
   }
@@ -73,11 +121,9 @@ export function ReplyForm({
         color: palette.text,
       }}
     >
-      <h2 className="font-serif text-2xl italic">
-        {t("reveal.replyTitle")}
-      </h2>
+      <h2 className="font-serif text-2xl italic">Say thanks</h2>
       <p className="mt-1 text-sm" style={{ color: palette.muted }}>
-        {t("reveal.replyHint")}
+        Send a quick reaction, a note, or both. No account needed.
       </p>
 
       <div
@@ -92,7 +138,7 @@ export function ReplyForm({
             onClick={() => setEmoji(reaction)}
             aria-pressed={emoji === reaction}
             aria-label={`React with ${reaction}`}
-            className="flex size-11 items-center justify-center rounded-full text-xl transition-transform hover:scale-105"
+            className="flex size-12 items-center justify-center rounded-full text-2xl transition-transform hover:scale-105"
             style={{
               border: `1px solid ${palette.muted}`,
               backgroundColor:
@@ -105,7 +151,7 @@ export function ReplyForm({
       </div>
 
       <label htmlFor="reply-message" className="sr-only">
-        Your reply
+        Your thank-you note
       </label>
       <textarea
         id="reply-message"
@@ -113,7 +159,7 @@ export function ReplyForm({
         onChange={(event) => setMessage(event.target.value)}
         rows={3}
         maxLength={1000}
-        placeholder="Say something kind…"
+        placeholder="Say something kind — or just send the reaction…"
         className="mt-4 w-full rounded-media border p-3 text-sm leading-relaxed"
         style={{
           borderColor: palette.muted,
@@ -131,12 +177,15 @@ export function ReplyForm({
       <button
         type="button"
         onClick={send}
-        disabled={!message.trim() || sending}
+        disabled={sending}
         className="mt-3 min-h-12 rounded-full px-6 text-sm font-medium transition-opacity disabled:opacity-50"
         style={{ backgroundColor: palette.accent, color: palette.background }}
       >
-        {sending ? "Sending…" : t("reveal.replyAction")}
+        {sending ? "Sending…" : "Send thanks"}
       </button>
+      <p className="mt-2 text-[11px]" style={{ color: palette.muted }}>
+        One thank-you per visit. The reaction alone is enough.
+      </p>
     </section>
   );
 }

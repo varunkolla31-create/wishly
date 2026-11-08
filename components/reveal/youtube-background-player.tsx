@@ -1,5 +1,6 @@
 "use client";
 
+import { motion } from "framer-motion";
 import { Music2, Pause, Play } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import {
@@ -8,6 +9,42 @@ import {
 } from "@/components/music/youtube-player";
 import type { TemplatePalette } from "@/lib/catalog/types";
 import type { MusicBinding } from "@/lib/music/types";
+
+function Equalizer({
+  playing,
+  color,
+}: {
+  playing: boolean;
+  color: string;
+}) {
+  return (
+    <span className="flex h-5 items-end gap-0.5" aria-hidden="true">
+      {[8, 16, 10, 20].map((height, index) => (
+        <motion.span
+          key={index}
+          className="w-1 rounded-full"
+          style={{
+            height,
+            backgroundColor: color,
+            transformOrigin: "bottom",
+          }}
+          animate={playing ? { scaleY: [0.35, 1, 0.55] } : { scaleY: 0.3 }}
+          transition={
+            playing
+              ? {
+                  duration: 0.85,
+                  repeat: Infinity,
+                  repeatType: "mirror",
+                  delay: index * 0.09,
+                  ease: "easeInOut",
+                }
+              : { duration: 0.2 }
+          }
+        />
+      ))}
+    </span>
+  );
+}
 
 export function YouTubeBackgroundPlayer({
   music,
@@ -21,14 +58,50 @@ export function YouTubeBackgroundPlayer({
   const playerRef = useRef<YouTubePlayerHandle>(null);
   const [playing, setPlaying] = useState(false);
   const [failed, setFailed] = useState(false);
-  const [playToken, setPlayToken] = useState(autoPlay ? 1 : 0);
+  const [playToken, setPlayToken] = useState(0);
+  const [showPrompt, setShowPrompt] = useState(false);
 
   useEffect(() => {
-    if (!autoPlay) return;
-    setPlayToken((token) => token + 1);
+    let unlocked = false;
+    try {
+      unlocked =
+        window.sessionStorage.getItem("wishly_unlock_autoplay") === "1";
+      if (unlocked) window.sessionStorage.removeItem("wishly_unlock_autoplay");
+    } catch {
+      // Session storage is a convenience.
+    }
+    if (autoPlay || unlocked) setPlayToken((token) => token + 1);
   }, [autoPlay]);
 
+  useEffect(() => {
+    if (!autoPlay || playing || failed) {
+      setShowPrompt(false);
+      return undefined;
+    }
+    const timer = window.setTimeout(() => setShowPrompt(true), 1800);
+    return () => window.clearTimeout(timer);
+  }, [autoPlay, playing, failed]);
+
+  useEffect(() => {
+    const pause = () => {
+      playerRef.current?.pause();
+      setPlaying(false);
+    };
+    const onVisibility = () => {
+      if (document.hidden) pause();
+    };
+    document.addEventListener("visibilitychange", onVisibility);
+    window.addEventListener("pagehide", pause);
+    window.addEventListener("beforeunload", pause);
+    return () => {
+      document.removeEventListener("visibilitychange", onVisibility);
+      window.removeEventListener("pagehide", pause);
+      window.removeEventListener("beforeunload", pause);
+    };
+  }, []);
+
   function toggle() {
+    setShowPrompt(false);
     if (failed) return;
     if (playing) {
       playerRef.current?.pause();
@@ -40,69 +113,92 @@ export function YouTubeBackgroundPlayer({
   }
 
   return (
-    <div
-      className="sticky bottom-0 z-30 border-t backdrop-blur"
-      style={{
-        backgroundColor: palette.surface,
-        borderColor: `${palette.muted}33`,
-        color: palette.text,
-      }}
-    >
-      <div className="mx-auto flex max-w-2xl items-center gap-3 px-4 py-2.5 sm:px-8">
-        <div className="relative hidden w-24 shrink-0 overflow-hidden rounded-md bg-black sm:block">
-          <YouTubePlayer
-            ref={playerRef}
-            videoId={music.videoId}
-            title={music.title}
-            startAtSeconds={music.startAtSeconds ?? 0}
-            playToken={playToken}
-            autoplay={autoPlay}
-            loop
-            controls={false}
-            onStateChange={(state) => {
-              if (state === 1) setPlaying(true);
-              if (state === 2 || state === 0) setPlaying(false);
-            }}
-            onError={() => setFailed(true)}
-            className="rounded-md"
-          />
-        </div>
+    <>
+      <div className="fixed bottom-4 right-4 z-40 max-w-[calc(100vw-2rem)]">
+        <div
+          className="flex items-center gap-2 rounded-full border p-1.5 pr-3 shadow-[0_18px_50px_rgba(0,0,0,0.28)] backdrop-blur"
+          style={{
+            backgroundColor: palette.surface,
+            borderColor: `${palette.muted}44`,
+            color: palette.text,
+          }}
+        >
+          <div className="w-16 shrink-0 overflow-hidden rounded-full bg-black sm:w-20">
+            <YouTubePlayer
+              ref={playerRef}
+              videoId={music.videoId}
+              title={music.title}
+              startAtSeconds={music.startAtSeconds ?? 0}
+              playToken={playToken}
+              autoplay={autoPlay}
+              loop
+              controls={false}
+              onStateChange={(state) => {
+                if (state === 1) setPlaying(true);
+                if (state === 2 || state === 0) setPlaying(false);
+              }}
+              onError={() => setFailed(true)}
+              className="rounded-full"
+            />
+          </div>
 
+          <button
+            type="button"
+            onClick={toggle}
+            aria-label={
+              playing ? "Pause background music" : "Play background music"
+            }
+            className="flex size-10 shrink-0 items-center justify-center rounded-full transition-transform hover:scale-105"
+            style={{
+              backgroundColor: palette.accent,
+              color: palette.background,
+            }}
+          >
+            {playing ? (
+              <Pause aria-hidden="true" className="size-4" />
+            ) : (
+              <Play aria-hidden="true" className="ml-0.5 size-4" />
+            )}
+          </button>
+
+          <div className="min-w-0 max-w-[100px] sm:max-w-[170px]">
+            <p className="flex items-center gap-1 truncate text-xs font-medium">
+              <Music2
+                aria-hidden="true"
+                className="size-3 shrink-0 opacity-60"
+              />
+              {music.title}
+            </p>
+            <p className="truncate text-[10px] opacity-60">
+              {failed
+                ? "Open on YouTube"
+                : music.channel || "Background music"}
+            </p>
+          </div>
+
+          <Equalizer playing={playing} color={palette.accent} />
+
+          <a
+            href={music.sourceUrl}
+            target="_blank"
+            rel="noreferrer"
+            className="shrink-0 text-[10px] font-medium underline underline-offset-4 opacity-60 hover:opacity-100"
+          >
+            YT
+          </a>
+        </div>
+      </div>
+
+      {showPrompt && !playing ? (
         <button
           type="button"
           onClick={toggle}
-          aria-label={playing ? "Pause background music" : "Play background music"}
-          className="flex size-12 shrink-0 items-center justify-center rounded-full border border-current/20 transition-transform hover:scale-105"
-          style={{ backgroundColor: palette.accent, color: palette.background }}
+          className="fixed bottom-24 right-4 z-40 inline-flex items-center gap-2 rounded-full bg-ink px-4 py-3 text-xs font-medium text-canvas shadow-[0_18px_50px_rgba(0,0,0,0.3)]"
         >
-          {playing ? (
-            <Pause aria-hidden="true" className="size-5" />
-          ) : (
-            <Play aria-hidden="true" className="ml-0.5 size-5" />
-          )}
+          <Play aria-hidden="true" className="size-3.5" />
+          Tap to play music
         </button>
-
-        <div className="min-w-0 flex-1">
-          <p className="flex items-center gap-1.5 truncate text-sm font-medium">
-            <Music2 aria-hidden="true" className="size-3.5 shrink-0 opacity-60" />
-            {music.title}
-          </p>
-          <p className="truncate text-xs opacity-60">
-            {failed
-              ? "This track can't play here — open it on YouTube."
-              : music.channel || "YouTube"}
-          </p>
-        </div>
-
-        <a
-          href={music.sourceUrl}
-          target="_blank"
-          rel="noreferrer"
-          className="shrink-0 text-[11px] font-medium underline underline-offset-4 opacity-70 hover:opacity-100"
-        >
-          YouTube
-        </a>
-      </div>
-    </div>
+      ) : null}
+    </>
   );
 }

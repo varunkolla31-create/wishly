@@ -19,8 +19,22 @@ export function MusicMiniPlayer({
     const pauseForVoice = () => {
       audioRef.current?.pause();
     };
+    const pauseWhenHidden = () => {
+      if (document.hidden) audioRef.current?.pause();
+    };
+    const pauseOnLeave = () => {
+      audioRef.current?.pause();
+    };
     window.addEventListener(MUSIC_DUCK_EVENT, pauseForVoice);
-    return () => window.removeEventListener(MUSIC_DUCK_EVENT, pauseForVoice);
+    document.addEventListener("visibilitychange", pauseWhenHidden);
+    window.addEventListener("pagehide", pauseOnLeave);
+    window.addEventListener("beforeunload", pauseOnLeave);
+    return () => {
+      window.removeEventListener(MUSIC_DUCK_EVENT, pauseForVoice);
+      document.removeEventListener("visibilitychange", pauseWhenHidden);
+      window.removeEventListener("pagehide", pauseOnLeave);
+      window.removeEventListener("beforeunload", pauseOnLeave);
+    };
   }, []);
 
   function toggle() {
