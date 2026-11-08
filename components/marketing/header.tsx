@@ -22,7 +22,7 @@ export function SiteHeader() {
 
         <div className="flex items-center gap-1">
           <ThemeToggle />
-          <ButtonLink href="/dashboard">
+          <ButtonLink href="/create">
             <span className="hidden sm:inline">Create a wish</span>
             <span className="sm:hidden">Create</span>
           </ButtonLink>

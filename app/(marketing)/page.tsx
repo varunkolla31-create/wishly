@@ -55,7 +55,7 @@ export default function LandingPage() {
               {t("marketing.hero.subtitle")}
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
-              <ButtonLink href="/dashboard" size="lg">
+              <ButtonLink href="/create" size="lg">
                 {t("marketing.hero.cta")}
               </ButtonLink>
               <ButtonLink href="/templates" variant="outline" size="lg">
@@ -233,7 +233,7 @@ export default function LandingPage() {
           <p className="mx-auto mt-4 max-w-lg text-base leading-relaxed text-ink-muted">
             It takes a few minutes. It stays with them much longer.
           </p>
-          <ButtonLink href="/dashboard" size="lg" className="mt-8">
+          <ButtonLink href="/create" size="lg" className="mt-8">
             Create a wish
           </ButtonLink>
         </div>

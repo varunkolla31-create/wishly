@@ -44,7 +44,7 @@ export default function PricingPage() {
           : "When paid plans arrive, early-access wishes will stay free. Billing is not part of this release."}
       </p>
 
-      <ButtonLink href="/dashboard" size="lg" className="mt-8">
+      <ButtonLink href="/create" size="lg" className="mt-8">
         Create a wish
       </ButtonLink>
     </section>

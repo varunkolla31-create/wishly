@@ -78,7 +78,10 @@ export default async function OccasionPage({ params }: OccasionPageProps) {
               {occasion.blurb}
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
-              <ButtonLink href="/dashboard" size="lg">
+              <ButtonLink
+                href={`/create?occasion=${occasion.slug}`}
+                size="lg"
+              >
                 Create a {occasion.name.toLowerCase()} wish
               </ButtonLink>
               <ButtonLink href="/templates" variant="outline" size="lg">
@@ -162,7 +165,10 @@ export default async function OccasionPage({ params }: OccasionPageProps) {
                 </li>
               ))}
             </ol>
-            <ButtonLink href="/dashboard" className="mt-6">
+            <ButtonLink
+              href={`/create?occasion=${occasion.slug}`}
+              className="mt-6"
+            >
               Start a draft
             </ButtonLink>
           </div>
