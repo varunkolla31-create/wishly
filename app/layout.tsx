@@ -17,7 +17,11 @@ const instrumentSerif = Instrument_Serif({
   display: "swap",
 });
 
-const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
+const vercelUrl =
+  process.env.VERCEL_PROJECT_PRODUCTION_URL ?? process.env.VERCEL_URL;
+const appUrl =
+  process.env.NEXT_PUBLIC_APP_URL ??
+  (vercelUrl ? `https://${vercelUrl}` : "http://localhost:3000");
 
 export const metadata: Metadata = {
   metadataBase: new URL(appUrl),
@@ -58,7 +62,11 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html
+      lang="en"
+      suppressHydrationWarning
+      data-env={process.env.NODE_ENV}
+    >
       <body
         className={`${inter.variable} ${instrumentSerif.variable} font-sans antialiased`}
       >

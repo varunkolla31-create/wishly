@@ -13,23 +13,43 @@ import { hasUnlocked } from "@/lib/wishes/unlocked";
 
 export const dynamic = "force-dynamic";
 
-export const metadata: Metadata = {
-  title: "A wish for you",
-  description:
-    "Someone made something for you. Unlock it with the password they shared.",
-  robots: { index: false, follow: false, nocache: true },
-  openGraph: {
-    title: "A wish for you",
-    description: "Someone made something for you.",
-    type: "website",
-    images: ["/opengraph-image"],
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "A wish for you",
-    description: "Someone made something for you.",
-  },
-};
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}): Promise<Metadata> {
+  const { id } = await params;
+  const title = "🎁 Someone sent you a surprise on Wishly";
+  const description =
+    "You received a private, password-protected memory reel. Tap to unlock.";
+  const image = `/w/${id}/opengraph-image`;
+
+  return {
+    title,
+    description,
+    robots: { index: false, follow: false, nocache: true },
+    openGraph: {
+      title,
+      description,
+      type: "website",
+      url: `/w/${id}`,
+      images: [
+        {
+          url: image,
+          width: 1200,
+          height: 630,
+          alt: "A locked gift box from Wishly",
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: [image],
+    },
+  };
+}
 
 export default async function WishPage({
   params,
