@@ -1,13 +1,12 @@
 import type { Metadata } from "next";
-import { MemoryTemplateCard } from "@/src/components/three-memory/memory-template-card";
-import { MEMORY_TEMPLATES } from "@/src/components/three-memory/catalog";
+import { MemoryReelGallery } from "@/components/marketing/memory-reel-gallery";
 import { ButtonLink } from "@/components/ui/button";
 import { pageMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = pageMetadata({
   title: "3D memory reels",
   description:
-    "Six native 3D memory reel templates for birthdays, weddings, festivals, thank-yous and quiet days. Add photos and Wishly renders a 9:16 video.",
+    "120 native 3D memory reels from 8 rigs and 15 atmosphere presets. Add photos and Wishly renders a 9:16 video.",
   path: "/studio",
 });
 
@@ -21,9 +20,9 @@ export default function StudioIndexPage() {
         Photos in, a little world out.
       </h1>
       <p className="mt-5 max-w-2xl text-lg leading-relaxed text-ink-muted">
-        Six original Wishly scenes. Add three to ten photos and a wish message,
-        move through the memory in 3D, then download a silent 9:16 reel for
-        Stories, Reels or WhatsApp.
+        120 original Wishly scenes from 8 rigs × 15 atmosphere presets. Add
+        three to ten photos and a wish message, move through the memory in 3D,
+        then download a silent 9:16 reel for Stories, Reels or WhatsApp.
       </p>
       <div className="mt-8 flex flex-wrap gap-3">
         <ButtonLink href="/create" size="lg">
@@ -34,10 +33,8 @@ export default function StudioIndexPage() {
         </ButtonLink>
       </div>
 
-      <div className="mt-12 grid grid-cols-2 gap-x-5 gap-y-10 md:grid-cols-3">
-        {MEMORY_TEMPLATES.map((template) => (
-          <MemoryTemplateCard key={template.id} template={template} />
-        ))}
+      <div className="mt-12">
+        <MemoryReelGallery />
       </div>
     </main>
   );
