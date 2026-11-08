@@ -7,6 +7,8 @@ import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { OccasionStep } from "@/components/wizard/occasion-step";
 import { TemplateStep } from "@/components/wizard/template-step";
+import { GuestMediaUploader } from "@/components/wizard/guest-media-uploader";
+import { useGuestMedia } from "@/components/wizard/use-guest-media";
 import { YouTubeMusicPicker } from "@/components/music/youtube-music-picker";
 import { WriteWithAi } from "@/components/wizard/write-with-ai";
 import { getMusicTrack } from "@/lib/catalog/music";
@@ -15,6 +17,7 @@ import { usePhotoPreview } from "@/src/context/PhotoPreviewContext";
 import type { MusicBinding } from "@/lib/music/types";
 import {
   defaultMemoryTemplateId,
+  getMemoryTemplate,
   SAMPLE_PHOTOS,
   type MemoryTemplate,
 } from "@/src/components/three-memory/catalog";
@@ -27,7 +30,7 @@ import { cn } from "@/lib/utils/cn";
 
 const DRAFT_KEY = "wishly_guest_draft";
 const STEP_KEY = "wishly_guest_step";
-const STEPS = ["Occasion", "3D Reel", "Words", "Lock"] as const;
+const STEPS = ["Occasion", "3D Reel", "Photos", "Words", "Lock"] as const;
 
 interface GuestDraft {
   category: string;
@@ -101,6 +104,7 @@ export function GuestWizard({
 }) {
   const router = useRouter();
   const { photos: previewPhotos, consume } = usePhotoPreview();
+  const guestMedia = useGuestMedia();
   const [draft, setDraft] = useState<GuestDraft>(EMPTY_DRAFT);
   const [step, setStep] = useState(resuming ? STEPS.length - 1 : 0);
   const [loaded, setLoaded] = useState(false);
@@ -166,6 +170,18 @@ export function GuestWizard({
 
   const occasion = getOccasion(draft.category);
   const template = getTemplateOrDefault(draft.templateId);
+  const selectedReel = getMemoryTemplate(draft.reelTemplateId);
+  const guestPhotos = guestMedia.media
+    .filter((item) => item.kind === "photo")
+    .map((item) => item.url);
+  const guestVideoFrames = guestMedia.media
+    .filter((item) => item.kind === "video" && item.poster)
+    .map((item) => item.poster as string);
+  const reelSources = [...guestPhotos, ...guestVideoFrames, ...previewPhotos];
+  const reelPhotos =
+    reelSources.length >= 3
+      ? reelSources.slice(0, 10)
+      : [...reelSources, ...SAMPLE_PHOTOS].slice(0, 6);
   const quizReady =
     Boolean(draft.quizQuestion.trim()) &&
     [draft.quizOption0, draft.quizOption1, draft.quizOption2].every((option) =>
@@ -205,7 +221,7 @@ export function GuestWizard({
     }
     if (!contentReady) {
       toast.error("Add their name or a title, and a message, first.");
-      setStep(2);
+      setStep(3);
       return;
     }
 
@@ -217,6 +233,11 @@ export function GuestWizard({
         // The in-memory draft still survives this tab.
       }
       window.location.href = `/sign-in?redirect=${encodeURIComponent("/create?resume=1")}`;
+      return;
+    }
+
+    if (!guestMedia.ready) {
+      toast.error("Still loading your photos and videos. Try again in a second.");
       return;
     }
 
@@ -238,9 +259,44 @@ export function GuestWizard({
       const wishId = createdBody.data?.wishId;
       if (!created.ok || !wishId) throw new Error("create_failed");
 
-      const carried = consume();
       const mediaKeys: string[] = [];
-      for (const dataUrl of carried.slice(0, 10)) {
+      let failedMedia = 0;
+
+      for (const item of guestMedia.media) {
+        try {
+          const uploaded = await uploadMedia(wishId, item.kind, item.file);
+          mediaKeys.push(uploaded.key);
+
+          if (item.kind === "video" && item.poster) {
+            try {
+              const posterBlob = await (await fetch(item.poster)).blob();
+              const posterFile = new File(
+                [posterBlob],
+                `video-frame-${mediaKeys.length}.jpg`,
+                { type: "image/jpeg" },
+              );
+              const poster = await uploadMedia(wishId, "photo", posterFile);
+              mediaKeys.push(poster.key);
+            } catch {
+              failedMedia += 1;
+            }
+          }
+        } catch {
+          failedMedia += 1;
+        }
+      }
+
+      const carried = consume();
+      const guestPhotoCount =
+        guestMedia.media.filter((item) => item.kind === "photo").length +
+        guestMedia.media.filter(
+          (item) => item.kind === "video" && item.poster,
+        ).length;
+
+      for (const dataUrl of carried.slice(
+        0,
+        Math.max(0, 10 - guestPhotoCount),
+      )) {
         try {
           const blob = await (await fetch(dataUrl)).blob();
           const file = new File([blob], `photo-${mediaKeys.length + 1}.jpg`, {
@@ -249,7 +305,7 @@ export function GuestWizard({
           const item = await uploadMedia(wishId, "photo", file);
           mediaKeys.push(item.key);
         } catch {
-          // One failed photo should not block the wish.
+          failedMedia += 1;
         }
       }
 
@@ -313,7 +369,14 @@ export function GuestWizard({
 
       window.localStorage.removeItem(DRAFT_KEY);
       window.localStorage.removeItem(STEP_KEY);
-      toast.success("Your wish is live");
+      if (failedMedia > 0) {
+        toast.error(
+          "Your wish is live, but some photos or videos couldn't upload.",
+        );
+      } else {
+        toast.success("Your wish is live");
+      }
+      await guestMedia.clear();
       router.push(`/dashboard/wishes/${wishId}/card`);
     } catch (error) {
       toast.error(
@@ -429,6 +492,76 @@ export function GuestWizard({
         ) : null}
 
         {step === 2 ? (
+          <div>
+            <h2 className="font-serif text-3xl italic leading-tight text-ink">
+              Add photos or videos.
+            </h2>
+            <p className="mt-2 max-w-xl text-sm leading-relaxed text-ink-muted">
+              Put your memories inside{" "}
+              <span className="font-medium text-ink">
+                {selectedReel?.name ?? "your 3D reel"}
+              </span>
+              . Photos and short videos both work — a video&apos;s first frame
+              plays in the 3D scene, and the full video opens on the reveal
+              page.
+            </p>
+
+            <div className="mt-6 rounded-card border border-hairline bg-surface p-5">
+              <GuestMediaUploader
+                media={guestMedia.media}
+                busy={guestMedia.busy}
+                ready={guestMedia.ready}
+                onAdd={guestMedia.addFiles}
+                onRemove={guestMedia.remove}
+                maxPhotos={guestMedia.maxPhotos}
+                maxVideos={guestMedia.maxVideos}
+              />
+            </div>
+
+            <div className="mt-6 rounded-card border border-hairline bg-surface p-5">
+              <div className="flex flex-wrap items-baseline justify-between gap-2">
+                <div>
+                  <h3 className="text-sm font-medium text-ink">
+                    3D reel preview
+                  </h3>
+                  <p className="mt-1 text-xs leading-relaxed text-ink-muted">
+                    Drag the scene to move through it.
+                  </p>
+                </div>
+                <Link
+                  href={`/studio/${draft.reelTemplateId}`}
+                  className="text-xs font-medium text-coral-strong hover:text-coral-hover"
+                >
+                  Open full studio →
+                </Link>
+              </div>
+
+              <div className="mt-4 grid gap-4 sm:grid-cols-[170px_1fr] sm:items-start">
+                <MemoryPreview
+                  input={{
+                    templateId: draft.reelTemplateId,
+                    photos: reelPhotos,
+                    title: draft.title || "A memory for you",
+                    receiverName: draft.receiverName,
+                  }}
+                />
+                <div className="space-y-2 text-xs leading-relaxed text-ink-muted">
+                  <p>
+                    {guestPhotos.length + guestVideoFrames.length >= 3
+                      ? `${guestPhotos.length} photo${guestPhotos.length === 1 ? "" : "s"} and ${guestVideoFrames.length} video frame${guestVideoFrames.length === 1 ? "" : "s"} in the reel.`
+                      : `Add ${Math.max(0, 3 - guestPhotos.length - guestVideoFrames.length)} more to fill the reel.`}
+                  </p>
+                  <p>
+                    Everything stays private. Photos, videos and frames upload
+                    after you sign in to publish.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        ) : null}
+
+        {step === 3 ? (
           <div>
             <h2 className="font-serif text-3xl italic leading-tight text-ink">
               Give it the words.
@@ -591,41 +724,11 @@ export function GuestWizard({
                   />
                 </div>
               </div>
-
-              <p className="rounded-media bg-sand px-4 py-3 text-xs leading-relaxed text-ink-muted">
-                Photos, videos and voice notes unlock after you sign in — they
-                need a private place to live. Everything you&apos;ve written here
-                is kept.
-              </p>
-
-              <div className="rounded-card border border-hairline bg-canvas p-3">
-                <p className="text-xs font-semibold uppercase tracking-[0.12em] text-ink-muted">
-                  3D memory reel preview
-                </p>
-                <div className="mt-3 grid gap-3 sm:grid-cols-[150px_1fr] sm:items-start">
-                  <MemoryPreview
-                    input={{
-                      templateId: draft.reelTemplateId,
-                      photos:
-                        previewPhotos.length >= 3
-                          ? previewPhotos.slice(0, 10)
-                          : [...previewPhotos, ...SAMPLE_PHOTOS].slice(0, 6),
-                      title: draft.title || "A memory for you",
-                      receiverName: draft.receiverName,
-                    }}
-                  />
-                  <p className="text-xs leading-relaxed text-ink-muted">
-                    {previewPhotos.length >= 3
-                      ? `${previewPhotos.length} photos from the gallery are ready. They upload with your wish after you sign in.`
-                      : "Sample photos for now. Pick photos on the 3D reels page and they appear here automatically."}
-                  </p>
-                </div>
-              </div>
             </div>
           </div>
         ) : null}
 
-        {step === 3 ? (
+        {step === 4 ? (
           <div>
             <h2 className="font-serif text-3xl italic leading-tight text-ink">
               Lock it.

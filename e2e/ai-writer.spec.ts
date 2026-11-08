@@ -20,7 +20,7 @@ test("AI assistant writes options and inserts the chosen message", async ({
   );
 
   await page.goto("/create");
-  await page.getByRole("button", { name: "3. Words" }).click();
+  await page.getByRole("button", { name: "4. Words" }).click();
   await page.getByRole("button", { name: "Help me write (AI)" }).click();
   await page
     .getByLabel("Tell AI about the wish")

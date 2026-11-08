@@ -86,7 +86,7 @@ async function openMusicStep(page: Page) {
   });
 
   await page.goto("/create");
-  await page.getByRole("button", { name: "3. Words" }).click();
+  await page.getByRole("button", { name: "4. Words" }).click();
   await expect(page.getByTestId("music-section")).toBeVisible();
   await page.getByTestId("music-section").scrollIntoViewIfNeeded();
   await expect(page.getByText("Top 10 right now")).toBeVisible();
