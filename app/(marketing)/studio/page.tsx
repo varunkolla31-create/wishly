@@ -28,7 +28,7 @@ export default function StudioIndexPage() {
         <ButtonLink href="/create" size="lg">
           Make a wish
         </ButtonLink>
-        <ButtonLink href="/templates#memory-reels" variant="outline" size="lg">
+        <ButtonLink href="/templates#reels" variant="outline" size="lg">
           See all reels
         </ButtonLink>
       </div>

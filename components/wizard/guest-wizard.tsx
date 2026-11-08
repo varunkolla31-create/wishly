@@ -25,7 +25,7 @@ import { fromLocalDateTimeInput } from "@/components/wizard/types";
 import { cn } from "@/lib/utils/cn";
 
 const DRAFT_KEY = "wishly_guest_draft";
-const STEPS = ["Occasion", "Template", "Words", "Lock"] as const;
+const STEPS = ["Occasion", "3D Reel", "Words", "Lock"] as const;
 
 interface GuestDraft {
   category: string;
@@ -574,7 +574,7 @@ export function GuestWizard({
                   <p className="text-xs leading-relaxed text-ink-muted">
                     {previewPhotos.length >= 3
                       ? `${previewPhotos.length} photos from the gallery are ready. They upload with your wish after you sign in.`
-                      : "Sample photos for now. Pick photos on the Templates page and they appear here automatically."}
+                      : "Sample photos for now. Pick photos on the 3D reels page and they appear here automatically."}
                   </p>
                 </div>
               </div>

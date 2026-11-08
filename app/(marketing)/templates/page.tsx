@@ -7,9 +7,9 @@ import { TEMPLATES } from "@/lib/catalog/templates";
 import { pageMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = pageMetadata({
-  title: "Templates",
+  title: "3D reels",
   description:
-    "Eight native wish page templates and eight original 3D memory reels. Pick a look, add photos and download a 9:16 reel, all inside Wishly.",
+    "120 original 3D memory reels from 8 rigs and 15 atmosphere presets. Upload 3–10 photos once, preview every reel live, and download a silent 9:16 video.",
   path: "/templates",
 });
 
@@ -17,55 +17,35 @@ export default function TemplatesPage() {
   return (
     <>
       <PhotoPreviewBar />
-      <section className="mx-auto max-w-6xl px-4 pb-12 pt-14 sm:px-6 lg:pt-20">
+
+      <section className="mx-auto max-w-6xl px-4 pb-10 pt-14 sm:px-6 lg:pt-20">
         <p className="text-xs font-semibold uppercase tracking-[0.12em] text-ink-muted">
-          Templates
+          3D reels
         </p>
         <h1 className="mt-3 max-w-3xl font-serif text-5xl italic leading-[1.05] text-ink sm:text-6xl">
-          A page, and a little world.
+          Your photos, in a little world.
         </h1>
         <p className="mt-5 max-w-2xl text-lg leading-relaxed text-ink-muted">
-          Eight wish page looks and eight original 3D memory reels. Every
-          template is made by Wishly and previews right here — no redirects, no
-          other editor.
+          120 original 3D reels from 8 rigs and 15 atmosphere presets. Upload
+          3–10 photos once and see them inside every reel before you pick one —
+          no redirects, no other editor.
         </p>
         <div className="mt-8 flex flex-wrap gap-3">
           <ButtonLink href="/create" size="lg">
             Create a wish
           </ButtonLink>
-          <ButtonLink href="#memory-reels" variant="outline" size="lg">
-            Explore 3D reels
+          <ButtonLink href="#reels" variant="outline" size="lg">
+            Preview all 120 reels
           </ButtonLink>
         </div>
       </section>
 
-      <section className="border-t border-hairline">
+      <section id="reels" className="scroll-mt-32 border-t border-hairline">
         <div className="mx-auto max-w-6xl px-4 pb-2 pt-12 sm:px-6">
           <p className="text-xs font-semibold uppercase tracking-[0.12em] text-ink-muted">
-            Wish page templates
+            3D reels · made first
           </p>
-          <h2 className="mt-2 font-serif text-3xl italic leading-tight text-ink">
-            Pick the feeling.
-          </h2>
-        </div>
-        <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
-          <div className="grid grid-cols-2 gap-x-6 gap-y-10 md:grid-cols-3 lg:grid-cols-4">
-            {TEMPLATES.map((template) => (
-              <InteractiveTemplateCard key={template.id} template={template} />
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section
-        id="memory-reels"
-        className="scroll-mt-24 border-t border-hairline bg-sand"
-      >
-        <div className="mx-auto max-w-6xl px-4 pb-2 pt-14 sm:px-6">
-          <p className="text-xs font-semibold uppercase tracking-[0.12em] text-ink-muted">
-            3D memory reels
-          </p>
-          <h2 className="mt-3 max-w-3xl font-serif text-4xl italic leading-tight text-ink sm:text-5xl">
+          <h2 className="mt-2 font-serif text-3xl italic leading-tight text-ink sm:text-4xl">
             Three photos. One small world.
           </h2>
           <p className="mt-4 max-w-2xl text-base leading-relaxed text-ink-muted">
@@ -76,6 +56,31 @@ export default function TemplatesPage() {
         </div>
         <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
           <MemoryReelGallery />
+        </div>
+      </section>
+
+      <section
+        id="page-looks"
+        className="scroll-mt-32 border-t border-hairline bg-sand"
+      >
+        <div className="mx-auto max-w-6xl px-4 pb-2 pt-12 sm:px-6">
+          <p className="text-xs font-semibold uppercase tracking-[0.12em] text-ink-muted">
+            Then pick a page look
+          </p>
+          <h2 className="mt-2 font-serif text-3xl italic leading-tight text-ink">
+            The page around the reel.
+          </h2>
+          <p className="mt-3 max-w-2xl text-base leading-relaxed text-ink-muted">
+            Eight wish page looks for the lock screen and the letter. The reel
+            stays the main event.
+          </p>
+        </div>
+        <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
+          <div className="grid grid-cols-2 gap-x-6 gap-y-10 md:grid-cols-3 lg:grid-cols-4">
+            {TEMPLATES.map((template) => (
+              <InteractiveTemplateCard key={template.id} template={template} />
+            ))}
+          </div>
         </div>
       </section>
 

@@ -8,7 +8,7 @@ export const en = {
   "marketing.hero.subtitle":
     "Create a password-protected page for any occasion. Send the link, share the password, and let them open it like a gift.",
   "marketing.hero.cta": "Start a wish",
-  "marketing.hero.secondary": "See templates",
+  "marketing.hero.secondary": "See 3D reels",
 
   "lock.overline": "A wish for",
   "lock.heading": "Someone made something for you.",

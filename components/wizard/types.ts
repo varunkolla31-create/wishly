@@ -3,7 +3,7 @@ import type { WishGateMode } from "@/lib/repos/types";
 
 export const WIZARD_STEPS = [
   { id: "occasion", label: "Occasion" },
-  { id: "template", label: "Template" },
+  { id: "template", label: "3D Reel" },
   { id: "content", label: "Content" },
   { id: "collect", label: "Collect" },
   { id: "password", label: "Password" },

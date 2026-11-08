@@ -3,8 +3,8 @@ import { Logo } from "@/components/marketing/logo";
 
 const FOOTER_LINKS = [
   { href: "/occasions/birthday", label: "Occasions" },
-  { href: "/templates", label: "Templates" },
-  { href: "/studio", label: "3D reels" },
+  { href: "/templates", label: "3D reels" },
+  { href: "/studio", label: "Studio" },
   { href: "/pricing", label: "Pricing" },
   { href: "/privacy", label: "Privacy" },
   { href: "/terms", label: "Terms" },

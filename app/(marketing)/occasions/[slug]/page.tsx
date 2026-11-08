@@ -82,7 +82,7 @@ export default async function OccasionPage({ params }: OccasionPageProps) {
                 Create a {occasion.name.toLowerCase()} wish
               </ButtonLink>
               <ButtonLink href="/templates" variant="outline" size="lg">
-                Browse templates
+                Browse 3D reels
               </ButtonLink>
             </div>
             {occasion.tone === "calm" ? (
@@ -148,7 +148,7 @@ export default async function OccasionPage({ params }: OccasionPageProps) {
             </p>
             <ol className="mt-6 space-y-4">
               {[
-                "Choose this occasion and a template.",
+                "Choose this occasion and a 3D reel.",
                 "Add your message, photos, music, and a password.",
                 "Share the link and the password. They unlock the rest.",
               ].map((step, index) => (
@@ -172,13 +172,13 @@ export default async function OccasionPage({ params }: OccasionPageProps) {
       <section className="mx-auto max-w-6xl px-4 py-16 sm:px-6">
         <div className="flex flex-wrap items-end justify-between gap-4">
           <h2 className="font-serif text-3xl italic leading-tight text-ink">
-            More templates for this tone
+            More page looks for this tone
           </h2>
           <Link
             href="/templates"
             className="text-sm font-medium text-coral-strong hover:text-coral-hover"
           >
-            All templates →
+            All 3D reels →
           </Link>
         </div>
         <div className="mt-8 grid grid-cols-2 gap-6 md:grid-cols-3">

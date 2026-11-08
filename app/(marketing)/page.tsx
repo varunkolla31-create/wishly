@@ -141,7 +141,7 @@ export default function LandingPage() {
                 <ButtonLink href="/studio" size="lg">
                   Try the 3D studio
                 </ButtonLink>
-                <ButtonLink href="/templates#memory-reels" variant="outline" size="lg">
+                <ButtonLink href="/templates#reels" variant="outline" size="lg">
                   See all reels
                 </ButtonLink>
               </div>
@@ -200,7 +200,7 @@ export default function LandingPage() {
             </p>
           </div>
           <ButtonLink href="/templates" variant="outline">
-            Browse templates
+            Browse 3D reels
           </ButtonLink>
         </div>
         <div className="mt-8">
@@ -212,7 +212,7 @@ export default function LandingPage() {
         <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:py-20">
           <div className="max-w-xl">
             <p className="text-xs font-semibold uppercase tracking-[0.12em] text-ink-muted">
-              Templates
+              Page looks
             </p>
             <h2 className="mt-3 font-serif text-3xl italic leading-tight text-ink sm:text-4xl">
               A look for every feeling.
@@ -229,10 +229,10 @@ export default function LandingPage() {
           </div>
           <div className="mt-8">
             <Link
-              href="/templates"
+              href="/templates#page-looks"
               className="text-sm font-medium text-coral-strong hover:text-coral-hover"
             >
-              See all eight templates →
+              See all page looks →
             </Link>
           </div>
         </div>
