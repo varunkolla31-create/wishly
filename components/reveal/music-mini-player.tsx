@@ -1,19 +1,28 @@
 "use client";
 
-import { Pause, Play } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
-import type { MusicTrack, TemplatePalette } from "@/lib/catalog/types";
+import { useEffect, useRef } from "react";
+import type { MusicTrack } from "@/lib/catalog/types";
 import { MUSIC_DUCK_EVENT } from "@/lib/media/duck";
 
-export function MusicMiniPlayer({
-  track,
-  palette,
-}: {
-  track: MusicTrack;
-  palette: TemplatePalette;
-}) {
+export function MusicMiniPlayer({ track }: { track: MusicTrack }) {
   const audioRef = useRef<HTMLAudioElement>(null);
-  const [playing, setPlaying] = useState(false);
+
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    let started = false;
+    const start = () => {
+      if (started) return;
+      started = true;
+      void audio.play().catch(() => {});
+    };
+    document.addEventListener("pointerdown", start, { once: true });
+    document.addEventListener("keydown", start, { once: true });
+    return () => {
+      document.removeEventListener("pointerdown", start);
+      document.removeEventListener("keydown", start);
+    };
+  }, []);
 
   useEffect(() => {
     const pauseForVoice = () => {
@@ -37,56 +46,13 @@ export function MusicMiniPlayer({
     };
   }, []);
 
-  function toggle() {
-    const audio = audioRef.current;
-    if (!audio) return;
-
-    if (audio.paused) {
-      void audio.play().catch(() => setPlaying(false));
-    } else {
-      audio.pause();
-    }
-  }
-
   return (
-    <div
-      className="sticky bottom-0 z-30 border-t backdrop-blur"
-      style={{
-        backgroundColor: palette.surface,
-        borderColor: palette.muted,
-        color: palette.text,
-      }}
-    >
-      <audio
-        ref={audioRef}
-        src={track.file}
-        loop
-        preload="none"
-        onPlay={() => setPlaying(true)}
-        onPause={() => setPlaying(false)}
-      />
-      <div className="mx-auto flex max-w-2xl items-center gap-3 px-4 py-2.5 sm:px-8">
-        <button
-          type="button"
-          onClick={toggle}
-          aria-label={playing ? "Pause music" : "Play music"}
-          className="flex size-12 shrink-0 items-center justify-center rounded-full border border-current/20 transition-transform hover:scale-105"
-          style={{ backgroundColor: palette.accent, color: palette.background }}
-        >
-          {playing ? (
-            <Pause aria-hidden="true" className="size-5" />
-          ) : (
-            <Play aria-hidden="true" className="ml-0.5 size-5" />
-          )}
-        </button>
-        <div className="min-w-0 flex-1">
-          <p className="truncate text-sm font-medium">{track.title}</p>
-          <p className="text-xs opacity-60">{track.mood}</p>
-        </div>
-        <span className="text-[10px] font-semibold uppercase tracking-[0.12em] opacity-50">
-          Looping
-        </span>
-      </div>
-    </div>
+    <audio
+      ref={audioRef}
+      src={track.file}
+      loop
+      preload="auto"
+      aria-hidden="true"
+    />
   );
 }

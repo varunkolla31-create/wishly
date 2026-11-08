@@ -144,11 +144,10 @@ export function RevealExperience({
       {content.youtubeMusic ? (
         <YouTubeBackgroundPlayer
           music={content.youtubeMusic}
-          palette={palette}
           autoPlay={content.autoPlayMusic}
         />
       ) : music ? (
-        <MusicMiniPlayer track={music} palette={palette} />
+        <MusicMiniPlayer track={music} />
       ) : null}
     </div>
   );
