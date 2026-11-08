@@ -1,10 +1,12 @@
 "use client";
 
 import { motion, useReducedMotion } from "framer-motion";
+import { Sparkles, X } from "lucide-react";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { ReplyForm } from "@/components/receiver/reply-form";
 import { BirthdayCandle } from "@/components/reveal/birthday-candle";
+import { CopyWishLink } from "@/components/reveal/copy-wish-link";
 import { RevealExperience } from "@/components/reveal/reveal-experience";
 import { DownloadReelButton } from "@/src/components/three-memory/download-reel-button";
 import { MemoryPreview } from "@/src/components/three-memory/memory-preview";
@@ -20,6 +22,7 @@ import type { PublicWishContent } from "@/lib/wishes/public";
 
 export function WrapGate({ content }: { content: PublicWishContent }) {
   const [unwrapped, setUnwrapped] = useState(false);
+  const [replayCandle, setReplayCandle] = useState(false);
   const reduceMotion = useReducedMotion();
   const template = getTemplateOrDefault(content.templateId);
   const music = getMusicTrack(content.musicId);
@@ -34,12 +37,9 @@ export function WrapGate({ content }: { content: PublicWishContent }) {
     receiverName: content.receiverName,
   };
 
-  useEffect(() => {
-    if (!unwrapped || reduceMotion || template.confetti === "none") return;
-
-    let active = true;
+  const fireConfetti = useCallback(() => {
+    if (reduceMotion || template.confetti === "none") return;
     void import("canvas-confetti").then(({ default: confetti }) => {
-      if (!active) return;
       confetti({
         particleCount: 110,
         spread: 74,
@@ -49,11 +49,12 @@ export function WrapGate({ content }: { content: PublicWishContent }) {
         disableForReducedMotion: true,
       });
     });
+  }, [reduceMotion, template.confetti, palette.accent]);
 
-    return () => {
-      active = false;
-    };
-  }, [unwrapped, reduceMotion, template, palette.accent]);
+  useEffect(() => {
+    if (!unwrapped) return;
+    fireConfetti();
+  }, [unwrapped, fireConfetti]);
 
   if (unwrapped) {
     return (
@@ -62,6 +63,56 @@ export function WrapGate({ content }: { content: PublicWishContent }) {
         animate={{ opacity: 1 }}
         transition={{ duration: reduceMotion ? 0 : 1 }}
       >
+        {content.category === "birthday" ? (
+          <>
+            <button
+              type="button"
+              onClick={() => setReplayCandle(true)}
+              className="fixed bottom-4 left-4 z-40 inline-flex min-h-11 items-center gap-2 rounded-full border border-hairline bg-canvas/95 px-4 text-xs font-medium text-ink shadow-lg backdrop-blur transition-colors hover:bg-hover"
+            >
+              <Sparkles aria-hidden="true" className="size-3.5 text-gold" />
+              Replay candle
+            </button>
+
+            {replayCandle ? (
+              <div
+                className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-ink/70 p-4"
+                role="presentation"
+                onClick={() => setReplayCandle(false)}
+              >
+                <div
+                  role="dialog"
+                  aria-modal="true"
+                  aria-label="Replay the birthday candle"
+                  className="relative w-full max-w-md rounded-card bg-canvas p-6 text-center shadow-2xl"
+                  onClick={(event) => event.stopPropagation()}
+                >
+                  <button
+                    type="button"
+                    onClick={() => setReplayCandle(false)}
+                    aria-label="Close candle replay"
+                    className="absolute right-3 top-3 flex size-10 items-center justify-center rounded-full text-ink-muted transition-colors hover:bg-hover hover:text-ink"
+                  >
+                    <X aria-hidden="true" className="size-4" />
+                  </button>
+                  <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-ink-muted">
+                    One more wish
+                  </p>
+                  <h2 className="mt-2 font-serif text-3xl italic text-ink">
+                    Blow it out again.
+                  </h2>
+                  <BirthdayCandle
+                    onBlown={() => {
+                      fireConfetti();
+                      setReplayCandle(false);
+                    }}
+                  />
+                </div>
+              </div>
+            ) : null}
+          </>
+        ) : null}
+
         <RevealExperience
           content={{
             receiverName: content.receiverName,
@@ -96,7 +147,12 @@ export function WrapGate({ content }: { content: PublicWishContent }) {
             <div className="mt-4 grid gap-4 sm:grid-cols-[minmax(0,260px)_1fr] sm:items-start">
               <MemoryPreview input={reelInput} />
               <div className="rounded-card bg-black/35 p-4">
-                <DownloadReelButton input={reelInput} />
+                <div className="flex flex-wrap items-start gap-2">
+                  <div className="min-w-[210px] flex-1">
+                    <DownloadReelButton input={reelInput} />
+                  </div>
+                  <CopyWishLink wishId={content.id} />
+                </div>
               </div>
             </div>
           </section>

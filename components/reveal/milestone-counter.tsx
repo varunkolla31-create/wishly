@@ -42,12 +42,10 @@ export function MilestoneCounter({
     return () => window.clearInterval(timer);
   }, [target]);
 
-  if (Number.isNaN(target)) return null;
+  if (!date.trim() || Number.isNaN(target)) return null;
 
-  const value =
-    now === null
-      ? { years: 0, days: 0, hours: 0, minutes: 0, seconds: 0 }
-      : splitSince(target, now);
+  const value = now === null ? null : splitSince(target, now);
+  if (!value || (value.years === 0 && value.days === 0)) return null;
 
   const cells = [
     ["Years", value.years],

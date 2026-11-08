@@ -33,6 +33,7 @@ export function MemoryPreview({
   const imagesRef = useRef<HTMLImageElement[]>([]);
   const fontsRef = useRef<ReelFonts>(DEFAULT_FONTS);
   const viewRef = useRef({ orbit: 0, zoom: 0 });
+  const velocityRef = useRef({ orbit: 0, zoom: 0 });
   const dragRef = useRef<{ x: number; y: number } | null>(null);
   const [playing, setPlaying] = useState(true);
   const reduce = useReducedMotion() ?? false;
@@ -80,6 +81,20 @@ export function MemoryPreview({
       const seconds = Math.max(0, playing ? now - startedAt : pausedAt) / 1000;
       const duration = REEL_DURATION_MS / 1000;
       const progress = (seconds % duration) / duration;
+
+      const velocity = velocityRef.current;
+      if (!dragRef.current) {
+        viewRef.current.orbit += velocity.orbit;
+        viewRef.current.zoom = Math.max(
+          -0.9,
+          Math.min(1.2, viewRef.current.zoom + velocity.zoom),
+        );
+        velocity.orbit *= 0.93;
+        velocity.zoom *= 0.9;
+        if (Math.abs(velocity.orbit) < 0.0002) velocity.orbit = 0;
+        if (Math.abs(velocity.zoom) < 0.0002) velocity.zoom = 0;
+      }
+
       context.setTransform(0.5, 0, 0, 0.5, 0, 0);
       context.clearRect(0, 0, 1080, 1920);
       drawMemoryFrame(
@@ -107,17 +122,21 @@ export function MemoryPreview({
           if (!interactive) return;
           event.currentTarget.setPointerCapture(event.pointerId);
           dragRef.current = { x: event.clientX, y: event.clientY };
+          velocityRef.current.orbit = 0;
+          velocityRef.current.zoom = 0;
         }}
         onPointerMove={(event) => {
           if (!interactive || !dragRef.current) return;
           const deltaX = event.clientX - dragRef.current.x;
           const deltaY = event.clientY - dragRef.current.y;
           dragRef.current = { x: event.clientX, y: event.clientY };
-          viewRef.current.orbit += deltaX * 0.006;
+          viewRef.current.orbit += deltaX * 0.012;
           viewRef.current.zoom = Math.max(
-            -0.6,
-            Math.min(0.9, viewRef.current.zoom + deltaY * 0.0018),
+            -0.9,
+            Math.min(1.2, viewRef.current.zoom + deltaY * 0.0032),
           );
+          velocityRef.current.orbit = deltaX * 0.0032;
+          velocityRef.current.zoom = deltaY * 0.0012;
         }}
         onPointerUp={() => {
           dragRef.current = null;
