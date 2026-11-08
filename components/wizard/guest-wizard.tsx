@@ -25,6 +25,7 @@ import { fromLocalDateTimeInput } from "@/components/wizard/types";
 import { cn } from "@/lib/utils/cn";
 
 const DRAFT_KEY = "wishly_guest_draft";
+const STEP_KEY = "wishly_guest_step";
 const STEPS = ["Occasion", "3D Reel", "Words", "Lock"] as const;
 
 interface GuestDraft {
@@ -139,6 +140,29 @@ export function GuestWizard({
     }
   }, [draft, loaded]);
 
+  useEffect(() => {
+    let saved = 0;
+    try {
+      const raw = window.localStorage.getItem(STEP_KEY);
+      if (raw !== null) saved = Number(raw);
+    } catch {
+      saved = 0;
+    }
+    if (resuming) saved = STEPS.length - 1;
+    if (Number.isFinite(saved)) {
+      setStep(Math.min(STEPS.length - 1, Math.max(0, saved)));
+    }
+  }, [resuming]);
+
+  useEffect(() => {
+    if (!loaded) return;
+    try {
+      window.localStorage.setItem(STEP_KEY, String(step));
+    } catch {
+      // Drafts are a convenience; publishing still works.
+    }
+  }, [step, loaded]);
+
   const occasion = getOccasion(draft.category);
   const template = getTemplateOrDefault(draft.templateId);
   const quizReady =
@@ -149,12 +173,16 @@ export function GuestWizard({
     draft.quizAnswerIndex >= 0;
   const passwordReady =
     draft.gateMode === "quiz" || /^\d{4,6}$/.test(draft.password);
-  const canPublish =
+  const gateReady =
+    draft.gateMode === "quiz"
+      ? quizReady
+      : draft.gateMode === "both"
+        ? passwordReady && quizReady
+        : passwordReady;
+  const contentReady =
     draft.message.trim().length > 0 &&
-    passwordReady &&
-    (draft.gateMode === "password" ||
-      (quizReady && (draft.gateMode !== "both" || passwordReady))) &&
     (draft.title.trim().length > 0 || draft.receiverName.trim().length > 0);
+  const canSubmit = gateReady;
 
   function update<K extends keyof GuestDraft>(key: K, value: GuestDraft[K]) {
     setDraft((current) => ({ ...current, [key]: value }));
@@ -166,22 +194,28 @@ export function GuestWizard({
 
   async function publish() {
     if (publishing) return;
-    if (!canPublish) {
+    if (!gateReady) {
       toast.error(
         draft.gateMode === "quiz"
-          ? "Add a name or title, a message, and finish the memory quiz."
-          : "Add a name or title, a message, and a 4–6 digit PIN.",
+          ? "Finish the memory quiz first."
+          : "Enter a valid 4–6 digit PIN first.",
       );
+      return;
+    }
+    if (!contentReady) {
+      toast.error("Add their name or a title, and a message, first.");
+      setStep(2);
       return;
     }
 
     if (!authenticated) {
       try {
         window.localStorage.setItem(DRAFT_KEY, JSON.stringify(draft));
+        window.localStorage.setItem(STEP_KEY, String(step));
       } catch {
         // The in-memory draft still survives this tab.
       }
-      window.location.href = `/sign-in?redirect_url=${encodeURIComponent("/create?resume=1")}`;
+      window.location.href = `/sign-in?redirect=${encodeURIComponent("/create?resume=1")}`;
       return;
     }
 
@@ -277,6 +311,7 @@ export function GuestWizard({
       if (!published.ok) throw new Error("publish_failed");
 
       window.localStorage.removeItem(DRAFT_KEY);
+      window.localStorage.removeItem(STEP_KEY);
       toast.success("Your wish is live");
       router.push(`/dashboard/wishes/${wishId}/card`);
     } catch (error) {
@@ -738,6 +773,18 @@ export function GuestWizard({
         ) : null}
       </div>
 
+      {step === STEPS.length - 1 && !canSubmit ? (
+        <p className="mt-6 rounded-media bg-sand px-4 py-3 text-xs leading-relaxed text-ink-muted">
+          Set a valid 4–6 digit PIN (or finish the memory quiz) to enable the
+          publish button.
+        </p>
+      ) : null}
+      {step === STEPS.length - 1 && canSubmit && !contentReady ? (
+        <p className="mt-6 rounded-media bg-sand px-4 py-3 text-xs leading-relaxed text-ink-muted">
+          Add a name or title and a message in the Words step, then publish.
+        </p>
+      ) : null}
+
       <div className="mt-8 flex flex-wrap items-center justify-between gap-3 border-t border-hairline pt-5">
         <Button
           type="button"
@@ -758,7 +805,7 @@ export function GuestWizard({
           <Button
             type="button"
             onClick={publish}
-            disabled={!canPublish || publishing}
+            disabled={!canSubmit || publishing}
           >
             {publishing
               ? "Publishing…"
