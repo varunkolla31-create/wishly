@@ -220,8 +220,26 @@ export function env(): AppEnv {
         "WISH_UNLOCK_SECRET must be set to a real secret in production.",
       );
     }
-    if (value.AUTH_MODE === "clerk" && !value.CLERK_SECRET_KEY) {
-      throw new Error("AUTH_MODE=clerk requires CLERK_SECRET_KEY.");
+  }
+
+  if (value.AUTH_MODE === "clerk") {
+    if (!value.CLERK_SECRET_KEY) {
+      console.warn(
+        "[auth] AUTH_MODE=clerk without CLERK_SECRET_KEY; sign-in will show a setup message.",
+      );
+    }
+    if (!value.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY) {
+      console.warn(
+        "[auth] AUTH_MODE=clerk without NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY; sign-in will show a setup message.",
+      );
+    }
+    if (
+      value.NODE_ENV === "production" &&
+      value.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY?.startsWith("pk_test_")
+    ) {
+      console.warn(
+        "[auth] Clerk is using a test publishable key in production. Use a pk_live_ key for production.",
+      );
     }
   }
 

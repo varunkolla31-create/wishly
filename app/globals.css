@@ -105,3 +105,7 @@
     }
   }
 }
+
+html[data-env="production"] [data-clerk-dev-mode-notice] {
+  display: none !important;
+}

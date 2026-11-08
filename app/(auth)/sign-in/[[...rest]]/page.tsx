@@ -34,10 +34,20 @@ function SignInFallback() {
 export default async function SignInPage({
   searchParams,
 }: {
-  searchParams: Promise<{ redirect?: string; redirect_url?: string }>;
+  searchParams: Promise<{
+    redirect?: string;
+    redirect_url?: string;
+    afterSignInUrl?: string;
+    afterSignUpUrl?: string;
+  }>;
 }) {
   const params = await searchParams;
-  const redirectTo = params.redirect_url ?? params.redirect ?? "/dashboard";
+  const redirectTo =
+    params.redirect_url ??
+    params.redirect ??
+    params.afterSignInUrl ??
+    params.afterSignUpUrl ??
+    "/dashboard";
   const clerkKey = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY;
   const clerkSecret = process.env.CLERK_SECRET_KEY;
   const keyLooksValid = Boolean(
