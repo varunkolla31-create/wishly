@@ -487,8 +487,8 @@ export function GuestWizard({
             Try it before you sign up.
           </h1>
           <p className="mt-3 max-w-xl text-sm leading-relaxed text-ink-muted">
-            Build the whole thing here. Your draft stays in this browser until
-            you publish, and you only sign in at the last step.
+            Build the whole thing here. Publish instantly with a link — no
+            sign-in needed — or sign in to save it to your dashboard.
           </p>
         </div>
         <div className="text-sm text-ink-muted">
@@ -1089,6 +1089,7 @@ export function GuestWizard({
               type="button"
               onClick={guestPublish}
               disabled={!canSubmit}
+              className="disabled:bg-sand disabled:text-ink-muted disabled:opacity-100"
             >
               Publish Instant Link (No Sign-In Needed)
             </Button>

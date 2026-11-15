@@ -295,7 +295,7 @@ export function ReceiverPreview(props: ReceiverPreviewProps) {
               Back to lock
             </button>
           </div>
-          <div className="max-h-[640px] overflow-y-auto">
+          <div className="max-h-[70vh] overflow-y-auto sm:max-h-[640px]">
             <RevealExperience
               className="min-h-[560px]"
               content={content}

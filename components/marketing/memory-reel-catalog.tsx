@@ -94,8 +94,8 @@ export function MemoryReelCatalog() {
           </div>
         </div>
 
-        <div className="mt-4 grid gap-3 sm:grid-cols-3">
-          <label className="block">
+        <div className="-mx-1 mt-4 flex snap-x snap-mandatory gap-3 overflow-x-auto px-1 pb-1 sm:mx-0 sm:grid sm:grid-cols-3 sm:overflow-visible sm:px-0 sm:pb-0">
+          <label className="block min-w-[15rem] snap-start sm:min-w-0">
             <span className="text-[11px] font-semibold uppercase tracking-[0.1em] text-ink-muted">
               Occasion
             </span>
@@ -113,7 +113,7 @@ export function MemoryReelCatalog() {
             </select>
           </label>
 
-          <label className="block">
+          <label className="block min-w-[15rem] snap-start sm:min-w-0">
             <span className="text-[11px] font-semibold uppercase tracking-[0.1em] text-ink-muted">
               Rig
             </span>
@@ -131,7 +131,7 @@ export function MemoryReelCatalog() {
             </select>
           </label>
 
-          <label className="block">
+          <label className="block min-w-[15rem] snap-start sm:min-w-0">
             <span className="text-[11px] font-semibold uppercase tracking-[0.1em] text-ink-muted">
               Atmosphere
             </span>

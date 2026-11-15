@@ -1,6 +1,6 @@
 "use client";
 
-import { Pause, Play } from "lucide-react";
+import { Check, Move3d, Pause, Play } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useReducedMotion } from "framer-motion";
 import {
@@ -12,6 +12,7 @@ import {
   type ReelFonts,
 } from "@/src/components/three-memory/engine";
 import { SAMPLE_PHOTOS } from "@/src/components/three-memory/catalog";
+import { cn } from "@/lib/utils/cn";
 
 const DEFAULT_FONTS: ReelFonts = {
   serif: "Georgia, serif",
@@ -36,8 +37,19 @@ export function MemoryPreview({
   const velocityRef = useRef({ orbit: 0, zoom: 0 });
   const dragRef = useRef<{ x: number; y: number } | null>(null);
   const [playing, setPlaying] = useState(true);
+  const [isCoarse, setIsCoarse] = useState(false);
+  const [exploring, setExploring] = useState(false);
   const reduce = useReducedMotion() ?? false;
   const photoKey = input.photos.join("|");
+  const interactionsEnabled = interactive && (!isCoarse || exploring);
+
+  useEffect(() => {
+    const query = window.matchMedia("(pointer: coarse)");
+    const update = () => setIsCoarse(query.matches);
+    update();
+    query.addEventListener?.("change", update);
+    return () => query.removeEventListener?.("change", update);
+  }, []);
 
   useEffect(() => {
     fontsRef.current = reelFonts();
@@ -113,20 +125,28 @@ export function MemoryPreview({
   }, [playing, reduce]);
 
   return (
-    <div className={`relative overflow-hidden rounded-card bg-[#0B1418] ${className ?? ""}`}>
+    <div
+      className={cn(
+        "relative overflow-hidden rounded-card bg-[#0B1418]",
+        className,
+      )}
+    >
       <canvas
         ref={canvasRef}
         aria-label="Interactive 3D memory preview"
-        className="block aspect-[9/16] w-full cursor-grab touch-pan-y active:cursor-grabbing sm:touch-none"
+        className={cn(
+          "mx-auto block h-[60vh] w-auto max-w-full cursor-grab active:cursor-grabbing sm:h-auto sm:w-full sm:aspect-[9/16]",
+          exploring ? "touch-none" : "touch-pan-y sm:touch-none",
+        )}
         onPointerDown={(event) => {
-          if (!interactive) return;
+          if (!interactionsEnabled) return;
           event.currentTarget.setPointerCapture(event.pointerId);
           dragRef.current = { x: event.clientX, y: event.clientY };
           velocityRef.current.orbit = 0;
           velocityRef.current.zoom = 0;
         }}
         onPointerMove={(event) => {
-          if (!interactive || !dragRef.current) return;
+          if (!interactionsEnabled || !dragRef.current) return;
           const deltaX = event.clientX - dragRef.current.x;
           const deltaY = event.clientY - dragRef.current.y;
           dragRef.current = { x: event.clientX, y: event.clientY };
@@ -146,7 +166,36 @@ export function MemoryPreview({
         }}
       />
 
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 flex items-center justify-between gap-3 p-3">
+      {isCoarse && interactive && !exploring ? (
+        <button
+          type="button"
+          onClick={() => setExploring(true)}
+          className="absolute inset-0 z-20 flex flex-col items-center justify-center gap-2.5 bg-black/30 px-6 text-center backdrop-blur-[1px]"
+        >
+          <span className="flex size-12 items-center justify-center rounded-full bg-white/95 text-ink shadow-lg">
+            <Move3d aria-hidden="true" className="size-5" />
+          </span>
+          <span className="rounded-full bg-white/95 px-4 py-2 text-xs font-semibold text-ink shadow-lg">
+            Tap to explore 3D
+          </span>
+          <span className="max-w-[15rem] text-[11px] leading-relaxed text-white/85">
+            Scrolling stays normal until you tap in.
+          </span>
+        </button>
+      ) : null}
+
+      {isCoarse && interactive && exploring ? (
+        <button
+          type="button"
+          onClick={() => setExploring(false)}
+          className="absolute right-3 top-3 z-30 flex min-h-10 items-center gap-1.5 rounded-full bg-black/65 px-3 text-xs font-medium text-white backdrop-blur"
+        >
+          <Check aria-hidden="true" className="size-3.5" />
+          Done
+        </button>
+      ) : null}
+
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 z-30 flex items-center justify-between gap-3 p-3">
         <button
           type="button"
           onClick={() => setPlaying((value) => !value)}
@@ -160,7 +209,7 @@ export function MemoryPreview({
           {playing ? "Pause" : "Play"}
         </button>
         <span className="rounded-full bg-black/45 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.12em] text-white/80 backdrop-blur">
-          {reduce ? "Reduced motion" : "Drag to explore"}
+          {reduce ? "Reduced motion" : exploring ? "Drag to explore" : "Tap to explore"}
         </span>
       </div>
     </div>

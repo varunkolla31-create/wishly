@@ -82,6 +82,7 @@
     background-color: var(--canvas);
     color: var(--ink);
     text-rendering: optimizeLegibility;
+    overflow-x: clip;
   }
 
   :focus-visible {

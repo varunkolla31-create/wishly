@@ -10,10 +10,13 @@ export function PhotoPreviewBar() {
 
   return (
     <div className="sticky top-16 z-30 border-b border-hairline bg-canvas/80 shadow-[0_1px_0_0_var(--hairline)] backdrop-blur-md supports-[backdrop-filter]:bg-canvas/70">
-      <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-3 px-4 py-3 sm:px-6">
-        <label className="inline-flex min-h-11 cursor-pointer items-center gap-2 rounded-full bg-ink px-4 text-sm font-medium text-canvas transition-opacity hover:opacity-90">
-          <ImagePlus aria-hidden="true" className="size-4" />
-          Upload Your Photos (3–10) to Preview All 120 3D Reels Live
+      <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-2 px-4 py-2 sm:gap-3 sm:px-6 sm:py-3">
+        <label className="inline-flex min-h-11 shrink-0 cursor-pointer items-center gap-2 rounded-full bg-ink px-3.5 text-xs font-medium text-canvas transition-opacity hover:opacity-90 sm:px-4 sm:text-sm">
+          <ImagePlus aria-hidden="true" className="size-4 shrink-0" />
+          <span className="sm:hidden">Upload Photos (3–10)</span>
+          <span className="hidden sm:inline">
+            Upload Your Photos (3–10) to Preview All 120 3D Reels Live
+          </span>
           <input
             type="file"
             accept="image/*"
@@ -39,13 +42,13 @@ export function PhotoPreviewBar() {
             />
           ))}
           {displayPhotos.length === 0 ? (
-            <span className="text-xs text-ink-muted">
+            <span className="hidden text-xs text-ink-muted sm:inline">
               Add photos once and every reel below updates instantly.
             </span>
           ) : null}
         </div>
 
-        <span className="text-xs text-ink-muted">
+        <span className="hidden text-xs text-ink-muted sm:inline">
           {displayPhotos.length}/{MAX_PHOTOS} · live in every reel
         </span>
 
