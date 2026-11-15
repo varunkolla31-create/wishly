@@ -184,17 +184,6 @@ export function MemoryPreview({
         </button>
       ) : null}
 
-      {isCoarse && interactive && exploring ? (
-        <button
-          type="button"
-          onClick={() => setExploring(false)}
-          className="absolute right-3 top-3 z-30 flex min-h-10 items-center gap-1.5 rounded-full bg-black/65 px-3 text-xs font-medium text-white backdrop-blur"
-        >
-          <Check aria-hidden="true" className="size-3.5" />
-          Done
-        </button>
-      ) : null}
-
       <div className="pointer-events-none absolute inset-x-0 bottom-0 z-30 flex items-center justify-between gap-3 p-3">
         <button
           type="button"
@@ -208,9 +197,25 @@ export function MemoryPreview({
           )}
           {playing ? "Pause" : "Play"}
         </button>
-        <span className="rounded-full bg-black/45 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.12em] text-white/80 backdrop-blur">
-          {reduce ? "Reduced motion" : exploring ? "Drag to explore" : "Tap to explore"}
-        </span>
+        {isCoarse && interactive ? (
+          <button
+            type="button"
+            onClick={() => setExploring((value) => !value)}
+            aria-pressed={exploring}
+            className="pointer-events-auto flex min-h-10 items-center gap-1.5 rounded-full bg-black/65 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.12em] text-white backdrop-blur"
+          >
+            {exploring ? (
+              <Check aria-hidden="true" className="size-3.5" />
+            ) : (
+              <Move3d aria-hidden="true" className="size-3.5" />
+            )}
+            {exploring ? "Done" : "Tap to explore"}
+          </button>
+        ) : (
+          <span className="rounded-full bg-black/45 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.12em] text-white/80 backdrop-blur">
+            {reduce ? "Reduced motion" : "Drag to explore"}
+          </span>
+        )}
       </div>
     </div>
   );

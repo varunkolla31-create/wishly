@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { SlidersHorizontal } from "lucide-react";
+import { ChevronDown, SlidersHorizontal } from "lucide-react";
 import { MemoryTemplateCard } from "@/src/components/three-memory/memory-template-card";
 import {
   MEMORY_ATMOSPHERES_PUBLIC,
@@ -99,54 +99,72 @@ export function MemoryReelCatalog() {
             <span className="text-[11px] font-semibold uppercase tracking-[0.1em] text-ink-muted">
               Occasion
             </span>
-            <select
-              value={occasion}
-              onChange={(event) => update(setOccasion, event.target.value)}
-              className={`mt-1.5 ${selectClass}`}
-            >
-              <option value={ALL}>All occasions</option>
-              {OCCASIONS.map((item) => (
-                <option key={item.slug} value={item.slug}>
-                  {item.name}
-                </option>
-              ))}
-            </select>
+            <div className="relative mt-1.5">
+              <select
+                value={occasion}
+                onChange={(event) => update(setOccasion, event.target.value)}
+                className={selectClass}
+              >
+                <option value={ALL}>All occasions</option>
+                {OCCASIONS.map((item) => (
+                  <option key={item.slug} value={item.slug}>
+                    {item.name}
+                  </option>
+                ))}
+              </select>
+              <ChevronDown
+                aria-hidden="true"
+                className="pointer-events-none absolute right-3 top-1/2 size-4 -translate-y-1/2 text-ink-muted"
+              />
+            </div>
           </label>
 
           <label className="block min-w-[15rem] snap-start sm:min-w-0">
             <span className="text-[11px] font-semibold uppercase tracking-[0.1em] text-ink-muted">
               Rig
             </span>
-            <select
-              value={rig}
-              onChange={(event) => update(setRig, event.target.value)}
-              className={`mt-1.5 ${selectClass}`}
-            >
-              <option value={ALL}>All 8 rigs</option>
-              {MEMORY_RIGS_PUBLIC.map((item) => (
-                <option key={item.id} value={item.id}>
-                  {item.name}
-                </option>
-              ))}
-            </select>
+            <div className="relative mt-1.5">
+              <select
+                value={rig}
+                onChange={(event) => update(setRig, event.target.value)}
+                className={selectClass}
+              >
+                <option value={ALL}>All 8 rigs</option>
+                {MEMORY_RIGS_PUBLIC.map((item) => (
+                  <option key={item.id} value={item.id}>
+                    {item.name}
+                  </option>
+                ))}
+              </select>
+              <ChevronDown
+                aria-hidden="true"
+                className="pointer-events-none absolute right-3 top-1/2 size-4 -translate-y-1/2 text-ink-muted"
+              />
+            </div>
           </label>
 
           <label className="block min-w-[15rem] snap-start sm:min-w-0">
             <span className="text-[11px] font-semibold uppercase tracking-[0.1em] text-ink-muted">
               Atmosphere
             </span>
-            <select
-              value={atmosphere}
-              onChange={(event) => update(setAtmosphere, event.target.value)}
-              className={`mt-1.5 ${selectClass}`}
-            >
-              <option value={ALL}>All 15 atmospheres</option>
-              {MEMORY_ATMOSPHERES_PUBLIC.map((item) => (
-                <option key={item.id} value={item.id}>
-                  {item.name}
-                </option>
-              ))}
-            </select>
+            <div className="relative mt-1.5">
+              <select
+                value={atmosphere}
+                onChange={(event) => update(setAtmosphere, event.target.value)}
+                className={selectClass}
+              >
+                <option value={ALL}>All 15 atmospheres</option>
+                {MEMORY_ATMOSPHERES_PUBLIC.map((item) => (
+                  <option key={item.id} value={item.id}>
+                    {item.name}
+                  </option>
+                ))}
+              </select>
+              <ChevronDown
+                aria-hidden="true"
+                className="pointer-events-none absolute right-3 top-1/2 size-4 -translate-y-1/2 text-ink-muted"
+              />
+            </div>
           </label>
         </div>
       </div>
