@@ -14,6 +14,25 @@ import { OCCASIONS } from "@/lib/catalog/occasions";
 const PAGE_SIZE = 12;
 const ALL = "all";
 
+const RIG_INDEX = new Map(
+  MEMORY_RIGS_PUBLIC.map((item, index) => [item.id, index]),
+);
+const PRESET_INDEX = new Map(
+  MEMORY_ATMOSPHERES_PUBLIC.map((item, index) => [item.id, index]),
+);
+
+/**
+ * The raw catalog is rig-major (all 15 atmospheres for one rig, then the next).
+ * Order by atmosphere first so the first fold shows one card from every rig
+ * instead of a dozen near-identical Polaroid cards.
+ */
+const MIXED_TEMPLATES = [...MEMORY_TEMPLATES].sort((a, b) => {
+  const presetDelta =
+    (PRESET_INDEX.get(a.preset) ?? 0) - (PRESET_INDEX.get(b.preset) ?? 0);
+  if (presetDelta !== 0) return presetDelta;
+  return (RIG_INDEX.get(a.rig) ?? 0) - (RIG_INDEX.get(b.rig) ?? 0);
+});
+
 const selectClass =
   "min-h-11 w-full appearance-none rounded-full border border-hairline bg-surface px-4 pr-9 text-sm text-ink transition-colors hover:bg-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral";
 
@@ -26,7 +45,7 @@ export function MemoryReelCatalog() {
 
   const filtered = useMemo(
     () =>
-      MEMORY_TEMPLATES.filter((template) => {
+      MIXED_TEMPLATES.filter((template) => {
         if (occasion !== ALL && !template.categories.includes(occasion)) return false;
         if (rig !== ALL && template.rig !== rig) return false;
         if (atmosphere !== ALL && template.preset !== atmosphere) return false;

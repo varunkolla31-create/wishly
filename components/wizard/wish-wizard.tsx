@@ -375,6 +375,7 @@ export function WishWizard({
             wishId={wish.wishId}
             hasPassword={hasPassword}
             initialHint={wish.passwordHint}
+            media={media}
             onSaved={(password) => {
               setHasPassword(true);
               setSavedPassword(password);

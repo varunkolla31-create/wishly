@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1000" width="800" height="1000">
+  <defs>
+    <linearGradient id="g10a" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#F6D7A8"/>
+      <stop offset="0.4" stop-color="#D9A36C"/>
+      <stop offset="0.68" stop-color="#6E7F73"/>
+      <stop offset="1" stop-color="#2C3B34"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="1000" fill="url(#g10a)"/>
+  <circle cx="610" cy="270" r="86" fill="#FFE9C4" opacity="0.9"/>
+  <g fill="#31423A">
+    <path d="M0 560 l120 -200 l90 130 l70 -110 l150 220Z"/>
+    <path d="M420 560 l110 -170 l70 100 l60 -80 l140 160Z"/>
+    <path d="M0 620 h800 v380 H0Z" opacity="0.55"/>
+  </g>
+  <g fill="#22312B" opacity="0.9">
+    <path d="M80 700 l20 -90 l20 90Z"/><path d="M130 700 l16 -70 l16 70Z"/>
+    <path d="M640 700 l18 -100 l18 100Z"/><path d="M690 700 l14 -64 l14 64Z"/>
+  </g>
+  <path d="M0 740 Q200 728 400 740 T800 736 V880 H0Z" fill="#1E2C28" opacity="0.5"/>
+  <path d="M540 740 Q600 730 660 742" stroke="#FFE9C4" stroke-width="4" fill="none" opacity="0.45"/>
+  <text x="400" y="930" text-anchor="middle" font-family="Georgia, serif" font-style="italic" font-size="34" fill="#FFF3E6" opacity="0.82">the lake, early light</text>
+</svg>

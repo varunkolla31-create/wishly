@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Check } from "lucide-react";
 import { ButtonLink } from "@/components/ui/button";
 import { Reveal } from "@/components/ui/reveal";
+import { TrustStrip } from "@/components/marketing/trust-strip";
 import { pageMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = pageMetadata({
@@ -36,7 +37,9 @@ export default function PricingPage() {
         </p>
       </Reveal>
 
-      <Reveal delay={0.08} className="mt-10">
+      <TrustStrip className="mt-6" align="start" />
+
+      <Reveal delay={0.08} className="mt-8">
         <div className="relative overflow-hidden rounded-card border border-coral/25 bg-sand p-6 shadow-[0_24px_70px_-38px_rgba(194,24,79,0.55)] ring-1 ring-coral/10 sm:p-8">
           <span
             aria-hidden="true"

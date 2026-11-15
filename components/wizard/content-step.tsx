@@ -201,21 +201,6 @@ export function ContentStep({
               Revealed in a gold pill after the scratch card is cleared.
             </p>
           </div>
-
-          <div className="mt-5">
-            <label htmlFor="unlockAt" className={labelClass}>
-              Open it on a certain day (optional)
-            </label>
-            <input
-              id="unlockAt"
-              type="datetime-local"
-              {...form.register("unlockAt")}
-              className={`mt-1 ${inputClass} sm:max-w-xs`}
-            />
-            <p className={hintClass}>
-              Before this time they&apos;ll see a countdown inside the lock ring.
-            </p>
-          </div>
         </div>
 
         <div className="rounded-card border border-hairline bg-surface p-5">

@@ -50,6 +50,12 @@ export const SAMPLE_PHOTOS = [
   "/three-memory/sample-4.svg",
   "/three-memory/sample-5.svg",
   "/three-memory/sample-6.svg",
+  "/three-memory/sample-7.svg",
+  "/three-memory/sample-8.svg",
+  "/three-memory/sample-9.svg",
+  "/three-memory/sample-10.svg",
+  "/three-memory/sample-11.svg",
+  "/three-memory/sample-12.svg",
 ];
 
 const samples = (...indexes: number[]) =>
@@ -91,7 +97,7 @@ const MEMORY_RIGS: MemoryRig[] = [
       "A matte-black record spins at the centre with a gold label while your photos circle it as 3D album sleeves, with warm reflections on the floor.",
     categories: ["love-valentine", "anniversary", "wedding-engagement"],
     tone: "fun",
-    samplePhotos: samples(5, 0, 3, 2, 1),
+    samplePhotos: samples(5, 6, 7, 2, 1),
   },
   {
     id: "3d-sky-lanterns",
@@ -101,7 +107,7 @@ const MEMORY_RIGS: MemoryRig[] = [
       "Four-sided paper lanterns carry your photos as they drift upward under a sky of stars and gold bokeh, each face lit by the candle inside.",
     categories: ["diwali", "pongal", "eid", "christmas", "holi", "new-year"],
     tone: "fun",
-    samplePhotos: samples(4, 5, 1, 2, 0),
+    samplePhotos: samples(8, 9, 10, 4, 0),
   },
   {
     id: "3d-museum-corridor",
@@ -117,7 +123,7 @@ const MEMORY_RIGS: MemoryRig[] = [
       "wedding-engagement",
     ],
     tone: "fun",
-    samplePhotos: samples(1, 3, 5, 0, 2),
+    samplePhotos: samples(1, 3, 11, 6, 2),
   },
   {
     id: "3d-gift-box-explosion",
@@ -127,7 +133,7 @@ const MEMORY_RIGS: MemoryRig[] = [
       "A ribbon-wrapped cube unfolds when the scene opens, its walls folding flat as tiered photo cards and a cake rise out of the box.",
     categories: ["birthday", "wedding-engagement", "baby-shower-newborn"],
     tone: "fun",
-    samplePhotos: samples(2, 4, 0, 5, 3),
+    samplePhotos: samples(2, 4, 5, 9, 3),
   },
   {
     id: "3d-film-reel-projector",
@@ -144,7 +150,7 @@ const MEMORY_RIGS: MemoryRig[] = [
       "thank-you",
     ],
     tone: "fun",
-    samplePhotos: samples(3, 0, 4, 1, 5),
+    samplePhotos: samples(3, 0, 7, 10, 5),
   },
   {
     id: "3d-scrapbook-flipbook",
@@ -161,7 +167,7 @@ const MEMORY_RIGS: MemoryRig[] = [
       "anniversary",
     ],
     tone: "fun",
-    samplePhotos: samples(2, 4, 0, 5, 3),
+    samplePhotos: samples(2, 6, 8, 11, 3),
   },
   {
     id: "3d-candle-sanctuary",
@@ -171,7 +177,7 @@ const MEMORY_RIGS: MemoryRig[] = [
       "Photos float above a dark mirror of water, lit by a breathing candle and reflected below. Built for the quiet days.",
     categories: ["get-well-soon", "sorry", "remembrance"],
     tone: "calm",
-    samplePhotos: samples(3, 5, 2, 1, 4),
+    samplePhotos: samples(3, 11, 5, 1, 4),
   },
 ];
 

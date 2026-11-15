@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1000" width="800" height="1000">
+  <defs>
+    <linearGradient id="g7a" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2C3A33"/>
+      <stop offset="0.55" stop-color="#6D5B4A"/>
+      <stop offset="1" stop-color="#C98F6B"/>
+    </linearGradient>
+    <radialGradient id="g7b" cx="0.72" cy="0.22" r="0.55">
+      <stop offset="0" stop-color="#FFD9A0" stop-opacity="0.85"/>
+      <stop offset="1" stop-color="#FFD9A0" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="800" height="1000" fill="url(#g7a)"/>
+  <rect width="800" height="1000" fill="url(#g7b)"/>
+  <g fill="#1F2A25" opacity="0.85">
+    <path d="M0 780 Q160 700 320 770 T800 760 V1000 H0Z"/>
+    <path d="M90 760 q14 -120 40 -150 q-6 90 12 150Z"/>
+    <path d="M650 760 q-18 -150 -48 -184 q10 108 -8 184Z"/>
+  </g>
+  <g stroke="#FFE2B0" stroke-width="3" opacity="0.75">
+    <path d="M20 330 Q200 380 400 330 T780 350" fill="none"/>
+  </g>
+  <g fill="#FFD79A">
+    <circle cx="90" cy="344" r="6"/><circle cx="190" cy="360" r="5"/><circle cx="300" cy="350" r="6"/>
+    <circle cx="420" cy="338" r="5"/><circle cx="540" cy="342" r="6"/><circle cx="660" cy="348" r="5"/>
+  </g>
+  <g fill="#F6C1C9" opacity="0.9">
+    <circle cx="130" cy="690" r="22"/><circle cx="160" cy="710" r="16"/><circle cx="620" cy="700" r="20"/>
+    <circle cx="650" cy="720" r="14"/><circle cx="540" cy="740" r="12"/>
+  </g>
+  <text x="400" y="910" text-anchor="middle" font-family="Georgia, serif" font-style="italic" font-size="34" fill="#FFF3E6" opacity="0.82">the garden, after rain</text>
+</svg>

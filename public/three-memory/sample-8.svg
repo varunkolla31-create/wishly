@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1000" width="800" height="1000">
+  <defs>
+    <linearGradient id="g8a" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#1A120C"/>
+      <stop offset="0.5" stop-color="#4A2C1B"/>
+      <stop offset="1" stop-color="#8A4E2D"/>
+    </linearGradient>
+    <radialGradient id="g8b" cx="0.5" cy="0.6" r="0.5">
+      <stop offset="0" stop-color="#FFB45E" stop-opacity="0.55"/>
+      <stop offset="1" stop-color="#FFB45E" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="800" height="1000" fill="url(#g8a)"/>
+  <rect width="800" height="1000" fill="url(#g8b)"/>
+  <g opacity="0.75">
+    <circle cx="145" cy="250" r="26" fill="#FFC978" opacity="0.35"/>
+    <circle cx="655" cy="205" r="18" fill="#FFC978" opacity="0.3"/>
+    <circle cx="700" cy="300" r="10" fill="#FFC978" opacity="0.4"/>
+    <circle cx="95" cy="360" r="9" fill="#FFC978" opacity="0.35"/>
+    <circle cx="360" cy="150" r="7" fill="#FFE0B0" opacity="0.5"/>
+  </g>
+  <g>
+    <ellipse cx="400" cy="760" rx="250" ry="46" fill="#2B1A10" opacity="0.85"/>
+    <rect x="300" y="560" width="200" height="170" rx="10" fill="#3A2416" opacity="0.9"/>
+    <rect x="318" y="580" width="164" height="130" rx="6" fill="#5C3822"/>
+    <g stroke="#E9C79C" stroke-width="7" fill="none" opacity="0.85">
+      <path d="M255 600 q-26 60 0 120"/>
+      <path d="M545 600 q26 60 0 120"/>
+    </g>
+    <g fill="#D6A86F">
+      <rect x="245" y="712" width="12" height="62" rx="6"/>
+      <rect x="555" y="712" width="12" height="62" rx="6"/>
+      <ellipse cx="251" cy="784" rx="34" ry="7"/>
+      <ellipse cx="561" cy="784" rx="34" ry="7"/>
+    </g>
+    <g fill="#FFD79A">
+      <rect x="360" y="520" width="10" height="56" rx="5"/>
+      <rect x="430" y="520" width="10" height="56" rx="5"/>
+      <ellipse cx="365" cy="516" rx="7" ry="12"/>
+      <ellipse cx="435" cy="516" rx="7" ry="12"/>
+    </g>
+  </g>
+  <text x="400" y="910" text-anchor="middle" font-family="Georgia, serif" font-style="italic" font-size="34" fill="#FFF3E6" opacity="0.8">dinner that ran late</text>
+</svg>

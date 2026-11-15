@@ -117,7 +117,7 @@ export function MemoryPreview({
       <canvas
         ref={canvasRef}
         aria-label="Interactive 3D memory preview"
-        className="block aspect-[9/16] w-full cursor-grab touch-none active:cursor-grabbing"
+        className="block aspect-[9/16] w-full cursor-grab touch-pan-y active:cursor-grabbing sm:touch-none"
         onPointerDown={(event) => {
           if (!interactive) return;
           event.currentTarget.setPointerCapture(event.pointerId);

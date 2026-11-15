@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1000" width="800" height="1000">
+  <defs>
+    <linearGradient id="g9a" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#F7B98C"/>
+      <stop offset="0.42" stop-color="#E07A5F"/>
+      <stop offset="0.72" stop-color="#7C3A4A"/>
+      <stop offset="1" stop-color="#2E2331"/>
+    </linearGradient>
+    <linearGradient id="g9b" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#E6A276"/>
+      <stop offset="1" stop-color="#2A2130"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="1000" fill="url(#g9a)"/>
+  <circle cx="400" cy="470" r="120" fill="#FFE0B2" opacity="0.92"/>
+  <rect y="560" width="800" height="440" fill="url(#g9b)"/>
+  <g fill="#241C28">
+    <ellipse cx="330" cy="700" rx="26" ry="12"/>
+    <path d="M304 700 q-6 -90 30 -120 q34 30 26 120Z"/>
+    <ellipse cx="470" cy="704" rx="26" ry="12"/>
+    <path d="M444 704 q-6 -92 30 -122 q34 30 26 122Z"/>
+  </g>
+  <path d="M0 760 Q200 730 400 762 T800 754" stroke="#FFD9B0" stroke-width="8" fill="none" opacity="0.35"/>
+  <path d="M0 820 Q220 790 420 820 T800 812" stroke="#FFD9B0" stroke-width="6" fill="none" opacity="0.22"/>
+  <text x="400" y="910" text-anchor="middle" font-family="Georgia, serif" font-style="italic" font-size="34" fill="#FFF3E6" opacity="0.82">the walk back home</text>
+</svg>

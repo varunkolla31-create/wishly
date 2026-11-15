@@ -39,7 +39,7 @@ export function MemoryTemplateCard({
   }, [open]);
 
   return (
-    <article className="group">
+    <article className="group flex h-full flex-col">
       <button
         type="button"
         onClick={() => setOpen(true)}
@@ -53,12 +53,12 @@ export function MemoryTemplateCard({
           </span>
         </span>
       </button>
-      <div className="mt-3">
+      <div className="mt-3 flex flex-1 flex-col">
         <h3 className="text-sm font-medium text-ink">{template.name}</h3>
         <p className="mt-1 text-sm leading-relaxed text-ink-muted">
           {template.tagline}
         </p>
-        <div className="mt-3 flex flex-wrap gap-2">
+        <div className="mt-auto flex flex-wrap gap-2 pt-3">
           <button
             type="button"
             onClick={() => setOpen(true)}

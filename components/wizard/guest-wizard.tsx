@@ -1,12 +1,13 @@
 "use client";
 
-import { ArrowLeft, ArrowRight, Lock } from "lucide-react";
+import { ArrowLeft, ArrowRight, CalendarClock, Lock, MonitorPlay } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { OccasionStep } from "@/components/wizard/occasion-step";
 import { TemplateStep } from "@/components/wizard/template-step";
 import { GuestMediaUploader } from "@/components/wizard/guest-media-uploader";
+import { ReceiverPreview } from "@/components/wizard/receiver-preview";
 import { useGuestMedia } from "@/components/wizard/use-guest-media";
 import { PublishSuccess } from "@/components/wizard/publish-success";
 import { YouTubeMusicPicker } from "@/components/music/youtube-music-picker";
@@ -111,6 +112,7 @@ export function GuestWizard({
   const guestMedia = useGuestMedia();
   const [draft, setDraft] = useState<GuestDraft>(EMPTY_DRAFT);
   const [step, setStep] = useState(resuming ? STEPS.length - 1 : 0);
+  const [showPreview, setShowPreview] = useState(false);
   const [loaded, setLoaded] = useState(false);
   const [publishing, setPublishing] = useState(false);
   const [published, setPublished] = useState<{
@@ -779,19 +781,6 @@ export function GuestWizard({
               </div>
 
               <div>
-                <label htmlFor="guest-unlock" className={labelClass}>
-                  Open it on a certain day (optional)
-                </label>
-                <input
-                  id="guest-unlock"
-                  type="datetime-local"
-                  value={draft.unlockAt}
-                  onChange={(event) => update("unlockAt", event.target.value)}
-                  className={`mt-1 ${inputClass} sm:max-w-xs`}
-                />
-              </div>
-
-              <div>
                 <span className={labelClass}>Music</span>
                 <div className="mt-2">
                   <YouTubeMusicPicker
@@ -955,6 +944,90 @@ export function GuestWizard({
                   </div>
                 </div>
               ) : null}
+
+              <div className="rounded-card border border-hairline bg-canvas p-4">
+                <div className="flex items-center gap-2">
+                  <CalendarClock
+                    aria-hidden="true"
+                    className="size-4 text-coral-strong"
+                  />
+                  <label htmlFor="guest-unlock" className={labelClass}>
+                    Open it on a certain day (optional)
+                  </label>
+                </div>
+                <input
+                  id="guest-unlock"
+                  type="datetime-local"
+                  value={draft.unlockAt}
+                  onChange={(event) => update("unlockAt", event.target.value)}
+                  className={`mt-2 ${inputClass} sm:max-w-xs`}
+                />
+                <p className={hintClass}>
+                  Before this time the receiver sees a styled countdown instead
+                  of the password box. Leave it empty to open immediately.
+                </p>
+              </div>
+
+              <div className="rounded-card border border-hairline bg-canvas p-4">
+                <div className="flex flex-wrap items-start justify-between gap-3">
+                  <div className="max-w-md">
+                    <h3 className="flex items-center gap-2 text-sm font-medium text-ink">
+                      <MonitorPlay
+                        aria-hidden="true"
+                        className="size-4 text-coral-strong"
+                      />
+                      Preview as receiver
+                    </h3>
+                    <p className="mt-1 text-xs leading-relaxed text-ink-muted">
+                      Test the countdown, password screen and the full 3D /
+                      music reveal before publishing.
+                    </p>
+                  </div>
+                  <Button
+                    type="button"
+                    variant={showPreview ? "secondary" : "outline"}
+                    onClick={() => setShowPreview((value) => !value)}
+                    aria-expanded={showPreview}
+                  >
+                    {showPreview ? "Close preview" : "Preview as receiver"}
+                  </Button>
+                </div>
+
+                {showPreview ? (
+                  <div className="mt-4">
+                    <ReceiverPreview
+                      receiverName={draft.receiverName}
+                      title={draft.title}
+                      message={draft.message}
+                      templateId={draft.templateId}
+                      musicId={draft.musicId}
+                      music={draft.music}
+                      milestoneDate={draft.milestoneDate}
+                      milestoneLabel={draft.milestoneLabel}
+                      secretScratchMessage={draft.secretScratchMessage}
+                      giftVoucherCode={draft.giftVoucherCode}
+                      heartbeat={
+                        draft.category === "love-valentine" ||
+                        draft.category === "anniversary"
+                      }
+                      unlockAt={draft.unlockAt}
+                      hint={draft.hint}
+                      gateMode={draft.gateMode}
+                      quizQuestion={draft.quizQuestion}
+                      quizOptions={[
+                        draft.quizOption0,
+                        draft.quizOption1,
+                        draft.quizOption2,
+                      ]}
+                      media={guestMedia.media.map((item) => ({
+                        key: item.id,
+                        url: item.url,
+                        kind: item.kind,
+                      }))}
+                    />
+                  </div>
+                ) : null}
+              </div>
 
               <div className="rounded-media border border-hairline bg-canvas px-4 py-3">
                 <p className="text-xs font-semibold uppercase tracking-[0.12em] text-ink-muted">

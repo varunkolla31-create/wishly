@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1000" width="800" height="1000">
+  <defs>
+    <linearGradient id="g12a" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#141226"/>
+      <stop offset="0.6" stop-color="#2A1B33"/>
+      <stop offset="1" stop-color="#4A2330"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="1000" fill="url(#g12a)"/>
+  <g fill="#FFD79A" opacity="0.85">
+    <circle cx="180" cy="220" r="4"/><circle cx="640" cy="180" r="3"/><circle cx="720" cy="340" r="4"/>
+    <circle cx="120" cy="420" r="3"/><circle cx="520" cy="120" r="3"/>
+  </g>
+  <g stroke="#FFC978" fill="none" opacity="0.8" stroke-linecap="round">
+    <path d="M400 300 v-70 M400 300 l-52 -52 M400 300 l52 -52 M400 300 l-70 12 M400 300 l70 12" stroke-width="4"/>
+    <path d="M150 560 v-44 M150 560 l-32 -32 M150 560 l32 -32" stroke-width="3" opacity="0.7"/>
+    <path d="M660 500 v-52 M660 500 l-38 -38 M660 500 l38 -38" stroke-width="3" opacity="0.75"/>
+  </g>
+  <g fill="#D6C283" opacity="0.7">
+    <rect x="250" y="700" width="10" height="26" rx="3" transform="rotate(20 255 713)"/>
+    <rect x="520" y="740" width="10" height="26" rx="3" transform="rotate(-18 525 753)"/>
+    <rect x="380" y="780" width="8" height="22" rx="3" transform="rotate(8 384 791)"/>
+  </g>
+  <g>
+    <rect x="300" y="640" width="200" height="240" rx="14" fill="#3B2431" opacity="0.9"/>
+    <rect x="320" y="660" width="160" height="200" rx="8" fill="#5A3444"/>
+  </g>
+  <text x="400" y="930" text-anchor="middle" font-family="Georgia, serif" font-style="italic" font-size="34" fill="#FFF3E6" opacity="0.82">the night we celebrated</text>
+</svg>

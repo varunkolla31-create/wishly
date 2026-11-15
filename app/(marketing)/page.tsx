@@ -3,6 +3,7 @@ import { Lock, PlayCircle } from "lucide-react";
 import { OccasionGrid } from "@/components/marketing/occasion-grid";
 import { CalmWishPreview } from "@/components/marketing/calm-wish-preview";
 import { TemplatePreview } from "@/components/marketing/template-preview";
+import { TrustStrip } from "@/components/marketing/trust-strip";
 import { MemoryPreview } from "@/src/components/three-memory/memory-preview";
 import { SAMPLE_PHOTOS } from "@/src/components/three-memory/catalog";
 import { ButtonLink } from "@/components/ui/button";
@@ -92,6 +93,7 @@ export default function LandingPage() {
                 Password: midnight
               </span>
             </Link>
+            <TrustStrip className="mt-4" align="start" />
           </div>
 
           <div className="relative mx-auto w-full max-w-md lg:max-w-none">
@@ -118,7 +120,7 @@ export default function LandingPage() {
                   template={HERO_TEMPLATES[1]}
                   title="Happy birthday, Amma"
                   rich
-                  photos={SAMPLE_PHOTOS.slice(1, 4)}
+                  photos={SAMPLE_PHOTOS.slice(5, 8)}
                   badge={<DemoBadge password="amma" />}
                 />
               </Link>
@@ -131,7 +133,7 @@ export default function LandingPage() {
                   template={HERO_TEMPLATES[2]}
                   title="See you at midnight"
                   rich
-                  photos={SAMPLE_PHOTOS.slice(3, 6)}
+                  photos={SAMPLE_PHOTOS.slice(8, 11)}
                   badge={<DemoBadge password="midnight" />}
                 />
               </Link>

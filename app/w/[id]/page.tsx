@@ -20,9 +20,9 @@ export async function generateMetadata({
   params: Promise<{ id: string }>;
 }): Promise<Metadata> {
   const { id } = await params;
-  const title = "🎁 Someone sent you a surprise on Wishly";
+  const title = "A private Wishly page is waiting for you";
   const description =
-    "You received a private, password-protected memory reel. Tap to unlock.";
+    "Someone sent you a private, password-protected memory reel. Tap to unlock — no sign-in needed.";
   const image = `/w/${id}/opengraph-image`;
 
   return {
@@ -32,6 +32,7 @@ export async function generateMetadata({
     openGraph: {
       title,
       description,
+      siteName: "Wishly",
       type: "website",
       url: `/w/${id}`,
       images: [

@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1000" width="800" height="1000">
+  <defs>
+    <linearGradient id="g11a" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#F3E3CC"/>
+      <stop offset="0.55" stop-color="#E3C4A0"/>
+      <stop offset="1" stop-color="#B98B61"/>
+    </linearGradient>
+    <linearGradient id="g11b" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FFF6E4" stop-opacity="0.9"/>
+      <stop offset="1" stop-color="#FFF6E4" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="1000" fill="url(#g11a)"/>
+  <rect x="120" y="80" width="360" height="520" rx="16" fill="url(#g11b)"/>
+  <g fill="#8C6A4B" opacity="0.85">
+    <rect x="520" y="620" width="150" height="180" rx="10"/>
+    <path d="M595 640 q-70 -100 -20 -170 q40 60 20 170Z"/>
+    <path d="M600 650 q60 -90 10 -150 q-40 60 -10 150Z"/>
+  </g>
+  <g fill="#6E5040" opacity="0.55">
+    <rect x="90" y="700" width="640" height="10" rx="5"/>
+  </g>
+  <g fill="#F7D9AC" opacity="0.8">
+    <circle cx="640" cy="530" r="10"/><circle cx="690" cy="560" r="6"/><circle cx="560" cy="510" r="7"/>
+  </g>
+  <text x="400" y="910" text-anchor="middle" font-family="Georgia, serif" font-style="italic" font-size="34" fill="#5B3D2C" opacity="0.8">the quiet afternoon</text>
+</svg>
