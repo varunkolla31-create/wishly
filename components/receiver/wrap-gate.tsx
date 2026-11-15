@@ -121,6 +121,9 @@ export function WrapGate({ content }: { content: PublicWishContent }) {
             bonusNote: content.bonusNote,
             milestoneDate: content.milestoneDate,
             milestoneLabel: content.milestoneLabel,
+            heartbeat:
+              content.category === "love-valentine" ||
+              content.category === "anniversary",
             secretScratchMessage: content.secretScratchMessage,
             giftVoucherCode: content.giftVoucherCode,
             template,

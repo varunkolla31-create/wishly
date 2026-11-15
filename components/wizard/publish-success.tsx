@@ -17,12 +17,16 @@ export function PublishSuccess({
   password,
   occasionName,
   hint,
+  shareUrl,
+  guest = false,
 }: {
   wishId: string;
   title: string;
   password: string | null;
   occasionName?: string | null;
   hint?: string | null;
+  shareUrl?: string;
+  guest?: boolean;
 }) {
   const [origin, setOrigin] = useState("");
   const [qr, setQr] = useState<string | null>(null);
@@ -31,10 +35,11 @@ export function PublishSuccess({
   useEffect(() => {
     const base = window.location.origin;
     setOrigin(base);
+    const finalUrl = shareUrl || `${base}/w/${wishId}`;
 
     void import("qrcode")
       .then(({ toDataURL }) =>
-        toDataURL(`${base}/w/${wishId}`, {
+        toDataURL(finalUrl, {
           margin: 1,
           width: 480,
           color: { dark: "#1C1B1A", light: "#FFFFFF" },
@@ -42,9 +47,9 @@ export function PublishSuccess({
       )
       .then(setQr)
       .catch(() => setQr(null));
-  }, [wishId]);
+  }, [wishId, shareUrl]);
 
-  const url = origin ? `${origin}/w/${wishId}` : "";
+  const url = shareUrl || (origin ? `${origin}/w/${wishId}` : "");
   const shareTitle = title || "A wish for you";
 
   async function copy(value: string, which: "link" | "password") {
@@ -96,9 +101,13 @@ export function PublishSuccess({
     window.open("https://www.instagram.com/", "_blank", "noopener,noreferrer");
   }
 
-  const shareText = password
-    ? `${shareTitle} — ${url}\nPassword: ${password}`
-    : `${shareTitle} — ${url}`;
+  const shareDetails = [
+    password ? `Password: ${password}` : "",
+    hint?.trim() ? `Hint: ${hint.trim()}` : "",
+  ]
+    .filter(Boolean)
+    .join("\n");
+  const shareText = `${shareTitle} — ${url}${shareDetails ? `\n${shareDetails}` : ""}`;
 
   return (
     <main className="mx-auto max-w-2xl px-1 py-2 sm:px-0">
@@ -205,7 +214,7 @@ export function PublishSuccess({
               rel="noreferrer"
               className={shareClass}
             >
-              WhatsApp
+              Share on WhatsApp
             </a>
             <a
               href={`https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(shareTitle)}`}
@@ -254,13 +263,15 @@ export function PublishSuccess({
         </div>
 
         <div className="mt-6 flex flex-wrap gap-2">
-          <a
-            href={`/dashboard/wishes/${wishId}/card`}
-            className={shareClass}
-          >
-            <Printer aria-hidden="true" className="size-4" />
-            Print card
-          </a>
+          {guest ? null : (
+            <a
+              href={`/dashboard/wishes/${wishId}/card`}
+              className={shareClass}
+            >
+              <Printer aria-hidden="true" className="size-4" />
+              Print card
+            </a>
+          )}
           <DownloadCardButton
             title={shareTitle}
             occasionName={occasionName}
@@ -275,8 +286,8 @@ export function PublishSuccess({
             hint={hint}
             url={url}
             qrDataUrl={qr ?? ""}
-            filename={`wishly-gift-tag-${wishId}.png`}
-            label="QR gift tag"
+            filename="wishly-gift-card.png"
+            label="Download Printable QR Gift Tag (PNG)"
           />
           <a
             href="/studio"
@@ -312,13 +323,21 @@ export function PublishSuccess({
         </div>
 
         <div className="mt-8 flex flex-wrap gap-3">
-          <ButtonLink href="/dashboard">Back to dashboard</ButtonLink>
-          <ButtonLink
-            href={`/dashboard/wishes/${wishId}/edit`}
-            variant="outline"
-          >
-            Keep editing
-          </ButtonLink>
+          {guest ? (
+            <ButtonLink href="/create" variant="outline">
+              Make another wish
+            </ButtonLink>
+          ) : (
+            <>
+              <ButtonLink href="/dashboard">Back to dashboard</ButtonLink>
+              <ButtonLink
+                href={`/dashboard/wishes/${wishId}/edit`}
+                variant="outline"
+              >
+                Keep editing
+              </ButtonLink>
+            </>
+          )}
         </div>
       </div>
     </main>

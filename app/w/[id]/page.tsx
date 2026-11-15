@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
 import { DemoWish } from "@/components/receiver/demo-wish";
+import { GuestWishPage } from "@/components/receiver/guest-wish";
 import { LockScreen } from "@/components/receiver/lock-screen";
 import { getDemoWish } from "@/lib/demo/wishes";
 import { wishRepo } from "@/lib/repos/index";
@@ -57,6 +58,10 @@ export default async function WishPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
+
+  if (id.startsWith("guest-")) {
+    return <GuestWishPage guestId={id} />;
+  }
 
   const demo = getDemoWish(id);
   if (demo) return <DemoWish wish={demo} />;

@@ -9,8 +9,13 @@ const httpsUrl = z.string().refine((value) => {
 }, "Use an https URL.");
 
 export const musicBindingSchema = z.object({
-  provider: z.literal("youtube"),
-  videoId: z.string().regex(/^[A-Za-z0-9_-]{11}$/, "Use a YouTube video id."),
+  provider: z.enum(["youtube", "spotify"]),
+  videoId: z
+    .string()
+    .regex(
+      /^(?:[A-Za-z0-9_-]{11}|[A-Za-z0-9]{22})$/,
+      "Use a valid YouTube or Spotify track id.",
+    ),
   title: z.string().trim().min(1).max(200),
   channel: z.string().trim().max(120),
   thumbnailUrl: httpsUrl,

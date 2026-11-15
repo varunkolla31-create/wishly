@@ -1,12 +1,12 @@
 "use client";
 
+import { HeartbeatGate } from "@/components/reveal/heartbeat-gate";
 import { MemoryWall } from "@/components/reveal/memory-wall";
 import { MilestoneCounter } from "@/components/reveal/milestone-counter";
-import { MusicMiniPlayer } from "@/components/reveal/music-mini-player";
+import { MusicBar } from "@/components/reveal/music-bar";
 import { RevealGallery } from "@/components/reveal/reveal-gallery";
 import { ScratchCard } from "@/components/reveal/scratch-card";
 import { TypedMessage } from "@/components/reveal/typed-message";
-import { YouTubeBackgroundPlayer } from "@/components/reveal/youtube-background-player";
 import type {
   MusicTrack,
   TemplateDefinition,
@@ -29,6 +29,7 @@ export interface RevealContent {
   music: MusicTrack | null;
   youtubeMusic?: MusicBinding | null;
   autoPlayMusic?: boolean;
+  heartbeat?: boolean;
   media: MediaItem[];
   contributions?: PublicContribution[];
 }
@@ -87,6 +88,15 @@ export function RevealExperience({
         text={content.message || "Your message will appear here."}
         className="mt-8"
       />
+
+      {content.heartbeat ? (
+        <HeartbeatGate
+          postscript={
+            content.bonusNote?.trim() || content.secretScratchMessage?.trim()
+          }
+          palette={palette}
+        />
+      ) : null}
     </>
   );
 
@@ -142,12 +152,12 @@ export function RevealExperience({
       )}
 
       {content.youtubeMusic ? (
-        <YouTubeBackgroundPlayer
+        <MusicBar
           music={content.youtubeMusic}
           autoPlay={content.autoPlayMusic}
         />
       ) : music ? (
-        <MusicMiniPlayer track={music} />
+        <MusicBar track={music} />
       ) : null}
     </div>
   );

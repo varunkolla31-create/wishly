@@ -3,7 +3,7 @@
  * can hold a `MusicBinding` without pulling in the API key module.
  */
 
-export type MusicProviderId = "youtube";
+export type MusicProviderId = "youtube" | "spotify";
 
 /** What a provider returns for a video: display data only, never media. */
 export interface MusicCandidate {

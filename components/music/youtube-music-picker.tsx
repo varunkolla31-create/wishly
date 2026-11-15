@@ -193,14 +193,14 @@ export function YouTubeMusicPicker({
     setPasteState("loading");
     setPasteMessage("");
     try {
-      const response = await fetch("/api/music/resolve", {
+      const response = await fetch("/api/music/link", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ url: pasteUrl }),
       });
       const body = (await response.json()) as {
         ok: boolean;
-        data?: MusicListItem;
+        data?: MusicBinding;
         error?: { message?: string };
       };
       if (!response.ok || !body.ok || !body.data) {
@@ -208,7 +208,7 @@ export function YouTubeMusicPicker({
         setPasteMessage(body.error?.message ?? "Couldn't use that link.");
         return;
       }
-      selectItem(body.data);
+      onChange(body.data);
       setPasteUrl("");
       setPasteState("idle");
     } catch {
@@ -305,7 +305,9 @@ export function YouTubeMusicPicker({
           </div>
         ) : null}
 
-        {value ? <AudioTrimmer music={value} onChange={onChange} /> : null}
+        {value?.provider === "youtube" ? (
+          <AudioTrimmer music={value} onChange={onChange} />
+        ) : null}
 
         {hiddenVideoId ? (
           <YouTubePlayer
@@ -512,7 +514,7 @@ export function YouTubeMusicPicker({
               className="flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.12em] text-ink-muted"
             >
               <Link2 aria-hidden="true" className="size-3.5" />
-              Or paste a link
+              Song Link (Spotify Track or YouTube Video URL)
             </label>
             <span aria-hidden="true" className="h-px flex-1 bg-hairline" />
           </div>
@@ -521,7 +523,7 @@ export function YouTubeMusicPicker({
               id="music-paste-link"
               value={pasteUrl}
               onChange={(event) => setPasteUrl(event.target.value)}
-              placeholder="Paste a song link"
+              placeholder="Paste a Spotify track or YouTube video link"
               className="min-h-10 min-w-0 flex-1 rounded-full border border-hairline bg-canvas px-3 text-xs text-ink shadow-sm"
             />
             <button

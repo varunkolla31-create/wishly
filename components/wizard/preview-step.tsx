@@ -42,6 +42,9 @@ export function PreviewStep({
               ? new Date(values.milestoneDate).toISOString()
               : null,
             milestoneLabel: values.milestoneLabel,
+            heartbeat:
+              values.category === "love-valentine" ||
+              values.category === "anniversary",
             secretScratchMessage: values.secretScratchMessage,
             giftVoucherCode: values.giftVoucherCode,
             template,

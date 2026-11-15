@@ -23,6 +23,10 @@ function splitSince(target: number, now: number) {
   return { years, days, hours, minutes, seconds };
 }
 
+function pad(value: number) {
+  return String(value).padStart(2, "0");
+}
+
 export function MilestoneCounter({
   date,
   label,
@@ -45,53 +49,33 @@ export function MilestoneCounter({
   if (!date.trim() || Number.isNaN(target)) return null;
 
   const value = now === null ? null : splitSince(target, now);
-  if (!value || (value.years === 0 && value.days === 0)) return null;
+  if (!value) return null;
 
-  const cells = [
-    ["Years", value.years],
-    ["Days", value.days],
-    ["Hours", value.hours],
-    ["Minutes", value.minutes],
-    ["Seconds", value.seconds],
-  ] as const;
+  const line = `${value.years} Years • ${value.days} Days • ${pad(value.hours)} Hrs • ${pad(value.minutes)} Min • ${pad(value.seconds)} Sec`;
 
   return (
     <div
-      className="mt-8 rounded-card border px-4 py-4"
+      className="mt-8 inline-flex max-w-full flex-col rounded-card border px-4 py-3"
       style={{
         borderColor: `${palette.muted}33`,
         backgroundColor: palette.surface,
         color: palette.text,
       }}
+      role="timer"
+      aria-label={label?.trim() || "Time since a special date"}
     >
-      <p
-        className="text-[11px] font-semibold uppercase tracking-[0.12em]"
+      <span
+        className="text-[10px] font-semibold uppercase tracking-[0.12em]"
         style={{ color: palette.muted }}
       >
         {label?.trim() || "Time since"}
-      </p>
-      <div
-        className="mt-3 grid grid-cols-5 gap-1 text-center"
+      </span>
+      <span
+        className="mt-1.5 font-mono text-sm leading-relaxed sm:text-base"
         style={{ fontVariantNumeric: "tabular-nums" }}
-        aria-label="Live time since milestone"
       >
-        {cells.map(([name, amount], index) => (
-          <div key={name} className="min-w-0">
-            <span className="block font-mono text-lg leading-none sm:text-2xl">
-              {String(amount).padStart(2, "0")}
-            </span>
-            <span
-              className="mt-1 block text-[9px] font-semibold uppercase tracking-[0.1em] sm:text-[10px]"
-              style={{ color: palette.muted }}
-            >
-              {name}
-            </span>
-            {index < cells.length - 1 ? (
-              <span className="sr-only">, </span>
-            ) : null}
-          </div>
-        ))}
-      </div>
+        {line}
+      </span>
     </div>
   );
 }

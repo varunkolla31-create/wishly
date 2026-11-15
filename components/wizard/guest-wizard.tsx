@@ -12,6 +12,12 @@ import { PublishSuccess } from "@/components/wizard/publish-success";
 import { YouTubeMusicPicker } from "@/components/music/youtube-music-picker";
 import { WriteWithAi } from "@/components/wizard/write-with-ai";
 import { getMusicTrack } from "@/lib/catalog/music";
+import {
+  guestWishUrl,
+  makeGuestWishId,
+  saveGuestWish,
+  type GuestWishPayload,
+} from "@/lib/demo/guest-wish";
 import { uploadMedia } from "@/lib/media/client";
 import { usePhotoPreview } from "@/src/context/PhotoPreviewContext";
 import type { MusicBinding } from "@/lib/music/types";
@@ -113,6 +119,8 @@ export function GuestWizard({
     password: string | null;
     occasionName: string | null;
     hint: string | null;
+    shareUrl?: string;
+    guest?: boolean;
   } | null>(null);
 
   useEffect(() => {
@@ -400,6 +408,57 @@ export function GuestWizard({
     } finally {
       setPublishing(false);
     }
+  }
+
+  function guestPublish() {
+    if (!gateReady) {
+      toast.error(
+        draft.gateMode === "quiz"
+          ? "Finish the memory quiz first."
+          : "Enter a valid 4–6 digit PIN first.",
+      );
+      return;
+    }
+    if (!contentReady) {
+      toast.error("Add their name or a title, and a message, first.");
+      setStep(3);
+      return;
+    }
+
+    const payload: GuestWishPayload = {
+      version: 1,
+      id: makeGuestWishId(),
+      receiverName: draft.receiverName,
+      title: draft.title.trim() || draft.receiverName.trim() || "A wish for you",
+      message: draft.message,
+      milestoneDate: draft.milestoneDate
+        ? new Date(draft.milestoneDate).toISOString()
+        : null,
+      milestoneLabel: draft.milestoneLabel.trim() || null,
+      secretScratchMessage: draft.secretScratchMessage.trim() || null,
+      giftVoucherCode: draft.giftVoucherCode.trim() || null,
+      templateId: draft.templateId,
+      category: draft.category,
+      reelTemplateId: draft.reelTemplateId,
+      music: draft.music,
+      musicId: draft.music ? null : draft.musicId,
+      password: draft.gateMode === "quiz" ? null : draft.password,
+      hint: draft.hint.trim() || null,
+      createdAt: new Date().toISOString(),
+    };
+
+    saveGuestWish(payload);
+    const shareUrl = guestWishUrl(payload, window.location.origin);
+    setPublished({
+      wishId: payload.id,
+      title: payload.title,
+      password: payload.password,
+      occasionName: occasion?.name ?? null,
+      hint: payload.hint,
+      shareUrl,
+      guest: true,
+    });
+    toast.success("Instant wish link ready");
   }
 
   const summary = useMemo(
@@ -937,18 +996,30 @@ export function GuestWizard({
             <ArrowRight aria-hidden="true" className="size-4" />
           </Button>
         ) : (
-          <Button
-            type="button"
-            onClick={publish}
-            disabled={!canSubmit || publishing}
-          >
-            {publishing
-              ? "Publishing…"
-              : authenticated
-                ? "Publish wish"
-                : "Sign in to publish"}
-            {!authenticated ? <Lock aria-hidden="true" className="size-4" /> : null}
-          </Button>
+          <div className="flex w-full flex-col items-stretch gap-2 sm:w-auto sm:flex-row sm:items-center">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={publish}
+              disabled={!canSubmit || publishing}
+            >
+              {publishing
+                ? "Publishing…"
+                : authenticated
+                  ? "Publish wish"
+                  : "Sign in to publish"}
+              {!authenticated ? (
+                <Lock aria-hidden="true" className="size-4" />
+              ) : null}
+            </Button>
+            <Button
+              type="button"
+              onClick={guestPublish}
+              disabled={!canSubmit}
+            >
+              Publish Instant Link (No Sign-In Needed)
+            </Button>
+          </div>
         )}
       </div>
     </main>

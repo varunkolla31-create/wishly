@@ -131,7 +131,7 @@ export function BirthdayCandle({ onBlown }: { onBlown: () => void }) {
         aria-live="polite"
         className="mt-4 text-center text-sm text-ink-muted"
       >
-        {message || "Tap the flame, or let them blow it out."}
+        {message || "Tap the flame or blow into the mic to make a wish."}
       </p>
 
       <div className="mt-4 flex flex-wrap justify-center gap-2">

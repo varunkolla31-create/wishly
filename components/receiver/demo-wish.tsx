@@ -3,7 +3,8 @@
 import { motion, useReducedMotion } from "framer-motion";
 import { Eye, EyeOff, Lock, Sparkles } from "lucide-react";
 import Link from "next/link";
-import { useState, type FormEvent } from "react";
+import { useCallback, useState, type FormEvent } from "react";
+import { BirthdayCandle } from "@/components/reveal/birthday-candle";
 import { RevealExperience } from "@/components/reveal/reveal-experience";
 import { DownloadReelButton } from "@/src/components/three-memory/download-reel-button";
 import { MemoryPreview } from "@/src/components/three-memory/memory-preview";
@@ -24,6 +25,25 @@ export function DemoWish({ wish }: { wish: DemoWishData }) {
   const template = getTemplateOrDefault(wish.templateId);
   const music = getMusicTrack(wish.musicId);
   const palette = template.palette;
+  const isBirthday = wish.category === "birthday";
+  const isHeart =
+    wish.category === "love-valentine" ||
+    wish.category === "anniversary" ||
+    wish.id === "demo-midnight";
+
+  const fireConfetti = useCallback(() => {
+    if (reduceMotion || template.confetti === "none") return;
+    void import("canvas-confetti").then(({ default: confetti }) => {
+      confetti({
+        particleCount: 120,
+        spread: 76,
+        startVelocity: 34,
+        origin: { y: 0.62 },
+        colors: [palette.accent, "#D6C283", "#FFFFFF"],
+        disableForReducedMotion: true,
+      });
+    });
+  }, [reduceMotion, template.confetti, palette.accent]);
 
   const [password, setPassword] = useState("");
   const [visible, setVisible] = useState(false);
@@ -40,18 +60,7 @@ export function DemoWish({ wish }: { wish: DemoWishData }) {
     }
 
     setUnlocked(true);
-    if (reduceMotion || template.confetti === "none") return;
-
-    void import("canvas-confetti").then(({ default: confetti }) => {
-      confetti({
-        particleCount: 110,
-        spread: 74,
-        startVelocity: 34,
-        origin: { y: 0.62 },
-        colors: [palette.accent, "#D6C283", "#FFFFFF"],
-        disableForReducedMotion: true,
-      });
-    });
+    fireConfetti();
   }
 
   if (unlocked) {
@@ -61,12 +70,41 @@ export function DemoWish({ wish }: { wish: DemoWishData }) {
         animate={{ opacity: 1 }}
         transition={{ duration: reduceMotion ? 0 : 0.9 }}
       >
+        {isBirthday ? (
+          <section
+            className="mx-auto mt-10 max-w-2xl rounded-card border p-6 text-center"
+            style={{
+              borderColor: `${palette.muted}33`,
+              backgroundColor: palette.surface,
+            }}
+          >
+            <p
+              className="text-[10px] font-semibold uppercase tracking-[0.14em]"
+              style={{ color: palette.muted }}
+            >
+              Before you read
+            </p>
+            <h2
+              className="mt-2 font-serif text-3xl italic leading-tight"
+              style={{ color: palette.text }}
+            >
+              Make a wish.
+            </h2>
+            <div className="mt-4">
+              <BirthdayCandle onBlown={fireConfetti} />
+            </div>
+          </section>
+        ) : null}
+
         <RevealExperience
           content={{
             receiverName: wish.receiverName,
             title: wish.title,
             message: wish.message,
             bonusNote: wish.bonusNote,
+            milestoneDate: wish.milestoneDate ?? null,
+            milestoneLabel: wish.milestoneLabel ?? null,
+            heartbeat: isHeart,
             template,
             music,
             media: [],
