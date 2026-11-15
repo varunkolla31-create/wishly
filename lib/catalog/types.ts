@@ -18,7 +18,9 @@ export type OccasionIcon =
   | "tree"
   | "droplets"
   | "party"
-  | "star";
+  | "star"
+  | "cloud-rain"
+  | "infinity";
 
 export interface Occasion {
   slug: string;

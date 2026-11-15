@@ -6,10 +6,10 @@ export function OccasionGrid({ occasions }: { occasions: Occasion[] }) {
   return (
     <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
       {occasions.map((occasion) => (
-        <li key={occasion.slug}>
+        <li key={occasion.slug} className="h-full">
           <Link
             href={`/occasions/${occasion.slug}`}
-            className="flex min-h-20 items-center gap-3 rounded-card border border-hairline bg-surface px-4 py-4 transition-colors hover:bg-hover"
+            className="flex h-full min-h-20 items-center gap-3 rounded-card border border-hairline bg-surface px-4 py-4 transition-colors hover:bg-hover"
           >
             <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-sand text-ink">
               <OccasionIcon icon={occasion.icon} className="size-5" />

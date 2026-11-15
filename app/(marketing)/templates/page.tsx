@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
-import { MemoryReelGallery } from "@/components/marketing/memory-reel-gallery";
+import { MemoryReelCatalog } from "@/components/marketing/memory-reel-catalog";
 import { PhotoPreviewBar } from "@/components/marketing/photo-preview-bar";
 import { ButtonLink } from "@/components/ui/button";
+import { Reveal } from "@/components/ui/reveal";
 import { pageMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = pageMetadata({
@@ -38,22 +39,24 @@ export default function TemplatesPage() {
         </div>
       </section>
 
-      <section id="reels" className="scroll-mt-32 border-t border-hairline">
+      <section id="reels" className="scroll-mt-40 border-t border-hairline">
         <div className="mx-auto max-w-6xl px-4 pb-2 pt-12 sm:px-6">
-          <p className="text-xs font-semibold uppercase tracking-[0.12em] text-ink-muted">
-            3D reels · made first
-          </p>
-          <h2 className="mt-2 font-serif text-3xl italic leading-tight text-ink sm:text-4xl">
-            Three photos. One small world.
-          </h2>
-          <p className="mt-4 max-w-2xl text-base leading-relaxed text-ink-muted">
-            Add 3–10 photos and a wish message. Wishly renders an interactive 3D
-            scene and a silent 9:16 reel you can post or send. Drag any preview
-            to move through the memory. Every scene respects reduced motion.
-          </p>
+          <Reveal>
+            <p className="text-xs font-semibold uppercase tracking-[0.12em] text-ink-muted">
+              3D reels · made first
+            </p>
+            <h2 className="mt-2 font-serif text-3xl italic leading-tight text-ink sm:text-4xl">
+              Three photos. One small world.
+            </h2>
+            <p className="mt-4 max-w-2xl text-base leading-relaxed text-ink-muted">
+              Add 3–10 photos and a wish message. Wishly renders an interactive 3D
+              scene and a silent 9:16 reel you can post or send. Drag any preview
+              to move through the memory. Every scene respects reduced motion.
+            </p>
+          </Reveal>
         </div>
-        <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
-          <MemoryReelGallery />
+        <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
+          <MemoryReelCatalog />
         </div>
       </section>
 

@@ -9,7 +9,7 @@ export function PhotoPreviewBar() {
   const displayPhotos = hasUploads ? photos : [];
 
   return (
-    <div className="sticky top-16 z-30 border-b border-hairline bg-canvas/95 backdrop-blur">
+    <div className="sticky top-16 z-30 border-b border-hairline bg-canvas/80 shadow-[0_1px_0_0_var(--hairline)] backdrop-blur-md supports-[backdrop-filter]:bg-canvas/70">
       <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-3 px-4 py-3 sm:px-6">
         <label className="inline-flex min-h-11 cursor-pointer items-center gap-2 rounded-full bg-ink px-4 text-sm font-medium text-canvas transition-opacity hover:opacity-90">
           <ImagePlus aria-hidden="true" className="size-4" />

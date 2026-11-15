@@ -2,6 +2,7 @@ import {
   Baby,
   Briefcase,
   Cake,
+  CloudRain,
   Droplets,
   Flower2,
   Gem,
@@ -10,6 +11,7 @@ import {
   Heart,
   HeartHandshake,
   HeartPulse,
+  Infinity as InfinityIcon,
   Moon,
   PartyPopper,
   Sparkles,
@@ -40,6 +42,8 @@ const ICONS: Record<OccasionIconName, LucideIcon> = {
   droplets: Droplets,
   party: PartyPopper,
   star: Star,
+  "cloud-rain": CloudRain,
+  infinity: InfinityIcon,
 };
 
 export function OccasionIcon({

@@ -1,9 +1,12 @@
 import Link from "next/link";
+import { Lock, PlayCircle } from "lucide-react";
 import { OccasionGrid } from "@/components/marketing/occasion-grid";
+import { CalmWishPreview } from "@/components/marketing/calm-wish-preview";
 import { TemplatePreview } from "@/components/marketing/template-preview";
 import { MemoryPreview } from "@/src/components/three-memory/memory-preview";
 import { SAMPLE_PHOTOS } from "@/src/components/three-memory/catalog";
 import { ButtonLink } from "@/components/ui/button";
+import { Reveal } from "@/components/ui/reveal";
 import { OCCASIONS } from "@/lib/catalog/occasions";
 import { getTemplate } from "@/lib/catalog/templates";
 import type { TemplateDefinition } from "@/lib/catalog/types";
@@ -20,6 +23,15 @@ const HERO_TEMPLATES = [
   requireTemplate("confetti-pop"),
   requireTemplate("midnight-glow"),
 ] as const;
+
+function DemoBadge({ password }: { password: string }) {
+  return (
+    <span className="pointer-events-none inline-flex items-center gap-1 rounded-full border border-hairline bg-canvas/85 px-2 py-0.5 text-[9px] font-semibold text-ink shadow-sm backdrop-blur-md">
+      <Lock aria-hidden="true" className="size-2.5" strokeWidth={2.4} />
+      Password: {password}
+    </span>
+  );
+}
 
 const HOW_IT_WORKS = [
   {
@@ -54,11 +66,16 @@ export default function LandingPage() {
             <p className="mt-5 text-lg leading-relaxed text-ink-muted">
               {t("marketing.hero.subtitle")}
             </p>
-            <div className="mt-8 flex flex-wrap gap-3">
+            <div className="mt-8 flex flex-wrap items-center gap-3">
               <ButtonLink href="/create" size="lg">
                 {t("marketing.hero.cta")}
               </ButtonLink>
-              <ButtonLink href="/templates" variant="outline" size="lg">
+              <ButtonLink
+                href="/templates"
+                variant="ghost"
+                size="lg"
+                className="border border-hairline"
+              >
                 {t("marketing.hero.secondary")}
               </ButtonLink>
             </div>
@@ -67,10 +84,11 @@ export default function LandingPage() {
             </p>
             <Link
               href="/w/demo-midnight"
-              className="mt-4 inline-flex min-h-11 items-center gap-2 rounded-full border border-hairline bg-surface px-4 text-sm font-medium text-ink transition-colors hover:bg-hover"
+              className="mt-4 inline-flex items-center gap-2 rounded-full border border-hairline bg-transparent px-3 py-1.5 text-xs font-medium text-ink-muted transition-colors hover:bg-hover hover:text-ink"
             >
+              <PlayCircle aria-hidden="true" className="size-3.5" />
               Try live demo
-              <span className="rounded-full bg-gold/30 px-2 py-0.5 text-[11px] font-semibold text-ink">
+              <span className="rounded-full bg-gold/25 px-1.5 py-0.5 text-[10px] font-semibold text-ink">
                 Password: midnight
               </span>
             </Link>
@@ -86,10 +104,10 @@ export default function LandingPage() {
                 <TemplatePreview
                   template={HERO_TEMPLATES[0]}
                   title="For you, always"
+                  rich
+                  photos={SAMPLE_PHOTOS.slice(0, 3)}
+                  badge={<DemoBadge password="always" />}
                 />
-                <span className="pointer-events-none absolute right-2.5 top-2.5 rounded-full bg-canvas/90 px-2.5 py-1 text-[10px] font-semibold text-ink shadow-sm backdrop-blur">
-                  Password: always
-                </span>
               </Link>
               <Link
                 href="/w/demo-amma"
@@ -99,10 +117,10 @@ export default function LandingPage() {
                 <TemplatePreview
                   template={HERO_TEMPLATES[1]}
                   title="Happy birthday, Amma"
+                  rich
+                  photos={SAMPLE_PHOTOS.slice(1, 4)}
+                  badge={<DemoBadge password="amma" />}
                 />
-                <span className="pointer-events-none absolute right-2.5 top-2.5 rounded-full bg-canvas/90 px-2.5 py-1 text-[10px] font-semibold text-ink shadow-sm backdrop-blur">
-                  Password: amma
-                </span>
               </Link>
               <Link
                 href="/w/demo-midnight"
@@ -112,10 +130,10 @@ export default function LandingPage() {
                 <TemplatePreview
                   template={HERO_TEMPLATES[2]}
                   title="See you at midnight"
+                  rich
+                  photos={SAMPLE_PHOTOS.slice(3, 6)}
+                  badge={<DemoBadge password="midnight" />}
                 />
-                <span className="pointer-events-none absolute right-2.5 top-2.5 rounded-full bg-canvas/90 px-2.5 py-1 text-[10px] font-semibold text-ink shadow-sm backdrop-blur">
-                  Password: midnight
-                </span>
               </Link>
             </div>
           </div>
@@ -124,7 +142,7 @@ export default function LandingPage() {
 
       <section className="border-y border-hairline bg-sand">
         <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:py-20">
-          <div className="grid gap-10 lg:grid-cols-2 lg:items-center">
+          <Reveal className="grid gap-10 lg:grid-cols-2 lg:items-center">
             <div>
               <p className="text-xs font-semibold uppercase tracking-[0.12em] text-ink-muted">
                 3D memory reels
@@ -156,38 +174,39 @@ export default function LandingPage() {
               }}
               className="mx-auto w-full max-w-xs"
             />
-          </div>
+          </Reveal>
         </div>
       </section>
 
       <section className="border-y border-hairline bg-sand">
         <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:py-20">
-          <h2 className="max-w-2xl font-serif text-3xl italic leading-tight text-ink sm:text-4xl">
-            Three steps, then it&apos;s theirs.
-          </h2>
+          <Reveal>
+            <h2 className="max-w-2xl font-serif text-3xl italic leading-tight text-ink sm:text-4xl">
+              Three steps, then it&apos;s theirs.
+            </h2>
+          </Reveal>
           <div className="mt-10 grid gap-6 md:grid-cols-3">
-            {HOW_IT_WORKS.map((item) => (
-              <div
-                key={item.step}
-                className="rounded-card border border-hairline bg-surface p-6"
-              >
-                <span className="text-xs font-semibold tracking-[0.12em] text-coral-strong">
-                  {item.step}
-                </span>
-                <h3 className="mt-3 text-base font-medium text-ink">
-                  {item.title}
-                </h3>
-                <p className="mt-2 text-sm leading-relaxed text-ink-muted">
-                  {item.body}
-                </p>
-              </div>
+            {HOW_IT_WORKS.map((item, index) => (
+              <Reveal key={item.step} delay={index * 0.08}>
+                <div className="h-full rounded-card border border-hairline bg-surface p-6">
+                  <span className="text-xs font-semibold tracking-[0.12em] text-coral-strong">
+                    {item.step}
+                  </span>
+                  <h3 className="mt-3 text-base font-medium text-ink">
+                    {item.title}
+                  </h3>
+                  <p className="mt-2 text-sm leading-relaxed text-ink-muted">
+                    {item.body}
+                  </p>
+                </div>
+              </Reveal>
             ))}
           </div>
         </div>
       </section>
 
       <section className="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:py-20">
-        <div className="flex flex-wrap items-end justify-between gap-4">
+        <Reveal className="flex flex-wrap items-end justify-between gap-4">
           <div className="max-w-xl">
             <p className="text-xs font-semibold uppercase tracking-[0.12em] text-ink-muted">
               Occasions
@@ -203,14 +222,14 @@ export default function LandingPage() {
           <ButtonLink href="/templates" variant="outline">
             Browse 3D reels
           </ButtonLink>
-        </div>
-        <div className="mt-8">
+        </Reveal>
+        <Reveal className="mt-8" delay={0.08}>
           <OccasionGrid occasions={OCCASIONS} />
-        </div>
+        </Reveal>
       </section>
 
       <section className="mx-auto grid max-w-6xl gap-10 px-4 py-16 sm:px-6 lg:grid-cols-2 lg:items-center lg:py-20">
-        <div className="order-2 lg:order-1">
+        <Reveal className="order-2 lg:order-1">
           <p className="text-xs font-semibold uppercase tracking-[0.12em] text-ink-muted">
             Tone matters
           </p>
@@ -225,17 +244,14 @@ export default function LandingPage() {
           <ButtonLink href="/occasions/get-well-soon" variant="outline" className="mt-6">
             See the calm style
           </ButtonLink>
-        </div>
-        <div className="order-1 mx-auto w-full max-w-xs lg:order-2 lg:max-w-sm">
-          <TemplatePreview
-            template={requireTemplate("calm-sky")}
-            title="Thinking of you today"
-          />
-        </div>
+        </Reveal>
+        <Reveal className="order-1 mx-auto w-full max-w-xs lg:order-2 lg:max-w-sm" delay={0.08}>
+          <CalmWishPreview />
+        </Reveal>
       </section>
 
       <section className="mx-auto max-w-6xl px-4 pb-20 sm:px-6">
-        <div className="rounded-[32px] bg-sand px-6 py-14 text-center sm:px-12">
+        <Reveal className="rounded-[32px] bg-sand px-6 py-14 text-center sm:px-12">
           <h2 className="mx-auto max-w-2xl font-serif text-4xl italic leading-tight text-ink sm:text-5xl">
             Make the thing they keep.
           </h2>
@@ -245,7 +261,7 @@ export default function LandingPage() {
           <ButtonLink href="/create" size="lg" className="mt-8">
             Create a wish
           </ButtonLink>
-        </div>
+        </Reveal>
       </section>
     </>
   );

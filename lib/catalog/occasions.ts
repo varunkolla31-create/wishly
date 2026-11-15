@@ -167,7 +167,7 @@ export const OCCASIONS: Occasion[] = [
     slug: "sorry",
     name: "Sorry",
     tone: "calm",
-    icon: "flower",
+    icon: "cloud-rain",
     defaultTemplateId: "calm-sky",
     defaultMusicId: "night-sky",
     blurb:
@@ -342,6 +342,24 @@ export const OCCASIONS: Occasion[] = [
     seoTitle: "Remembrance pages",
     seoDescription:
       "Create a calm, password-protected remembrance page to gather memories and photos together.",
+  },
+  {
+    slug: "just-because",
+    name: "Just Because",
+    tone: "fun",
+    icon: "infinity",
+    defaultTemplateId: "soft-pastel",
+    defaultMusicId: "warm-glow",
+    blurb:
+      "No calendar entry, no reason needed. A small page for the person you were thinking about on an ordinary afternoon.",
+    prompts: [
+      "What made me think of you today",
+      "A small thing that made me smile",
+      "A photo from a day with no occasion",
+    ],
+    seoTitle: "Just because wish pages",
+    seoDescription:
+      "Send a just-because wish page with photos, music and a message — no occasion required.",
   },
 ];
 

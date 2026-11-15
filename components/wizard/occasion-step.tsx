@@ -25,13 +25,13 @@ export function OccasionStep({
         {OCCASIONS.map((occasion) => {
           const active = occasion.slug === selected;
           return (
-            <li key={occasion.slug}>
+            <li key={occasion.slug} className="h-full">
               <button
                 type="button"
                 onClick={() => onSelect(occasion)}
                 aria-pressed={active}
                 className={cn(
-                  "flex min-h-28 w-full flex-col items-start gap-2 rounded-card border px-4 py-4 text-left transition-colors",
+                  "flex h-full min-h-36 w-full flex-col items-start gap-2 rounded-card border px-4 py-4 text-left transition-colors",
                   active
                     ? "border-ink bg-canvas"
                     : "border-hairline bg-surface hover:bg-hover",
@@ -48,7 +48,7 @@ export function OccasionStep({
                 <span className="text-sm font-medium leading-snug text-ink">
                   {occasion.name}
                 </span>
-                <span className="text-[10px] font-semibold uppercase tracking-[0.12em] text-ink-muted">
+                <span className="mt-auto text-[10px] font-semibold uppercase tracking-[0.12em] text-ink-muted">
                   {occasion.tone === "calm" ? "Calm" : "Celebratory"}
                 </span>
               </button>
