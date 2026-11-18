@@ -57,7 +57,7 @@ export default async function OccasionPage({ params }: OccasionPageProps) {
     <>
       <section className="mx-auto max-w-6xl px-4 pb-12 pt-14 sm:px-6 lg:pt-20">
         <Link
-          href="/"
+          href="/occasions"
           className="text-sm text-ink-muted transition-colors hover:text-ink"
         >
           ← All occasions
@@ -100,7 +100,7 @@ export default async function OccasionPage({ params }: OccasionPageProps) {
               <div className="grid grid-cols-3 gap-3">
                 <TemplatePreview
                   template={defaultTemplate}
-                  title={`For ${occasion.name.toLowerCase()}`}
+                  title={occasion.sample.title}
                   className="col-span-2"
                 />
                 <div className="grid gap-3">
@@ -108,6 +108,7 @@ export default async function OccasionPage({ params }: OccasionPageProps) {
                     <TemplatePreview
                       key={template.id}
                       template={template}
+                      title={template.name}
                       className="text-sm"
                     />
                   ))}
@@ -116,10 +117,13 @@ export default async function OccasionPage({ params }: OccasionPageProps) {
             ) : (
               <TemplatePreview
                 template={defaultTemplate}
-                title={`For ${occasion.name.toLowerCase()}`}
+                title={occasion.sample.title}
                 className="mx-auto max-w-sm"
               />
             )}
+            <p className="mt-4 text-center text-sm italic text-ink-muted">
+              {occasion.sample.note}
+            </p>
           </div>
         </div>
       </section>
@@ -177,9 +181,17 @@ export default async function OccasionPage({ params }: OccasionPageProps) {
 
       <section className="mx-auto max-w-6xl px-4 py-16 sm:px-6">
         <div className="flex flex-wrap items-end justify-between gap-4">
-          <h2 className="font-serif text-3xl italic leading-tight text-ink">
-            More page looks for this tone
-          </h2>
+          <div>
+            <h2 className="font-serif text-3xl italic leading-tight text-ink">
+              More page looks for this tone
+            </h2>
+            <p className="mt-2 max-w-xl text-sm leading-relaxed text-ink-muted">
+              {occasion.tone === "calm"
+                ? `Slow light and no confetti, tuned for ${occasion.name.toLowerCase()}.`
+                : `Warmer, louder looks that still suit ${occasion.name.toLowerCase()}.`}{" "}
+              {occasion.sample.altTitle}
+            </p>
+          </div>
           <Link
             href="/templates"
             className="text-sm font-medium text-coral-strong hover:text-coral-hover"
@@ -188,8 +200,15 @@ export default async function OccasionPage({ params }: OccasionPageProps) {
           </Link>
         </div>
         <div className="mt-8 grid grid-cols-2 gap-6 md:grid-cols-3">
-          {[defaultTemplate, ...companionTemplates].map((template) => (
-            <TemplateCard key={template.id} template={template} />
+          {[defaultTemplate, ...companionTemplates].map((template, index) => (
+            <div key={template.id}>
+              <TemplateCard template={template} />
+              <p className="mt-2 text-xs leading-relaxed text-ink-muted">
+                {index === 0
+                  ? `${occasion.sample.altTitle} Suits ${occasion.name.toLowerCase()} best.`
+                  : `${template.tagline} A quieter alternate for ${occasion.name.toLowerCase()}.`}
+              </p>
+            </div>
           ))}
         </div>
       </section>

@@ -33,6 +33,21 @@ export interface Occasion {
   prompts: string[];
   seoTitle: string;
   seoDescription: string;
+  /**
+   * Copy for the sample card previews on this occasion's page. Without it every
+   * occasion showed the same "For you, always", which made each page look like
+   * a duplicate of the others.
+   */
+  sample: OccasionSample;
+}
+
+export interface OccasionSample {
+  /** The headline written on the sample card. */
+  title: string;
+  /** One line shown beneath it, in the occasion's own voice. */
+  note: string;
+  /** Headline for the "more looks for this tone" card. */
+  altTitle: string;
 }
 
 export type PhotoLayout = "stack" | "grid" | "collage";

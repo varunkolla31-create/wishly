@@ -1,6 +1,120 @@
-import type { Occasion } from "@/lib/catalog/types";
+import type { Occasion, OccasionSample } from "@/lib/catalog/types";
 
-export const OCCASIONS: Occasion[] = [
+/**
+ * Sample card copy per occasion. Each occasion writes in its own voice so its
+ * landing page cannot be mistaken for a copy of another one — the pages used to
+ * all show "For you, always".
+ */
+const OCCASION_SAMPLES: Record<string, OccasionSample> = {
+  birthday: {
+    title: "Happy birthday, Amma",
+    note: "Another year of you, and the same terrible jokes.",
+    altTitle: "Make a wish. Blow out the candle.",
+  },
+  anniversary: {
+    title: "The years, and the small rituals",
+    note: "Tea at four, the same song, the good chair.",
+    altTitle: "One more year of this, please.",
+  },
+  "love-valentine": {
+    title: "The ordinary Tuesdays",
+    note: "I like you most on the days nobody photographs.",
+    altTitle: "For you. Always.",
+  },
+  "wedding-engagement": {
+    title: "From everyone who loves you",
+    note: "A wall of wishes from the whole guest list.",
+    altTitle: "Something borrowed, something kept.",
+  },
+  "baby-shower-newborn": {
+    title: "Hello, little one",
+    note: "The family you're joining has been waiting.",
+    altTitle: "Ten tiny fingers, one very loud hello.",
+  },
+  graduation: {
+    title: "You actually did it",
+    note: "Late nights, bad coffee, one very good morning.",
+    altTitle: "The impossible semester, survived.",
+  },
+  "farewell-retirement": {
+    title: "One last Monday",
+    note: "From the whole team, before the last day.",
+    altTitle: "Slow mornings, finally.",
+  },
+  "get-well-soon": {
+    title: "Rest easy for a while",
+    note: "Slow light, no confetti, everyone pulling for you.",
+    altTitle: "Small days, gentle progress.",
+  },
+  "thank-you": {
+    title: "Thank you, properly",
+    note: "Not just a text this time. The real thing.",
+    altTitle: "For the thing you didn't have to do.",
+  },
+  sorry: {
+    title: "I'm sorry, and I mean it",
+    note: "Quietly, with the words I should have said sooner.",
+    altTitle: "Let me start again.",
+  },
+  "mothers-fathers-day": {
+    title: "Thank you, Amma",
+    note: "For the pressure cooker, the radio, the patience.",
+    altTitle: "Everything you taught me before I noticed.",
+  },
+  friendship: {
+    title: "The people who stayed",
+    note: "Ten years, three cities, one group chat.",
+    altTitle: "You're still my favourite problem.",
+  },
+  diwali: {
+    title: "Happy Diwali, from all of us",
+    note: "Lights on the balcony, sweets we didn't need.",
+    altTitle: "Light it up, phone down.",
+  },
+  pongal: {
+    title: "Pongal vaazhthukkal",
+    note: "New pot, first harvest, the whole family standing around it.",
+    altTitle: "Boil over, and take the year with you.",
+  },
+  eid: {
+    title: "Eid Mubarak, my friend",
+    note: "Until the morning prayers, and long after the biryani.",
+    altTitle: "Same table, bigger crowd.",
+  },
+  christmas: {
+    title: "Merry Christmas, you",
+    note: "Same paper stars, one more year of this.",
+    altTitle: "Pudding first, opinions later.",
+  },
+  holi: {
+    title: "Happy Holi",
+    note: "Wear something you don't mind losing.",
+    altTitle: "Bring the white shirt. Leave the dignity.",
+  },
+  "new-year": {
+    title: "See you at midnight",
+    note: "The year was loud. We made it anyway.",
+    altTitle: "New year, same people.",
+  },
+  remembrance: {
+    title: "In memory, gently",
+    note: "A quiet room, their photographs, your words.",
+    altTitle: "Some people don't leave the room.",
+  },
+  "just-because": {
+    title: "A small page, no occasion",
+    note: "You were on my mind on an ordinary afternoon.",
+    altTitle: "No reason. That's the reason.",
+  },
+};
+
+const FALLBACK_SAMPLE: OccasionSample = {
+  title: "For you, always",
+  note: "Something worth opening slowly.",
+  altTitle: "A page made just for you.",
+};
+
+const OCCASIONS_SOURCE: Omit<Occasion, "sample">[] = [
   {
     slug: "birthday",
     name: "Birthday",
@@ -362,6 +476,14 @@ export const OCCASIONS: Occasion[] = [
       "Send a just-because wish page with photos, music and a message — no occasion required.",
   },
 ];
+
+export const OCCASIONS: Occasion[] = OCCASIONS_SOURCE.map((occasion) => ({
+  ...occasion,
+  sample: OCCASION_SAMPLES[occasion.slug] ?? {
+    ...FALLBACK_SAMPLE,
+    title: `For ${occasion.name.toLowerCase()}`,
+  },
+}));
 
 const OCCASION_MAP = new Map(OCCASIONS.map((occasion) => [occasion.slug, occasion]));
 
