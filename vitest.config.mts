@@ -20,5 +20,9 @@ export default defineConfig({
     include: ["tests/unit/**/*.test.{ts,tsx}"],
     setupFiles: ["tests/setup.ts"],
     restoreMocks: true,
+    // Vitest sets NODE_ENV=test itself, but a shell that exports a global
+    // NODE_ENV=production (some CI images and Windows setups do) wins over it.
+    // Pin it here so lib/env.ts never demands production secrets under test.
+    env: { NODE_ENV: "test" },
   },
 });
