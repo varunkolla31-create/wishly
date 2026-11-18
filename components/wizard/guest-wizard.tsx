@@ -34,9 +34,17 @@ import { getTemplateOrDefault } from "@/lib/catalog/templates";
 import { fromLocalDateTimeInput } from "@/components/wizard/types";
 import { cn } from "@/lib/utils/cn";
 
-const DRAFT_KEY = "wishly_guest_draft";
-const STEP_KEY = "wishly_guest_step";
-const STEPS = ["Occasion", "3D Reel", "Photos", "Words", "Lock"] as const;
+const DRAFT_KEY = "wishly_guest_draft_v2";
+const STEP_KEY = "wishly_guest_step_v2";
+/**
+ * Occasion → Words → Photos → 3D Reel → Lock.
+ *
+ * Words comes before Photos so the photos step can show the title and receiver
+ * beside the reel preview, and the reel step last so it reflects the final
+ * words. The keys are versioned because a draft saved under the old order would
+ * otherwise resume on a different step.
+ */
+const STEPS = ["Occasion", "Words", "Photos", "3D Reel", "Lock"] as const;
 
 interface GuestDraft {
   category: string;
@@ -239,7 +247,8 @@ export function GuestWizard({
     }
     if (!contentReady) {
       toast.error("Add their name or a title, and a message, first.");
-      setStep(3);
+      // Words is step 1 in the current order.
+      setStep(1);
       return;
     }
 
@@ -430,7 +439,8 @@ export function GuestWizard({
     }
     if (!contentReady) {
       toast.error("Add their name or a title, and a message, first.");
-      setStep(3);
+      // Words is step 1 in the current order.
+      setStep(1);
       return;
     }
     if (!guestMedia.ready) {
@@ -659,7 +669,7 @@ export function GuestWizard({
           />
         ) : null}
 
-        {step === 1 ? (
+        {step === 3 ? (
           <TemplateStep
             category={draft.category}
             reelTemplateId={draft.reelTemplateId}
@@ -752,7 +762,7 @@ export function GuestWizard({
           </div>
         ) : null}
 
-        {step === 3 ? (
+        {step === 1 ? (
           <div>
             <h2 className="font-serif text-3xl italic leading-tight text-ink">
               Give it the words.

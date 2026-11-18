@@ -207,6 +207,66 @@ export default function LandingPage() {
         </div>
       </section>
 
+      <section className="border-t border-hairline bg-sand">
+        <div className="mx-auto grid max-w-6xl gap-10 px-4 py-16 sm:px-6 lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:py-20">
+          <Reveal>
+            <p className="text-xs font-semibold uppercase tracking-[0.12em] text-ink-muted">
+              Alone or with friends
+            </p>
+            <h2 className="mt-3 font-serif text-3xl italic leading-tight text-ink sm:text-4xl">
+              One wish, everyone&apos;s memories.
+            </h2>
+            <p className="mt-4 max-w-lg text-base leading-relaxed text-ink-muted">
+              Some wishes are better with a crowd. Turn a wish into a group
+              page, send friends a contributor link, and they add a photo, a
+              short video, a voice note or a message — no account needed.
+              Nothing appears until you approve it.
+            </p>
+            <p className="mt-3 max-w-lg text-sm leading-relaxed text-ink-muted">
+              Approved memories become a memory wall inside the reveal, so the
+              receiver opens one page holding everyone&apos;s words at once.
+              Contributor links are available on wishes saved to an account.
+            </p>
+            <div className="mt-6 flex flex-wrap gap-3">
+              <ButtonLink href="/create" size="lg">
+                Start a group wish
+              </ButtonLink>
+              <ButtonLink
+                href="/occasions/wedding-engagement"
+                variant="outline"
+                size="lg"
+              >
+                See a group occasion
+              </ButtonLink>
+            </div>
+          </Reveal>
+
+          <Reveal delay={0.08} className="rounded-card border border-hairline bg-surface p-6">
+            <p className="text-xs font-semibold uppercase tracking-[0.12em] text-ink-muted">
+              How collecting works
+            </p>
+            <ol className="mt-4 space-y-4">
+              {[
+                "You create the wish and switch it to group mode.",
+                "You send friends the contributor link.",
+                "They add memories with just their name — no sign-in.",
+                "You approve, hide, reorder or remove each one.",
+                "Everyone's approved memories appear in the reveal.",
+              ].map((step, index) => (
+                <li key={step} className="flex gap-3">
+                  <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-ink text-xs font-medium text-canvas">
+                    {index + 1}
+                  </span>
+                  <p className="pt-0.5 text-sm leading-relaxed text-ink-muted">
+                    {step}
+                  </p>
+                </li>
+              ))}
+            </ol>
+          </Reveal>
+        </div>
+      </section>
+
       <section className="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:py-20">
         <Reveal className="flex flex-wrap items-end justify-between gap-4">
           <div className="max-w-xl">
