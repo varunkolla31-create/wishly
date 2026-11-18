@@ -1327,38 +1327,116 @@ export function drawMemoryFrame(
   context.restore();
 }
 
-function pickMime() {
-  if (typeof MediaRecorder === "undefined") return "";
-  for (const type of [
-    "video/mp4;codecs=avc1",
-    "video/webm;codecs=vp9",
-    "video/webm;codecs=vp8",
-    "video/webm",
-  ]) {
+/**
+ * Which container this browser can actually record.
+ *
+ * `mp4` is the one that plays everywhere (WhatsApp, Instagram, iOS Safari).
+ * Chrome and Edge record H.264 in an MP4 container; Safari records MP4 but not
+ * WebM; Firefox generally records WebM only. So the caller gets a definite
+ * answer up front and can tell the user what they are about to get.
+ */
+export type ReelContainer = "mp4" | "webm";
+
+export interface ReelCapability {
+  container: ReelContainer;
+  mime: string;
+  /** True when MP4 was requested but this browser can only make WebM. */
+  degraded: boolean;
+}
+
+export function reelCapability(): ReelCapability | null {
+  if (typeof MediaRecorder === "undefined") return null;
+
+  const candidates: { mime: string; container: ReelContainer }[] = [
+    { mime: "video/mp4;codecs=avc1.42E01E", container: "mp4" },
+    { mime: "video/mp4;codecs=avc1", container: "mp4" },
+    { mime: "video/mp4", container: "mp4" },
+    { mime: "video/webm;codecs=vp9", container: "webm" },
+    { mime: "video/webm;codecs=vp8", container: "webm" },
+    { mime: "video/webm", container: "webm" },
+  ];
+
+  for (const candidate of candidates) {
     try {
-      if (MediaRecorder.isTypeSupported(type)) return type;
+      if (MediaRecorder.isTypeSupported(candidate.mime)) {
+        return {
+          ...candidate,
+          degraded: candidate.container === "webm",
+        };
+      }
     } catch {
-      // ignore
+      // isTypeSupported can throw on odd values; keep looking.
     }
   }
-  return "";
+
+  return null;
+}
+
+export interface RenderOptions {
+  onProgress?: (progress: number) => void;
+  durationMs?: number;
+  /**
+   * Optional audio bed. Either a URL from the bundled royalty-free library or
+   * an object URL for a file the user picked. Never a Spotify/YouTube stream.
+   */
+  audioUrl?: string;
+  audioVolume?: number;
 }
 
 export interface RenderedReel {
   blob: Blob;
   url: string;
-  extension: "mp4" | "webm";
+  extension: ReelContainer;
+  /** True when the browser could not produce an MP4. */
+  degraded: boolean;
+}
+
+/**
+ * Decodes the audio bed and returns a destination node to record from. Returns
+ * null when the clip cannot be decoded, so the reel still exports silently
+ * rather than failing outright.
+ */
+async function connectAudio(
+  stream: MediaStream,
+  audioUrl: string,
+  volume: number,
+): Promise<{ context: AudioContext; element: HTMLAudioElement } | null> {
+  try {
+    const context = new AudioContext();
+    const element = new Audio(audioUrl);
+    element.loop = true;
+    element.crossOrigin = "anonymous";
+    element.volume = volume;
+
+    const source = context.createMediaElementSource(element);
+    const destination = context.createMediaStreamDestination();
+    const gain = context.createGain();
+    gain.gain.value = volume;
+
+    source.connect(gain);
+    gain.connect(destination);
+
+    for (const track of destination.stream.getAudioTracks()) {
+      stream.addTrack(track);
+    }
+
+    await element.play();
+    return { context, element };
+  } catch {
+    return null;
+  }
 }
 
 export async function renderMemoryReel(
   input: MemoryReelInput,
-  options: { onProgress?: (progress: number) => void; durationMs?: number } = {},
+  options: RenderOptions = {},
 ): Promise<RenderedReel> {
-  if (typeof MediaRecorder === "undefined") {
-    throw new Error("This browser can't record video. Try Chrome or Edge.");
+  const capability = reelCapability();
+  if (!capability) {
+    throw new Error(
+      "This browser can't record video. On iPhone or iPad, use Safari; on Android, use Chrome.",
+    );
   }
-  const mime = pickMime();
-  if (!mime) throw new Error("This browser can't record video. Try Chrome or Edge.");
 
   const images = await loadMemoryImages(input.photos);
   const fonts = reelFonts();
@@ -1370,17 +1448,24 @@ export async function renderMemoryReel(
   const context = canvas.getContext("2d");
   if (!context) throw new Error("Canvas is not available.");
 
+  // 30fps canvas stream, plus the audio track when a bed is supplied.
   const stream = canvas.captureStream(30);
+  const audio = options.audioUrl
+    ? await connectAudio(stream, options.audioUrl, options.audioVolume ?? 0.6)
+    : null;
+
   const recorder = new MediaRecorder(stream, {
-    mimeType: mime,
+    mimeType: capability.mime,
     videoBitsPerSecond: 8_000_000,
+    ...(audio ? { audioBitsPerSecond: 128_000 } : {}),
   });
   const chunks: BlobPart[] = [];
   recorder.ondataavailable = (event) => {
     if (event.data.size > 0) chunks.push(event.data);
   };
   const finished = new Promise<Blob>((resolve) => {
-    recorder.onstop = () => resolve(new Blob(chunks, { type: mime.split(";")[0] }));
+    recorder.onstop = () =>
+      resolve(new Blob(chunks, { type: capability.mime.split(";")[0] }));
   });
 
   const reduced =
@@ -1410,9 +1495,13 @@ export async function renderMemoryReel(
   recorder.stop();
   const blob = await finished;
   stream.getTracks().forEach((track) => track.stop());
+  audio?.element.pause();
+  await audio?.context.close().catch(() => undefined);
+
   return {
     blob,
     url: URL.createObjectURL(blob),
-    extension: mime.includes("mp4") ? "mp4" : "webm",
+    extension: capability.container,
+    degraded: capability.degraded,
   };
 }
