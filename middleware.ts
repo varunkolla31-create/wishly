@@ -6,6 +6,14 @@ const hasClerkKeys = Boolean(
     process.env.CLERK_SECRET_KEY,
 );
 
+/**
+ * Routes a signed-out visitor must reach.
+ *
+ * Keep this in step with the app: any page that is not meant to require an
+ * account belongs here, or Clerk protects it and a signed-out visitor gets a
+ * 404. That silently broke /faq, /about and /manage in production.
+ * tests/unit/route-access.test.ts fails when a top-level route is missing.
+ */
 const isPublicRoute = createRouteMatcher([
   "/",
   "/create(.*)",
@@ -13,10 +21,13 @@ const isPublicRoute = createRouteMatcher([
   "/studio(.*)",
   "/occasions(.*)",
   "/w(.*)",
+  "/manage(.*)",
   "/pricing(.*)",
   "/privacy(.*)",
   "/terms(.*)",
   "/report(.*)",
+  "/faq(.*)",
+  "/about(.*)",
   "/offline(.*)",
   "/sign-in(.*)",
   "/sign-up(.*)",
