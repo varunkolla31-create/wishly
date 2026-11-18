@@ -27,6 +27,7 @@ export function POST(request: Request) {
 
     const wish = await wishRepo().create({
       ownerId: sender.userId,
+      ownerEmail: sender.email || null,
       category: occasion.slug,
       templateId: template.id,
       mode: input.mode,

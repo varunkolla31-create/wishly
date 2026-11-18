@@ -54,13 +54,14 @@ export class PostgresWishRepo implements WishRepo {
     const now = new Date().toISOString();
     const { rows } = await query<WishRow>(
       `INSERT INTO wishes (
-         wish_id, owner_id, mode, category, template_id, receiver_name, title,
-         created_at, updated_at
-       ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$8)
+         wish_id, owner_id, owner_email, mode, category, template_id,
+         receiver_name, title, created_at, updated_at
+       ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$9)
        RETURNING *`,
       [
         newId(),
         input.ownerId,
+        input.ownerEmail ?? null,
         input.mode ?? "solo",
         input.category,
         input.templateId,

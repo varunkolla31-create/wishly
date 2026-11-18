@@ -1,6 +1,9 @@
 import type { Wish } from "@/lib/repos/types";
 
-export type SenderWish = Omit<Wish, "passwordHash" | "manageTokenHash"> & {
+export type SenderWish = Omit<
+  Wish,
+  "passwordHash" | "manageTokenHash" | "ownerEmail"
+> & {
   hasPassword: boolean;
 };
 

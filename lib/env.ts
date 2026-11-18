@@ -131,7 +131,8 @@ export type AppEnv = z.infer<typeof envSchema>;
 export function env(): AppEnv {
   const parsed = envSchema.safeParse({
     NODE_ENV: process.env.NODE_ENV,
-    APP_URL: process.env.NEXT_PUBLIC_APP_URL,
+    // Prefer the single public origin; NEXT_PUBLIC_APP_URL is the legacy name.
+    APP_URL: process.env.NEXT_PUBLIC_SITE_URL ?? process.env.NEXT_PUBLIC_APP_URL,
     DATA_DIR: process.env.WISHLY_DATA_DIR,
     AUTH_MODE: process.env.AUTH_MODE,
     DEV_AUTH_BYPASS: process.env.WISHLY_DEV_AUTH_BYPASS,

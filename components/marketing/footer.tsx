@@ -6,6 +6,8 @@ const FOOTER_LINKS = [
   { href: "/occasions", label: "Occasions" },
   { href: "/templates", label: "3D reels" },
   { href: "/pricing", label: "Pricing" },
+  { href: "/faq", label: "FAQ" },
+  { href: "/about", label: "About" },
   { href: "/privacy", label: "Privacy" },
   { href: "/terms", label: "Terms" },
   { href: "/report", label: "Report a page" },

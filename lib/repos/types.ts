@@ -53,6 +53,12 @@ export interface Wish {
   claimedAt: string | null;
   /** First time a receiver opened the reveal. Null until then. */
   openedAt: string | null;
+  /**
+   * Sender's address, copied onto the row at creation for signed-in wishes so
+   * the one-off "your wish was opened" note can be sent without a Clerk lookup.
+   * Null for anonymous wishes, which never get a notification.
+   */
+  ownerEmail: string | null;
   views: number;
   createdAt: string;
   updatedAt: string;
@@ -60,6 +66,7 @@ export interface Wish {
 
 export interface NewWish {
   ownerId: string;
+  ownerEmail?: string | null;
   mode?: WishMode;
   category: string;
   templateId: string;

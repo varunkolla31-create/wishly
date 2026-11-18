@@ -53,6 +53,7 @@ export interface WishRow {
   expires_at: Date | string | null;
   claimed_at: Date | string | null;
   opened_at: Date | string | null;
+  owner_email: string | null;
   views: number;
   created_at: Date | string;
   updated_at: Date | string;
@@ -93,6 +94,7 @@ export function toWish(row: WishRow): Wish {
     expiresAt: toIso(row.expires_at),
     claimedAt: toIso(row.claimed_at),
     openedAt: toIso(row.opened_at),
+    ownerEmail: row.owner_email ?? null,
     views: row.views,
     createdAt: toIso(row.created_at) ?? new Date().toISOString(),
     updatedAt: toIso(row.updated_at) ?? new Date().toISOString(),

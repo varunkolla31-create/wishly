@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Check } from "lucide-react";
 import { ButtonLink } from "@/components/ui/button";
+import { NotifyMeForm } from "@/components/marketing/notify-me-form";
 import { Reveal } from "@/components/ui/reveal";
 import { TrustStrip } from "@/components/marketing/trust-strip";
 import { pageMetadata } from "@/lib/seo";
@@ -19,6 +20,22 @@ const EARLY_ACCESS_FEATURES = [
   "Photos, short videos, voice notes and music.",
   "Receiver never needs an account.",
   "Delete your wishes and their media at any time.",
+];
+
+/** Explicitly not built. The label on each card says so too. */
+const PLANNED = [
+  {
+    title: "Longer-lived wishes",
+    body: "Wishes that stay online for years instead of expiring, with more storage for photos and video.",
+  },
+  {
+    title: "Group wishes for everyone",
+    body: "Contributor links without needing an account first, and a bigger memory wall.",
+  },
+  {
+    title: "A custom domain for your page",
+    body: "Serving a wish from your own domain, with the same private link behaviour.",
+  },
 ];
 
 export default function PricingPage() {
@@ -88,6 +105,49 @@ export default function PricingPage() {
           ? "Paid plans are being finalised. Nothing on this page charges you."
           : "When paid plans arrive, early-access wishes will stay free. Billing is not part of this release."}
       </p>
+
+      <Reveal delay={0.12} className="mt-12 border-t border-hairline pt-10">
+        <p className="text-xs font-semibold uppercase tracking-[0.12em] text-ink-muted">
+          What&apos;s planned
+        </p>
+        <h2 className="mt-3 font-serif text-3xl italic leading-tight text-ink">
+          Nothing here is for sale yet.
+        </h2>
+        <p className="mt-3 max-w-xl text-base leading-relaxed text-ink-muted">
+          These are the ideas we are working towards. None of them is built, and
+          nothing is charged today — they are listed so you know roughly where
+          this is going.
+        </p>
+
+        <ul className="mt-6 space-y-3">
+          {PLANNED.map((item) => (
+            <li
+              key={item.title}
+              className="rounded-card border border-hairline bg-surface px-5 py-4"
+            >
+              <p className="text-sm font-medium text-ink">{item.title}</p>
+              <p className="mt-1 text-sm leading-relaxed text-ink-muted">
+                {item.body}
+              </p>
+              <p className="mt-2 text-[10px] font-semibold uppercase tracking-[0.1em] text-warning">
+                Planned, not built
+              </p>
+            </li>
+          ))}
+        </ul>
+
+        <div className="mt-8 rounded-card border border-hairline bg-sand p-5">
+          <h3 className="text-sm font-medium text-ink">
+            Want a note when it&apos;s ready?
+          </h3>
+          <p className="mt-1 text-sm leading-relaxed text-ink-muted">
+            One email, when paid plans actually exist. No newsletter.
+          </p>
+          <div className="mt-4">
+            <NotifyMeForm />
+          </div>
+        </div>
+      </Reveal>
     </section>
   );
 }

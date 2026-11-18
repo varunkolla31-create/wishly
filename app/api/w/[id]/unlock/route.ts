@@ -1,5 +1,6 @@
 import { fail, HttpError, ok, readJson, route } from "@/lib/api/respond";
 import { wishRepo } from "@/lib/repos/index";
+import { notifyWishOpened } from "@/lib/notify";
 import { verifyPassword } from "@/lib/security/password";
 import {
   attemptKeys,
@@ -88,6 +89,16 @@ export function POST(
     }
 
     await clearUnlockFailures(gate.keys.length > 0 ? gate.keys : attemptKeys(id, ip));
+
+    // One boolean event, not a history: the first time this wish was actually
+    // opened. Matches what the privacy page promises, and is what backs the
+    // sender's "your wish was opened" note.
+    if (wish.openedAt === null) {
+      await wishRepo().update(wish.wishId, {
+        openedAt: new Date().toISOString(),
+      });
+      await notifyWishOpened(wish);
+    }
 
     const token = await signUnlockToken({
       wishId: wish.wishId,

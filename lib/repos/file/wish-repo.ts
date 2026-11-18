@@ -43,6 +43,7 @@ export class FileWishRepo implements WishRepo {
       expiresAt: null,
       claimedAt: null,
       openedAt: null,
+      ownerEmail: input.ownerEmail ?? null,
       views: 0,
       createdAt: now,
       updatedAt: now,

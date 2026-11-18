@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Instrument_Serif, Inter } from "next/font/google";
 import { Providers } from "@/components/providers";
+import { siteUrl } from "@/lib/config-public";
 import "./globals.css";
 
 const inter = Inter({
@@ -17,11 +18,10 @@ const instrumentSerif = Instrument_Serif({
   display: "swap",
 });
 
-const vercelUrl =
-  process.env.VERCEL_PROJECT_PRODUCTION_URL ?? process.env.VERCEL_URL;
-const appUrl =
-  process.env.NEXT_PUBLIC_APP_URL ??
-  (vercelUrl ? `https://${vercelUrl}` : "http://localhost:3000");
+// One resolver for the public origin, shared with the sitemap, robot rules,
+// canonical URLs, OG tags and media links. Switching to a custom domain is a
+// NEXT_PUBLIC_SITE_URL change and nothing else.
+const appUrl = siteUrl();
 
 export const metadata: Metadata = {
   metadataBase: new URL(appUrl),
