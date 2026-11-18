@@ -4,9 +4,10 @@ import { WishWizard } from "@/components/wizard/wish-wizard";
 import { WIZARD_STEPS } from "@/components/wizard/types";
 import { requirePageSender } from "@/lib/auth/page";
 import { env } from "@/lib/env";
+import { mediaProxyUrl } from "@/lib/media/read-url";
 import { mediaKindFromKey } from "@/lib/media/validate";
 import { toSenderWish } from "@/lib/repos/dto";
-import { mediaStore, wishRepo } from "@/lib/repos/index";
+import { wishRepo } from "@/lib/repos/index";
 
 export const dynamic = "force-dynamic";
 
@@ -31,14 +32,13 @@ export default async function EditWishPage({
   const wish = await wishRepo().getById(id);
   if (!wish || wish.ownerId !== sender.userId) notFound();
 
-  const store = mediaStore();
-  const initialMedia = await Promise.all(
-    wish.mediaKeys.map(async (key) => ({
-      key,
-      url: await store.createReadUrl(key),
-      kind: mediaKindFromKey(key) ?? "photo",
-    })),
-  );
+  // Preview links go through /api/media, which checks that this is the owner,
+  // rather than exposing a raw storage URL.
+  const initialMedia = wish.mediaKeys.map((key) => ({
+    key,
+    url: mediaProxyUrl(key, wish.passwordVersion),
+    kind: mediaKindFromKey(key) ?? "photo",
+  }));
 
   const parsedStep = Number.parseInt(step ?? "1", 10);
   const initialStep = Number.isFinite(parsedStep)

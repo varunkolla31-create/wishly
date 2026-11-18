@@ -54,8 +54,10 @@ export function POST(
       contentType: input.contentType,
       size: input.size,
     });
-    const readUrl = await store.createReadUrl(target.key);
+    // No read URL is handed back: a contributor is not the owner and has not
+    // unlocked the wish, so the only preview they get is the local file they
+    // just picked. The server never needs to expose the object to them.
 
-    return ok({ ...target, readUrl }, 201);
+    return ok({ ...target }, 201);
   });
 }

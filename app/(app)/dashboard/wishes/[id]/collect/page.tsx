@@ -29,7 +29,7 @@ export default async function CollectPage({
   if (!wish || wish.ownerId !== sender.userId) notFound();
 
   const contributions = await contributionRepo().listByWish(id);
-  const items = await toSenderContributions(contributions);
+  const items = await toSenderContributions(contributions, wish.passwordVersion);
   const pending = items.filter((item) => item.status === "pending").length;
   const occasion = getOccasion(wish.category);
 

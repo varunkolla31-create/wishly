@@ -13,10 +13,12 @@ export function GET(
 ) {
   return route(async () => {
     const { id } = await context.params;
-    await getOwnedWish(id);
+    const { wish } = await getOwnedWish(id);
 
     const items = await contributionRepo().listByWish(id);
-    const response = ok(await toSenderContributions(items));
+    const response = ok(
+      await toSenderContributions(items, wish.passwordVersion),
+    );
     response.headers.set("Cache-Control", "no-store");
     return response;
   });
@@ -28,7 +30,7 @@ export function PATCH(
 ) {
   return route(async () => {
     const { id } = await context.params;
-    await getOwnedWish(id);
+    const { wish } = await getOwnedWish(id);
 
     const { orderedIds } = await readJson(request, contributionOrderSchema);
     const existing = await contributionRepo().listByWish(id);
@@ -46,6 +48,6 @@ export function PATCH(
     revalidatePath(`/dashboard/wishes/${id}/collect`);
 
     const items = await contributionRepo().listByWish(id);
-    return ok(await toSenderContributions(items));
+    return ok(await toSenderContributions(items, wish.passwordVersion));
   });
 }

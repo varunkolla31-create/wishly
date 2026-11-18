@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
+  inspectMediaToken,
   signMediaToken,
   verifyMediaToken,
 } from "@/lib/security/media-token";
@@ -48,12 +49,31 @@ describe("media token", () => {
     expect(verifyMediaToken(`${key}-other`, "put", token)).toBe(false);
   });
 
+  it("binds the wish's password version", () => {
+    const token = signMediaToken(key, "get", Date.now(), 3);
+    expect(inspectMediaToken(key, "get", token).version).toBe(3);
+    // A token for version 3 must not verify as version 4.
+    expect(verifyMediaToken(key, "get", token.replace(".3.", ".4."))).toBe(
+      false,
+    );
+  });
+
   it("expires", () => {
     const issuedAt = 1_700_000_000_000;
+    // get tokens are 15 minutes.
     const token = signMediaToken(key, "get", issuedAt);
     expect(verifyMediaToken(key, "get", token, issuedAt + 60_000)).toBe(true);
     expect(
-      verifyMediaToken(key, "get", token, issuedAt + 61 * 60 * 1000),
+      verifyMediaToken(key, "get", token, issuedAt + 16 * 60 * 1000),
     ).toBe(false);
+  });
+
+  it("reports the version through inspect", () => {
+    const token = signMediaToken(key, "get", Date.now(), 7);
+    expect(inspectMediaToken(key, "get", token)).toEqual({
+      valid: true,
+      version: 7,
+    });
+    expect(inspectMediaToken(key, "get", "garbage").valid).toBe(false);
   });
 });

@@ -13,7 +13,7 @@ export function PATCH(
 ) {
   return route(async () => {
     const { id, contributionId } = await context.params;
-    await getOwnedWish(id);
+    const { wish } = await getOwnedWish(id);
 
     const { status } = await readJson(request, contributionStatusSchema);
     const updated = await contributionRepo().updateStatus(
@@ -27,7 +27,9 @@ export function PATCH(
     }
 
     revalidatePath(`/dashboard/wishes/${id}/collect`);
-    return ok((await toSenderContributions([updated]))[0]);
+    return ok(
+      (await toSenderContributions([updated], wish.passwordVersion))[0],
+    );
   });
 }
 

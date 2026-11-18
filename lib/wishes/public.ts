@@ -1,9 +1,10 @@
 import "server-only";
 import { getOccasion } from "@/lib/catalog/occasions";
 import { mediaKindFromKey } from "@/lib/media/validate";
+import { mediaProxyUrl } from "@/lib/media/read-url";
 import type { MediaItem } from "@/lib/media/types";
 import type { MusicBinding } from "@/lib/music/types";
-import { contributionRepo, mediaStore } from "@/lib/repos/index";
+import { contributionRepo } from "@/lib/repos/index";
 import type { ContributionType, Wish, WishGateMode } from "@/lib/repos/types";
 
 export type LockState = "locked" | "counting_down";
@@ -86,22 +87,23 @@ export function toPublicWishMeta(
 export async function buildWishContent(
   wish: Wish,
 ): Promise<PublicWishContent> {
-  const store = mediaStore();
-  const media = await Promise.all(
-    wish.mediaKeys.map(async (key) => ({
-      key,
-      url: await store.createReadUrl(key),
-      kind: mediaKindFromKey(key) ?? "photo",
-    })),
-  );
+  // Read URLs are minted here and only here, after the caller has already
+  // proven the unlock session. They point at /api/media, which re-checks the
+  // unlock cookie, so these strings are useless on their own.
+  const version = wish.passwordVersion;
+  const media = wish.mediaKeys.map((key) => ({
+    key,
+    url: mediaProxyUrl(key, version),
+    kind: mediaKindFromKey(key) ?? "photo",
+  }));
 
   const approved =
     wish.mode === "group"
       ? await contributionRepo().listByWish(wish.wishId, "approved")
       : [];
 
-  const contributions = await Promise.all(
-    approved.map(async (item): Promise<PublicContribution> => ({
+  const contributions = approved.map(
+    (item): PublicContribution => ({
       contributionId: item.contributionId,
       contributorName: item.contributorName,
       type: item.type,
@@ -109,11 +111,11 @@ export async function buildWishContent(
       media: item.mediaKey
         ? {
             key: item.mediaKey,
-            url: await store.createReadUrl(item.mediaKey),
+            url: mediaProxyUrl(item.mediaKey, version),
             kind: mediaKindFromKey(item.mediaKey) ?? "photo",
           }
         : null,
-    })),
+    }),
   );
 
   return {

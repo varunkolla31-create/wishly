@@ -69,12 +69,15 @@ by the player UI.
 3. `POST /api/upload/confirm` with `{ key }`. The server runs `verifyUpload`; on
    failure it deletes the object and returns a typed error. Only then does the
    draft reference the key.
-4. Reads: `createReadUrl` mints a presigned `GET` (15 minutes) inside
-   `buildWishContent`, which only runs after the receiver has unlocked. There is
-   no public URL.
+4. Reads: `lib/media/read-url.ts` mints a URL to `/api/media/:key`. That route
+   verifies the signed token (which binds the key to the wish's current
+   `passwordVersion`) **and** the wish's unlock cookie, then either streams the
+   file from disk or 302s to a short-lived storage presign. Storage URLs are
+   never handed to a browser directly, so a copied URL is useless on its own.
 
 A reveal page left open longer than 15 minutes shows broken media until it is
-reloaded.
+reloaded. A password change bumps `passwordVersion`, which retires every
+outstanding media link immediately.
 
 ## Deleting
 
@@ -84,7 +87,8 @@ Media failures are logged and never block the wish deletion.
 
 ## Adding a driver
 
-Implement the four methods, return presigned URLs from `createUpload` and
-`createReadUrl`, and use `checkStoredMedia()` inside `verifyUpload`. Register it
-in `lib/repos/index.ts` and add the enum value in `lib/env.ts`. Nothing else in
-the app needs to change.
+Implement the four methods and use `checkStoredMedia()` inside `verifyUpload`.
+`createReadUrl` must return a presigned, short-lived `GET` — the media route
+calls it after the unlock check and redirects the browser to it, so it never
+reaches the client on its own. Register the driver in `lib/repos/index.ts` and
+add the enum value in `lib/env.ts`. Nothing else in the app needs to change.
