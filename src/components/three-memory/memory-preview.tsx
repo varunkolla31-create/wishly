@@ -12,6 +12,10 @@ import {
   type ReelFonts,
 } from "@/src/components/three-memory/engine";
 import { SAMPLE_PHOTOS } from "@/src/components/three-memory/catalog";
+import {
+  acquireCanvasSlot,
+  releaseCanvasSlot,
+} from "@/src/components/three-memory/canvas-budget";
 import { cn } from "@/lib/utils/cn";
 
 const DEFAULT_FONTS: ReelFonts = {
@@ -79,8 +83,45 @@ export function MemoryPreview({
     let startedAt = performance.now();
     let pausedAt = 0;
     let wasPlaying = playing;
+    let inView = true;
+    let visible = document.visibilityState !== "hidden";
+
+    // Reduced motion: draw one representative frame and stop. There is nothing
+    // to animate for a visitor who asked for no motion, and a static frame is
+    // far cheaper than 30 repaints a second.
+    const drawStill = () => {
+      context.setTransform(0.5, 0, 0, 0.5, 0, 0);
+      context.clearRect(0, 0, 1080, 1920);
+      drawMemoryFrame(
+        context,
+        inputRef.current,
+        imagesRef.current,
+        0.32,
+        { ...viewRef.current, reduced: true },
+        fontsRef.current,
+      );
+    };
+
+    // A third simultaneous live canvas degrades to a still frame rather than
+    // competing with the two already animating.
+    const slot = reduce ? null : acquireCanvasSlot();
+
+    if (reduce || slot === null) {
+      drawStill();
+      const recheck = window.setTimeout(drawStill, 600);
+      return () => {
+        window.clearTimeout(recheck);
+        if (slot) releaseCanvasSlot(slot);
+      };
+    }
+
+    const shouldRun = () => inView && visible;
 
     const loop = (now: number) => {
+      if (!shouldRun()) {
+        frame = 0;
+        return;
+      }
       if (playing) {
         if (!wasPlaying) {
           startedAt = now - pausedAt;
@@ -114,14 +155,45 @@ export function MemoryPreview({
         inputRef.current,
         imagesRef.current,
         progress,
-        { ...viewRef.current, reduced: reduce },
+        { ...viewRef.current, reduced: false },
         fontsRef.current,
       );
       frame = requestAnimationFrame(loop);
     };
 
-    frame = requestAnimationFrame(loop);
-    return () => cancelAnimationFrame(frame);
+    const start = () => {
+      if (frame === 0 && shouldRun()) frame = requestAnimationFrame(loop);
+    };
+    const stop = () => {
+      if (frame !== 0) cancelAnimationFrame(frame);
+      frame = 0;
+    };
+
+    // Only animate while the element is actually on screen.
+    const observer =
+      typeof IntersectionObserver === "undefined"
+        ? null
+        : new IntersectionObserver((entries) => {
+            inView = entries.some((entry) => entry.isIntersecting);
+            if (inView) start();
+            else stop();
+          });
+    observer?.observe(canvas);
+
+    const onVisibility = () => {
+      visible = document.visibilityState !== "hidden";
+      if (visible) start();
+      else stop();
+    };
+    document.addEventListener("visibilitychange", onVisibility);
+
+    start();
+    return () => {
+      stop();
+      observer?.disconnect();
+      document.removeEventListener("visibilitychange", onVisibility);
+      releaseCanvasSlot(slot);
+    };
   }, [playing, reduce]);
 
   return (
