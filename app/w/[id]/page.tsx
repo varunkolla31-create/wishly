@@ -20,7 +20,17 @@ export async function generateMetadata({
   params: Promise<{ id: string }>;
 }): Promise<Metadata> {
   const { id } = await params;
-  const title = "A private Wishly page is waiting for you";
+
+  // Privacy rule: a link preview may carry the receiver's name and nothing
+  // else. Never the hint, the message, the title, the occasion or any media.
+  // The crawler never gets past the lock screen, so it must not be told more
+  // than a stranger glancing at a chat thread would see.
+  const wish = await wishRepo().getById(id).catch(() => null);
+  const receiver = wish?.receiverName?.trim().slice(0, 40) ?? "";
+
+  const title = receiver
+    ? `A wish is waiting for you, ${receiver}`
+    : "A wish is waiting for you";
   const description =
     "Someone sent you a private, password-protected memory reel. Tap to unlock — no sign-in needed.";
   const image = `/w/${id}/opengraph-image`;

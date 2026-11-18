@@ -22,9 +22,16 @@ export function SiteHeader() {
 
         <div className="flex items-center gap-1">
           <ThemeToggle />
-          <ButtonLink href="/create">
-            <span className="hidden sm:inline">Create a wish</span>
-            <span className="sm:hidden">Create</span>
+          <ButtonLink href="/create" aria-label="Create a wish">
+            {/* Only one of these is visible at a time; the other is hidden from
+                assistive tech so the link is never announced as
+                "Create a wishCreate". */}
+            <span aria-hidden="true" className="hidden sm:inline">
+              Create a wish
+            </span>
+            <span aria-hidden="true" className="sm:hidden">
+              Create
+            </span>
           </ButtonLink>
           <MobileNav links={NAV_LINKS} />
         </div>
