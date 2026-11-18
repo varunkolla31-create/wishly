@@ -33,6 +33,13 @@ const isPublicRoute = createRouteMatcher([
   "/sign-up(.*)",
   "/c(.*)",
   "/contribute(.*)",
+  // Next metadata routes. Without these, Clerk protects them and crawlers get
+  // a 404 for robots.txt, the sitemap and every Open Graph image.
+  "/robots.txt",
+  "/sitemap.xml",
+  "/opengraph-image(.*)",
+  "/icon.svg",
+  "/manifest.webmanifest",
   "/api(.*)",
 ]);
 
