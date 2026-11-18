@@ -6,9 +6,9 @@ import { getSender } from "@/lib/auth/session";
 import { mediaDriver } from "@/lib/env";
 import { mediaFilePath } from "@/lib/media/storage";
 import { contentTypeForKey, isValidMediaKey } from "@/lib/media/validate";
-import { wishRepo } from "@/lib/repos/index";
-import { mediaStore } from "@/lib/repos/index";
+import { mediaStore, wishRepo } from "@/lib/repos/index";
 import { inspectMediaToken } from "@/lib/security/media-token";
+import { isExpired } from "@/lib/wishes/anonymous";
 import { isPublished, isUnlockTimeReached } from "@/lib/wishes/public";
 import { hasUnlocked } from "@/lib/wishes/unlocked";
 
@@ -92,7 +92,7 @@ export async function GET(
   const isOwner = sender !== null && sender.userId === wish.ownerId;
 
   if (!isOwner) {
-    if (!isPublished(wish)) {
+    if (!isPublished(wish) || isExpired(wish)) {
       return fail(404, "not_found", "Not found.");
     }
     if (!isUnlockTimeReached(wish)) {

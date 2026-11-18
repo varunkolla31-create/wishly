@@ -42,6 +42,17 @@ export interface Wish {
   status: WishStatus;
   contributorToken: string | null;
   contributorTokenRevokedAt: string | null;
+  /**
+   * SHA-256 of the manage token handed to a creator who published without
+   * signing in. Only the hash is stored; the raw token is shown once.
+   */
+  manageTokenHash: string | null;
+  /** When an anonymous wish stops being reachable. Null means never. */
+  expiresAt: string | null;
+  /** Set when an anonymous wish is claimed by a signed-in sender. */
+  claimedAt: string | null;
+  /** First time a receiver opened the reveal. Null until then. */
+  openedAt: string | null;
   views: number;
   createdAt: string;
   updatedAt: string;
@@ -64,6 +75,8 @@ export interface WishRepo {
   create(input: NewWish): Promise<Wish>;
   getById(wishId: string): Promise<Wish | null>;
   getByContributorToken(token: string): Promise<Wish | null>;
+  /** Looks a wish up by the hash of its manage token. */
+  getByManageTokenHash(hash: string): Promise<Wish | null>;
   listByOwner(ownerId: string): Promise<Wish[]>;
   update(wishId: string, patch: WishPatch): Promise<Wish | null>;
   delete(wishId: string): Promise<boolean>;

@@ -1,6 +1,6 @@
 import type { Wish } from "@/lib/repos/types";
 
-export type SenderWish = Omit<Wish, "passwordHash"> & {
+export type SenderWish = Omit<Wish, "passwordHash" | "manageTokenHash"> & {
   hasPassword: boolean;
 };
 
@@ -38,6 +38,9 @@ export function toSenderWish(wish: Wish): SenderWish {
     status: wish.status,
     contributorToken: wish.contributorToken,
     contributorTokenRevokedAt: wish.contributorTokenRevokedAt,
+    expiresAt: wish.expiresAt,
+    claimedAt: wish.claimedAt,
+    openedAt: wish.openedAt,
     views: wish.views,
     createdAt: wish.createdAt,
     updatedAt: wish.updatedAt,

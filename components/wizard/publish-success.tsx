@@ -18,6 +18,8 @@ export function PublishSuccess({
   occasionName,
   hint,
   shareUrl,
+  manageUrl,
+  expiresAt,
   guest = false,
 }: {
   wishId: string;
@@ -26,11 +28,16 @@ export function PublishSuccess({
   occasionName?: string | null;
   hint?: string | null;
   shareUrl?: string;
+  /** One-time manage link for a creator who published without signing in. */
+  manageUrl?: string;
+  expiresAt?: string | null;
   guest?: boolean;
 }) {
   const [origin, setOrigin] = useState("");
   const [qr, setQr] = useState<string | null>(null);
-  const [copied, setCopied] = useState<"link" | "password" | null>(null);
+  const [copied, setCopied] = useState<"link" | "password" | "manage" | null>(
+    null,
+  );
 
   useEffect(() => {
     const base = window.location.origin;
@@ -52,7 +59,7 @@ export function PublishSuccess({
   const url = shareUrl || (origin ? `${origin}/w/${wishId}` : "");
   const shareTitle = title || "A wish for you";
 
-  async function copy(value: string, which: "link" | "password") {
+  async function copy(value: string, which: "link" | "password" | "manage") {
     try {
       await navigator.clipboard.writeText(value);
       setCopied(which);
@@ -199,6 +206,56 @@ export function PublishSuccess({
             )}
           </div>
         </div>
+
+        {manageUrl ? (
+          <div className="mt-6 rounded-card border border-coral/30 bg-sand p-4">
+            <h2 className="text-xs font-semibold uppercase tracking-[0.12em] text-coral-strong">
+              Save this manage link
+            </h2>
+            <p className="mt-1 text-xs leading-relaxed text-ink">
+              You published without signing in, so this link is the only way
+              back. It can view the wish and delete it — and we can&apos;t show
+              it again.
+            </p>
+            <div className="mt-3 flex flex-col gap-2 sm:flex-row">
+              <input
+                id="published-manage"
+                readOnly
+                aria-label="Manage link"
+                value={manageUrl}
+                onFocus={(event) => event.currentTarget.select()}
+                className="min-h-12 min-w-0 flex-1 rounded-full border border-hairline bg-canvas px-4 text-sm text-ink"
+              />
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => copy(manageUrl, "manage")}
+              >
+                {copied === "manage" ? (
+                  <Check aria-hidden="true" className="size-4" />
+                ) : (
+                  <Copy aria-hidden="true" className="size-4" />
+                )}
+                Copy
+              </Button>
+            </div>
+            <a
+              href={manageUrl}
+              className="mt-2 inline-block text-xs font-medium text-coral-strong hover:text-coral-hover"
+            >
+              Open my manage page →
+            </a>
+            {expiresAt ? (
+              <p className="mt-2 text-xs text-ink-muted">
+                This wish expires on{" "}
+                {new Intl.DateTimeFormat("en-IN", {
+                  dateStyle: "long",
+                }).format(new Date(expiresAt))}
+                .
+              </p>
+            ) : null}
+          </div>
+        ) : null}
 
         <div className="mt-8">
           <h2 className="text-xs font-semibold uppercase tracking-[0.12em] text-ink-muted">

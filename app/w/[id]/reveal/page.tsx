@@ -3,6 +3,7 @@ import { notFound, redirect } from "next/navigation";
 import { WrapGate } from "@/components/receiver/wrap-gate";
 import { getDemoWish } from "@/lib/demo/wishes";
 import { wishRepo } from "@/lib/repos/index";
+import { isExpired } from "@/lib/wishes/anonymous";
 import {
   buildWishContent,
   isPublished,
@@ -29,6 +30,7 @@ export default async function RevealPage({
   const wish = await wishRepo().getById(id);
 
   if (!wish || !isPublished(wish)) notFound();
+  if (isExpired(wish)) notFound();
 
   if (!isUnlockTimeReached(wish) || !(await hasUnlocked(wish))) {
     redirect(`/w/${id}`);

@@ -33,6 +33,10 @@ const COLUMNS: Record<string, string> = {
   status: "status",
   contributorToken: "contributor_token",
   contributorTokenRevokedAt: "contributor_token_revoked_at",
+  manageTokenHash: "manage_token_hash",
+  expiresAt: "expires_at",
+  claimedAt: "claimed_at",
+  openedAt: "opened_at",
 };
 
 /** media_keys, music and quiz_options are jsonb; pg would otherwise mis-encode them. */
@@ -84,6 +88,14 @@ export class PostgresWishRepo implements WishRepo {
       `SELECT * FROM wishes
        WHERE contributor_token = $1 AND contributor_token_revoked_at IS NULL`,
       [token],
+    );
+    return rows[0] ? toWish(rows[0]) : null;
+  }
+
+  async getByManageTokenHash(hash: string): Promise<Wish | null> {
+    const { rows } = await query<WishRow>(
+      `SELECT * FROM wishes WHERE manage_token_hash = $1`,
+      [hash],
     );
     return rows[0] ? toWish(rows[0]) : null;
   }

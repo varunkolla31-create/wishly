@@ -14,6 +14,7 @@ import {
   unlockCookieName,
 } from "@/lib/security/unlock-token";
 import { unlockSchema } from "@/lib/validation/unlock";
+import { isExpired } from "@/lib/wishes/anonymous";
 import { isPublished, isUnlockTimeReached } from "@/lib/wishes/public";
 
 export const runtime = "nodejs";
@@ -52,7 +53,8 @@ export function POST(
     if (!gate.allowed) return tooManyTries(gate.retryAfterMs);
 
     const wish = await wishRepo().getById(id);
-    const available = wish !== null && isPublished(wish);
+    const available =
+      wish !== null && isPublished(wish) && !isExpired(wish);
 
     if (!available) {
       // Spend comparable work and record a failure so an unknown id cannot be

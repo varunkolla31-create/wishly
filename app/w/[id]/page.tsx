@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
 import { DemoWish } from "@/components/receiver/demo-wish";
-import { GuestWishPage } from "@/components/receiver/guest-wish";
 import { LockScreen } from "@/components/receiver/lock-screen";
 import { getDemoWish } from "@/lib/demo/wishes";
 import { wishRepo } from "@/lib/repos/index";
+import { isExpired } from "@/lib/wishes/anonymous";
 import {
   isPublished,
   isUnlockTimeReached,
@@ -60,16 +60,15 @@ export default async function WishPage({
 }) {
   const { id } = await params;
 
-  if (id.startsWith("guest-")) {
-    return <GuestWishPage guestId={id} />;
-  }
-
   const demo = getDemoWish(id);
   if (demo) return <DemoWish wish={demo} />;
 
   const wish = await wishRepo().getById(id);
 
   if (!wish || !isPublished(wish)) notFound();
+
+  // Expired anonymous wishes behave exactly like deleted ones.
+  if (isExpired(wish)) notFound();
 
   if (isUnlockTimeReached(wish) && (await hasUnlocked(wish))) {
     redirect(`/w/${id}/reveal`);

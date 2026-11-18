@@ -49,6 +49,10 @@ export interface WishRow {
   status: WishStatus;
   contributor_token: string | null;
   contributor_token_revoked_at: Date | string | null;
+  manage_token_hash: string | null;
+  expires_at: Date | string | null;
+  claimed_at: Date | string | null;
+  opened_at: Date | string | null;
   views: number;
   created_at: Date | string;
   updated_at: Date | string;
@@ -85,6 +89,10 @@ export function toWish(row: WishRow): Wish {
     status: row.status,
     contributorToken: row.contributor_token,
     contributorTokenRevokedAt: toIso(row.contributor_token_revoked_at),
+    manageTokenHash: row.manage_token_hash ?? null,
+    expiresAt: toIso(row.expires_at),
+    claimedAt: toIso(row.claimed_at),
+    openedAt: toIso(row.opened_at),
     views: row.views,
     createdAt: toIso(row.created_at) ?? new Date().toISOString(),
     updatedAt: toIso(row.updated_at) ?? new Date().toISOString(),

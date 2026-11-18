@@ -13,12 +13,7 @@ import { PublishSuccess } from "@/components/wizard/publish-success";
 import { YouTubeMusicPicker } from "@/components/music/youtube-music-picker";
 import { WriteWithAi } from "@/components/wizard/write-with-ai";
 import { getMusicTrack } from "@/lib/catalog/music";
-import {
-  guestWishUrl,
-  makeGuestWishId,
-  saveGuestWish,
-  type GuestWishPayload,
-} from "@/lib/demo/guest-wish";
+import { uploadAnonymousMedia } from "@/lib/media/anonymous-client";
 import { uploadMedia } from "@/lib/media/client";
 import { usePhotoPreview } from "@/src/context/PhotoPreviewContext";
 import {
@@ -127,6 +122,8 @@ export function GuestWizard({
     occasionName: string | null;
     hint: string | null;
     shareUrl?: string;
+    manageUrl?: string;
+    expiresAt?: string | null;
     guest?: boolean;
   } | null>(null);
 
@@ -417,7 +414,12 @@ export function GuestWizard({
     }
   }
 
-  function guestPublish() {
+  /**
+   * Publishes without an account. The wish is a real server record, not a URL
+   * fragment: the manage token authorises uploads and the final publish, and
+   * only its hash is stored so the creator is the only one who can come back.
+   */
+  async function guestPublish() {
     if (!gateReady) {
       toast.error(
         draft.gateMode === "quiz"
@@ -431,41 +433,135 @@ export function GuestWizard({
       setStep(3);
       return;
     }
+    if (!guestMedia.ready) {
+      toast.error("Still loading your photos and videos. Try again in a second.");
+      return;
+    }
+    if (publishing) return;
 
-    const payload: GuestWishPayload = {
-      version: 1,
-      id: makeGuestWishId(),
-      receiverName: draft.receiverName,
-      title: draft.title.trim() || draft.receiverName.trim() || "A wish for you",
-      message: draft.message,
-      milestoneDate: draft.milestoneDate
-        ? new Date(draft.milestoneDate).toISOString()
-        : null,
-      milestoneLabel: draft.milestoneLabel.trim() || null,
-      secretScratchMessage: draft.secretScratchMessage.trim() || null,
-      giftVoucherCode: draft.giftVoucherCode.trim() || null,
-      templateId: draft.templateId,
-      category: draft.category,
-      reelTemplateId: draft.reelTemplateId,
-      music: draft.music,
-      musicId: draft.music ? null : draft.musicId,
-      password: draft.gateMode === "quiz" ? null : draft.password,
-      hint: draft.hint.trim() || null,
-      createdAt: new Date().toISOString(),
-    };
+    setPublishing(true);
+    try {
+      const createdResponse = await fetch("/api/wishes/anonymous", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          category: draft.category,
+          templateId: draft.templateId,
+          receiverName: draft.receiverName,
+          title: draft.title.trim() || draft.receiverName.trim(),
+        }),
+      });
+      const createdBody = (await createdResponse.json()) as {
+        ok: boolean;
+        data?: { manageToken?: string };
+        error?: { message?: string };
+      };
+      const manageToken = createdBody.data?.manageToken;
+      if (!createdResponse.ok || !manageToken) {
+        throw new Error(
+          createdBody.error?.message ?? "Couldn't start that wish.",
+        );
+      }
 
-    saveGuestWish(payload);
-    const shareUrl = guestWishUrl(payload, window.location.origin);
-    setPublished({
-      wishId: payload.id,
-      title: payload.title,
-      password: payload.password,
-      occasionName: occasion?.name ?? null,
-      hint: payload.hint,
-      shareUrl,
-      guest: true,
-    });
-    toast.success("Instant wish link ready");
+      const mediaKeys: string[] = [];
+      let failedMedia = 0;
+
+      for (const item of guestMedia.media) {
+        try {
+          mediaKeys.push(
+            await uploadAnonymousMedia(manageToken, item.kind, item.file),
+          );
+
+          if (item.kind === "video" && item.poster) {
+            try {
+              const posterBlob = await (await fetch(item.poster)).blob();
+              const posterFile = new File(
+                [posterBlob],
+                `video-frame-${mediaKeys.length}.jpg`,
+                { type: "image/jpeg" },
+              );
+              mediaKeys.push(
+                await uploadAnonymousMedia(manageToken, "photo", posterFile),
+              );
+            } catch {
+              failedMedia += 1;
+            }
+          }
+        } catch {
+          failedMedia += 1;
+        }
+      }
+
+      const publishResponse = await fetch(
+        `/api/wishes/anonymous/${manageToken}/publish`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            message: draft.message,
+            title: draft.title.trim() || undefined,
+            mediaKeys,
+            reelTemplateId: draft.reelTemplateId || null,
+            musicId: draft.music ? null : draft.musicId,
+            hint: draft.hint.trim() || null,
+            password: draft.password,
+          }),
+        },
+      );
+
+      const publishBody = (await publishResponse.json()) as {
+        ok: boolean;
+        data?: {
+          wishId: string;
+          shareUrl: string;
+          manageUrl: string;
+          expiresAt: string | null;
+        };
+        error?: { message?: string };
+      };
+
+      if (!publishResponse.ok || !publishBody.data) {
+        throw new Error(
+          publishBody.error?.message ?? "Couldn't publish that wish.",
+        );
+      }
+
+      try {
+        window.localStorage.removeItem(DRAFT_KEY);
+        window.localStorage.removeItem(STEP_KEY);
+      } catch {
+        // Nothing to clear.
+      }
+
+      if (failedMedia > 0) {
+        toast.error(
+          "Your wish is live, but some photos or videos couldn't upload.",
+        );
+      } else {
+        toast.success("Your wish is live");
+      }
+      await guestMedia.clear();
+
+      setPublished({
+        wishId: publishBody.data.wishId,
+        title:
+          draft.title.trim() || draft.receiverName.trim() || "A wish for you",
+        password: draft.gateMode === "quiz" ? null : draft.password,
+        occasionName: occasion?.name ?? null,
+        hint: draft.hint.trim() || null,
+        shareUrl: publishBody.data.shareUrl,
+        manageUrl: publishBody.data.manageUrl,
+        expiresAt: publishBody.data.expiresAt,
+      });
+    } catch (error) {
+      toast.error(
+        error instanceof Error && error.message
+          ? error.message
+          : "Couldn't publish that wish. Try again.",
+      );
+    } finally {
+      setPublishing(false);
+    }
   }
 
   const summary = useMemo(
@@ -1093,10 +1189,12 @@ export function GuestWizard({
             <Button
               type="button"
               onClick={guestPublish}
-              disabled={!canSubmit}
+              disabled={!canSubmit || publishing}
               className="disabled:bg-sand disabled:text-ink-muted disabled:opacity-100"
             >
-              Publish Instant Link (No Sign-In Needed)
+              {publishing
+                ? "Publishing…"
+                : "Publish without signing in"}
             </Button>
           </div>
         )}

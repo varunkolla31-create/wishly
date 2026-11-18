@@ -56,6 +56,24 @@ const envSchema = z.object({
   FEATURE_BILLING: boolFromEnv(false),
   FEATURE_GROUP_MODE: boolFromEnv(true),
 
+  /**
+   * How long an anonymous wish stays reachable before it expires. Signed-in
+   * wishes ignore this entirely.
+   */
+  ANON_WISH_TTL_DAYS: intFromEnv(30, 1, 365),
+
+  /** Contact address shown in the footer and on the legal pages. */
+  CONTACT_EMAIL: z.preprocess(emptyToUndefined, z.string().optional()),
+  /** Grievance / report address; falls back to CONTACT_EMAIL when unset. */
+  GRIEVANCE_EMAIL: z.preprocess(emptyToUndefined, z.string().optional()),
+
+  /** Public site origin used in canonical URLs, OG tags and the sitemap. */
+  SITE_URL: z.preprocess(emptyToUndefined, z.string().url().optional()),
+
+  /** Mail is a no-op until a provider is configured. See lib/email.ts. */
+  RESEND_API_KEY: z.preprocess(emptyToUndefined, z.string().optional()),
+  EMAIL_FROM: z.preprocess(emptyToUndefined, z.string().optional()),
+
   /** Independent switches: data and media can use different backends. */
   DB_DRIVER: z.preprocess(
     emptyToUndefined,
@@ -130,6 +148,12 @@ export function env(): AppEnv {
     WISH_UNLOCK_SECRET: process.env.WISH_UNLOCK_SECRET,
     FEATURE_BILLING: process.env.FEATURE_BILLING,
     FEATURE_GROUP_MODE: process.env.FEATURE_GROUP_MODE,
+    ANON_WISH_TTL_DAYS: process.env.ANON_WISH_TTL_DAYS,
+    CONTACT_EMAIL: process.env.CONTACT_EMAIL,
+    GRIEVANCE_EMAIL: process.env.GRIEVANCE_EMAIL,
+    SITE_URL: process.env.NEXT_PUBLIC_SITE_URL,
+    RESEND_API_KEY: process.env.RESEND_API_KEY,
+    EMAIL_FROM: process.env.EMAIL_FROM,
     DB_DRIVER: process.env.DB_DRIVER,
     MEDIA_DRIVER: process.env.MEDIA_DRIVER,
     DATA_ADAPTER: process.env.DATA_ADAPTER,

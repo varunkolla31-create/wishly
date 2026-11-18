@@ -48,6 +48,10 @@ const PATCHABLE = [
   "status",
   "contributorToken",
   "contributorTokenRevokedAt",
+  "manageTokenHash",
+  "expiresAt",
+  "claimedAt",
+  "openedAt",
 ] as const satisfies readonly (keyof WishPatch)[];
 
 function toItem(wish: Wish, info: TableInfo): Record<string, unknown> {
@@ -91,6 +95,10 @@ export class DynamoWishRepo implements WishRepo {
       status: "draft",
       contributorToken: null,
       contributorTokenRevokedAt: null,
+      manageTokenHash: null,
+      expiresAt: null,
+      claimedAt: null,
+      openedAt: null,
       views: 0,
       createdAt: now,
       updatedAt: now,
@@ -148,6 +156,34 @@ export class DynamoWishRepo implements WishRepo {
           candidate.contributorToken === token &&
           candidate.contributorTokenRevokedAt === null,
       );
+
+    return wish ?? null;
+  }
+
+  async getByManageTokenHash(hash: string): Promise<Wish | null> {
+    const info = await this.info();
+    const index = findIndexByHash(info, "manageTokenHash");
+
+    const items = index
+      ? await drain(async (startKey) => {
+          const result = await ddb().send(
+            new QueryCommand({
+              TableName: info.name,
+              IndexName: index.name,
+              KeyConditionExpression: "#token = :token",
+              ExpressionAttributeNames: { "#token": index.hashKey },
+              ExpressionAttributeValues: { ":token": hash },
+              ExclusiveStartKey: startKey,
+              Limit: 20,
+            }),
+          );
+          return { items: result.Items ?? [], lastKey: result.LastEvaluatedKey };
+        })
+      : await this.scanBy(info, "manageTokenHash", hash);
+
+    const wish = items
+      .map((item) => toWish(item, info))
+      .find((candidate) => candidate.manageTokenHash === hash);
 
     return wish ?? null;
   }

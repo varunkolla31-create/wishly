@@ -39,6 +39,10 @@ export class FileWishRepo implements WishRepo {
       status: "draft",
       contributorToken: null,
       contributorTokenRevokedAt: null,
+      manageTokenHash: null,
+      expiresAt: null,
+      claimedAt: null,
+      openedAt: null,
       views: 0,
       createdAt: now,
       updatedAt: now,
@@ -65,6 +69,15 @@ export class FileWishRepo implements WishRepo {
           wish.contributorToken !== null &&
           wish.contributorTokenRevokedAt === null &&
           tokensMatch(wish.contributorToken, token),
+      ) ?? null
+    );
+  }
+
+  async getByManageTokenHash(hash: string): Promise<Wish | null> {
+    const items = await this.collection.read();
+    return (
+      items.find(
+        (wish) => wish.manageTokenHash !== null && wish.manageTokenHash === hash,
       ) ?? null
     );
   }

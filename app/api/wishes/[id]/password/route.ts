@@ -1,10 +1,8 @@
 import { revalidatePath } from "next/cache";
 import { HttpError, ok, readJson, route } from "@/lib/api/respond";
 import { getOwnedWish } from "@/lib/api/ownership";
-import { wishRepo } from "@/lib/repos/index";
-import { hashPassword } from "@/lib/security/password";
-import { validateNewPassword } from "@/lib/security/password-policy";
 import { setPasswordSchema } from "@/lib/validation/draft";
+import { setWishPassword } from "@/lib/wishes/password";
 
 export const runtime = "nodejs";
 
@@ -17,27 +15,16 @@ export function POST(
     const { wish } = await getOwnedWish(id);
     const input = await readJson(request, setPasswordSchema);
 
-    const policy = validateNewPassword(input.password);
-    if (!policy.ok) {
-      throw new HttpError(400, "weak_password", policy.message);
-    }
-
-    const passwordHash = await hashPassword(input.password);
-    const updated = await wishRepo().update(id, {
-      passwordHash,
-      passwordHint: input.hint?.trim() ? input.hint.trim() : null,
-      passwordVersion: wish.passwordVersion + 1,
-    });
-
-    if (!updated) {
-      throw new HttpError(404, "not_found", "That wish could not be found.");
+    const result = await setWishPassword(wish, input.password, input.hint);
+    if (!result.ok) {
+      throw new HttpError(400, "weak_password", result.message);
     }
 
     revalidatePath("/dashboard");
 
     return ok({
       hasPassword: true,
-      passwordVersion: updated.passwordVersion,
+      passwordVersion: result.wish.passwordVersion,
     });
   });
 }
