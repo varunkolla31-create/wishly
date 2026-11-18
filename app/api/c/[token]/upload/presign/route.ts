@@ -1,5 +1,6 @@
 import { HttpError, fail, ok, readJson, route } from "@/lib/api/respond";
 import { clientKey } from "@/lib/api/request";
+import { checkMediaQuota } from "@/lib/media/quota";
 import { validateUpload } from "@/lib/media/validate";
 import { mediaStore } from "@/lib/repos/index";
 import { consumeRateLimit } from "@/lib/security/rate-limit";
@@ -45,6 +46,11 @@ export function POST(
     const validation = validateUpload(input.kind, input.contentType, input.size);
     if (!validation.ok) {
       throw new HttpError(400, "invalid_upload", validation.reason);
+    }
+
+    const quota = checkMediaQuota(wish, input.size);
+    if (!quota.ok) {
+      throw new HttpError(400, "quota_exceeded", quota.reason);
     }
 
     const store = mediaStore();

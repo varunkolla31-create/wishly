@@ -1,5 +1,6 @@
 import { HttpError, ok, readJson, route } from "@/lib/api/respond";
 import { getOwnedWish } from "@/lib/api/ownership";
+import { checkMediaQuota } from "@/lib/media/quota";
 import { mediaProxyUrl } from "@/lib/media/read-url";
 import { validateUpload } from "@/lib/media/validate";
 import { mediaStore } from "@/lib/repos/index";
@@ -19,6 +20,11 @@ export function POST(request: Request) {
     );
     if (!validation.ok) {
       throw new HttpError(400, "invalid_upload", validation.reason);
+    }
+
+    const quota = checkMediaQuota(wish, input.size);
+    if (!quota.ok) {
+      throw new HttpError(400, "quota_exceeded", quota.reason);
     }
 
     const store = mediaStore();

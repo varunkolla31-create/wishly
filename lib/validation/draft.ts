@@ -33,7 +33,8 @@ export const draftPatchSchema = z.object({
   music: musicBindingSchema.nullable().optional(),
   mediaKeys: z
     .array(z.string().refine(isValidMediaKey, "Invalid media key"))
-    .max(30)
+    // Matches MAX_MEDIA_PER_WISH; the route also checks the per-wish quota.
+    .max(20)
     .refine(
       (keys) => new Set(keys).size === keys.length,
       "The same media was added twice.",

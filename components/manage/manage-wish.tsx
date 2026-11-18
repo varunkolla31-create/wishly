@@ -7,6 +7,10 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Dialog } from "@/components/ui/dialog";
+import {
+  MAX_ANON_WISH_BYTES,
+  MAX_MEDIA_PER_ANON_WISH,
+} from "@/lib/media/limits";
 
 export interface ManageDetails {
   wishId: string;
@@ -194,6 +198,13 @@ export function ManageWish({
           Delete wish
         </Button>
       </div>
+
+      <p className="text-center text-xs leading-relaxed text-ink-muted">
+        Anonymous wishes hold up to {MAX_MEDIA_PER_ANON_WISH} files and{" "}
+        {Math.round(MAX_ANON_WISH_BYTES / (1024 * 1024))}MB, and expire{" "}
+        {formatDate(details.expiresAt)}. Signing in would keep yours
+        indefinitely.
+      </p>
 
       <Dialog
         open={confirmOpen}
