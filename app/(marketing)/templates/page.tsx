@@ -46,7 +46,7 @@ export default async function ReelsPage({
             Create a wish
           </ButtonLink>
           <ButtonLink href="#reels" variant="outline" size="lg">
-            Browse the catalog
+            See the catalog
           </ButtonLink>
         </div>
       </section>

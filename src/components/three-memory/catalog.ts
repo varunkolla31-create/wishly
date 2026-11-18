@@ -335,7 +335,10 @@ export const MEMORY_TEMPLATES: MemoryTemplate[] = MEMORY_RIGS.flatMap((rig) =>
     rig: rig.id,
     preset: preset.id,
     name: `${rig.name} · ${preset.name}`,
-    tagline: preset.tagline,
+    // Cards used to show only the atmosphere's line, so every card in a column
+    // read identically. Pairing the scene's own voice with the mood makes all
+    // 120 distinct while staying one readable line.
+    tagline: `${preset.name}: ${rig.tagline}`,
     description: `${rig.description} ${preset.description}`,
     categories: rig.categories,
     accent: preset.accent,

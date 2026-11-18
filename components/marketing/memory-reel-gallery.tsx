@@ -18,7 +18,7 @@ export function MemoryReelGallery() {
     <div>
       <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
         <p className="text-xs font-semibold uppercase tracking-[0.12em] text-ink-muted">
-          120 reels · 8 rigs × 15 atmosphere presets · your photos, live
+          8 scenes × 15 moods · your photos, live
         </p>
         <p className="text-xs text-ink-muted">
           {shown.length} of {MEMORY_TEMPLATES.length}
@@ -54,7 +54,7 @@ export function MemoryReelGallery() {
         </div>
       ) : (
         <p className="mt-10 text-center text-sm text-ink-muted">
-          All 120 reels loaded.
+          Every scene and mood is loaded.
         </p>
       )}
     </div>

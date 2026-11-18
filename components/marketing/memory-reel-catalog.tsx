@@ -121,7 +121,7 @@ export function MemoryReelCatalog() {
 
           <label className="block min-w-[15rem] snap-start sm:min-w-0">
             <span className="text-[11px] font-semibold uppercase tracking-[0.1em] text-ink-muted">
-              Rig
+              Scene
             </span>
             <div className="relative mt-1.5">
               <select
@@ -129,7 +129,7 @@ export function MemoryReelCatalog() {
                 onChange={(event) => update(setRig, event.target.value)}
                 className={selectClass}
               >
-                <option value={ALL}>All 8 rigs</option>
+                <option value={ALL}>All scenes</option>
                 {MEMORY_RIGS_PUBLIC.map((item) => (
                   <option key={item.id} value={item.id}>
                     {item.name}
@@ -145,7 +145,7 @@ export function MemoryReelCatalog() {
 
           <label className="block min-w-[15rem] snap-start sm:min-w-0">
             <span className="text-[11px] font-semibold uppercase tracking-[0.1em] text-ink-muted">
-              Atmosphere
+              Mood
             </span>
             <div className="relative mt-1.5">
               <select
@@ -153,7 +153,7 @@ export function MemoryReelCatalog() {
                 onChange={(event) => update(setAtmosphere, event.target.value)}
                 className={selectClass}
               >
-                <option value={ALL}>All 15 atmospheres</option>
+                <option value={ALL}>All moods</option>
                 {MEMORY_ATMOSPHERES_PUBLIC.map((item) => (
                   <option key={item.id} value={item.id}>
                     {item.name}
