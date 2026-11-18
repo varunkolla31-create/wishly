@@ -36,6 +36,11 @@ export default async function ReelsPage({
           workbench to put your own photos inside it and export a silent 9:16
           reel. Same place, two ways to work.
         </p>
+        <p className="mt-3 max-w-2xl text-sm leading-relaxed text-ink-muted">
+          The workbench never uploads anything — photos stay in your browser. A
+          wish page is different: when you publish it, its photos are stored on
+          our servers so the receiver can open it anywhere.
+        </p>
         <div className="mt-8 flex flex-wrap gap-3">
           <ButtonLink href="/create" size="lg">
             Create a wish

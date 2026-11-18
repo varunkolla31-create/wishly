@@ -685,6 +685,11 @@ export function GuestWizard({
               plays in the 3D scene, and the full video opens on the reveal
               page.
             </p>
+            <p className="mt-2 max-w-xl rounded-media bg-sand px-3 py-2 text-xs leading-relaxed text-ink">
+              Your photos are uploaded to Wishly&apos;s servers when you
+              publish, so the receiver can open the wish anywhere. Until then
+              they stay in this browser.
+            </p>
 
             <div className="mt-6 rounded-card border border-hairline bg-surface p-5">
               <GuestMediaUploader

@@ -112,8 +112,16 @@ export function MemoryWorkbench() {
             ) : null}
           </div>
           <p className="mt-2 text-xs leading-relaxed text-ink-muted">
-            Photos stay in this browser until you export. Nothing is uploaded
-            here.
+            This workbench keeps your photos in this browser tab. Nothing is
+            uploaded and nothing is saved — close or refresh and they are gone.
+            To send a reel to someone,{" "}
+            <a
+              href="/create"
+              className="font-medium text-coral-strong underline underline-offset-4 hover:text-coral-hover"
+            >
+              create a wish
+            </a>
+            , where photos upload to our servers when you publish.
           </p>
         </div>
 
