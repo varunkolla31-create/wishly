@@ -1,6 +1,7 @@
 "use client";
 
 import { estimatePasswordStrength } from "@/lib/security/password-strength";
+import { MIN_PASSWORD_LENGTH } from "@/lib/security/password-policy";
 import { cn } from "@/lib/utils/cn";
 
 const SEGMENT_COLORS = [
@@ -31,8 +32,9 @@ export function StrengthMeter({ password }: { password: string }) {
         ))}
       </div>
       <p className="mt-1.5 text-xs text-ink-muted" role="status">
-        {password ? strength.label : "Use at least 8 characters."}
-        {password && strength.hints[0] ? ` · ${strength.hints[0]}` : ""}
+        {password
+          ? `${strength.label}${strength.hints[0] ? ` · ${strength.hints[0]}` : ""}`
+          : `Use at least ${MIN_PASSWORD_LENGTH} characters.`}
       </p>
     </div>
   );

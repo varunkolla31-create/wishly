@@ -9,7 +9,13 @@ import { ReceiverPreview } from "@/components/wizard/receiver-preview";
 import { StrengthMeter } from "@/components/wizard/strength-meter";
 import type { DraftValues } from "@/components/wizard/types";
 import type { MediaItem } from "@/lib/media/types";
+import {
+  MAX_PASSWORD_LENGTH,
+  MIN_PASSWORD_LENGTH,
+  validateNewPassword,
+} from "@/lib/security/password-policy";
 import { cn } from "@/lib/utils/cn";
+import { generatePassphrase } from "@/lib/utils/passphrase";
 
 const inputClass =
   "min-h-12 w-full rounded-full border border-hairline bg-canvas px-4 text-sm text-ink placeholder:text-ink-muted/70";
@@ -63,8 +69,9 @@ export function PasswordStep({
   async function save() {
     setError(null);
 
-    if (!/^\d{4,6}$/.test(password)) {
-      setError("Use 4 to 6 digits.");
+    const policy = validateNewPassword(password);
+    if (!policy.ok) {
+      setError(policy.message);
       return;
     }
     if (password !== confirm) {
@@ -105,6 +112,14 @@ export function PasswordStep({
     const pin = String(Math.floor(100000 + Math.random() * 900000));
     setPassword(pin);
     setConfirm(pin);
+    setVisible(true);
+    setError(null);
+  }
+
+  function generatePassphraseValue() {
+    const phrase = generatePassphrase();
+    setPassword(phrase);
+    setConfirm(phrase);
     setVisible(true);
     setError(null);
   }
@@ -199,13 +214,13 @@ export function PasswordStep({
                   type={visible ? "text" : "password"}
                   value={password}
                   onChange={(event) => {
-                    setPassword(event.target.value.replace(/\D/g, "").slice(0, 6));
+                    setPassword(
+                      event.target.value.slice(0, MAX_PASSWORD_LENGTH),
+                    );
                     setSaved(false);
                   }}
-                  inputMode="numeric"
-                  pattern="[0-9]*"
                   autoComplete="new-password"
-                  maxLength={6}
+                  maxLength={MAX_PASSWORD_LENGTH}
                   className={`${inputClass} pr-14`}
                 />
                 <button
@@ -224,14 +239,28 @@ export function PasswordStep({
               <div className="mt-2">
                 <StrengthMeter password={password} />
               </div>
-              <button
-                type="button"
-                onClick={generate}
-                className="mt-2 inline-flex min-h-10 items-center gap-1.5 text-xs font-medium text-coral-strong hover:text-coral-hover"
-              >
-                <RefreshCw aria-hidden="true" className="size-3.5" />
-                Suggest a 6-digit PIN
-              </button>
+              <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1">
+                <button
+                  type="button"
+                  onClick={generate}
+                  className="inline-flex min-h-10 items-center gap-1.5 text-xs font-medium text-coral-strong hover:text-coral-hover"
+                >
+                  <RefreshCw aria-hidden="true" className="size-3.5" />
+                  Suggest a 6-digit PIN
+                </button>
+                <button
+                  type="button"
+                  onClick={generatePassphraseValue}
+                  className="inline-flex min-h-10 items-center gap-1.5 text-xs font-medium text-coral-strong hover:text-coral-hover"
+                >
+                  <RefreshCw aria-hidden="true" className="size-3.5" />
+                  Suggest a passphrase
+                </button>
+              </div>
+              <p className="mt-1 text-xs leading-relaxed text-ink-muted">
+                At least {MIN_PASSWORD_LENGTH} characters. Avoid names, festival
+                words and anything you use elsewhere.
+              </p>
             </div>
 
             <div>
@@ -246,12 +275,10 @@ export function PasswordStep({
                 type={visible ? "text" : "password"}
                 value={confirm}
                 onChange={(event) =>
-                  setConfirm(event.target.value.replace(/\D/g, "").slice(0, 6))
+                  setConfirm(event.target.value.slice(0, MAX_PASSWORD_LENGTH))
                 }
-                inputMode="numeric"
-                pattern="[0-9]*"
                 autoComplete="new-password"
-                maxLength={6}
+                maxLength={MAX_PASSWORD_LENGTH}
                 className={`mt-1 ${inputClass}`}
               />
             </div>

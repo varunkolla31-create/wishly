@@ -5,6 +5,7 @@ import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { POST as unlockWish } from "@/app/api/w/[id]/unlock/route";
 import { wishRepo } from "@/lib/repos/index";
 import { hashPassword } from "@/lib/security/password";
+import { resetAttemptStore } from "@/lib/security/attempt-store-pg";
 
 async function createPublishedWish(password: string) {
   const wish = await wishRepo().create({
@@ -43,12 +44,14 @@ describe("unlock route", () => {
   let dir: string;
 
   beforeEach(async () => {
+    resetAttemptStore();
     dir = await mkdtemp(path.join(os.tmpdir(), "wishly-unlock-"));
     process.env.WISHLY_DATA_DIR = dir;
   });
 
   afterEach(async () => {
     delete process.env.WISHLY_DATA_DIR;
+    resetAttemptStore();
     await rm(dir, { recursive: true, force: true });
   });
 
@@ -64,7 +67,7 @@ describe("unlock route", () => {
     const payload = (await response.json()) as {
       error: { message: string };
     };
-    expect(payload.error.message).toBe("That password didn't match.");
+    expect(payload.error.message).toBe("That password didn't match. Try again.");
   });
 
   it("sets a short-lived httpOnly cookie on success", async () => {
@@ -83,23 +86,37 @@ describe("unlock route", () => {
     expect(cookie).toContain("Max-Age=7200");
   });
 
-  it("accepts a 4–6 digit PIN", async () => {
-    const wish = await createPublishedWish("4821");
+  it("accepts a 6-digit PIN", async () => {
+    const wish = await createPublishedWish("482913");
 
     const response = await unlockWish(
-      attempt("4821", wish.wishId, "198.51.100.15"),
+      attempt("482913", wish.wishId, "198.51.100.15"),
       params(wish.wishId),
     );
 
     expect(response.status).toBe(200);
   });
 
-  it("hides unknown wishes and spends comparable work", async () => {
+  it("accepts a legacy 4-digit PIN so old wishes keep opening", async () => {
+    const wish = await createPublishedWish("4821");
+
     const response = await unlockWish(
+      attempt("4821", wish.wishId, "198.51.100.16"),
+      params(wish.wishId),
+    );
+
+    expect(response.status).toBe(200);
+  });
+
+  it("makes an unknown wish indistinguishable from a wrong password", async () => {
+    const missing = await unlockWish(
       attempt("anything", "doesnotexist123456789", "198.51.100.12"),
       params("doesnotexist123456789"),
     );
-    expect(response.status).toBe(404);
+    expect(missing.status).toBe(401);
+
+    const payload = (await missing.json()) as { error: { message: string } };
+    expect(payload.error.message).toBe("That password didn't match. Try again.");
   });
 
   it("allows five wrong tries, then a cooldown", async () => {
@@ -114,6 +131,8 @@ describe("unlock route", () => {
       expect(response.status).toBe(401);
     }
 
+    // The fifth failure crosses the threshold, so even the right password is
+    // refused until the cooldown passes.
     const blocked = await unlockWish(
       attempt("correct horse", wish.wishId, ip),
       params(wish.wishId),
@@ -141,6 +160,6 @@ describe("unlock route", () => {
       attempt("secret", wish.wishId, "198.51.100.14"),
       params(wish.wishId),
     );
-    expect(response.status).toBe(404);
+    expect(response.status).toBe(401);
   });
 });

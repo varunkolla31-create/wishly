@@ -46,8 +46,9 @@ export const draftPatchSchema = z.object({
 export type DraftPatch = z.infer<typeof draftPatchSchema>;
 
 export const setPasswordSchema = z.object({
-  password: z
-    .string()
-    .regex(/^\d{4,6}$/, "Use 4 to 6 digits."),
+  // Length and guessability are checked by `validateNewPassword` so the route
+  // can answer with one clear message instead of a schema error. Any character
+  // is allowed, which keeps the suggested 6-digit PIN working.
+  password: z.string().min(1).max(128),
   hint: z.string().trim().max(80).optional(),
 });

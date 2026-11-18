@@ -3,6 +3,7 @@ import { HttpError, ok, readJson, route } from "@/lib/api/respond";
 import { getOwnedWish } from "@/lib/api/ownership";
 import { wishRepo } from "@/lib/repos/index";
 import { hashPassword } from "@/lib/security/password";
+import { validateNewPassword } from "@/lib/security/password-policy";
 import { setPasswordSchema } from "@/lib/validation/draft";
 
 export const runtime = "nodejs";
@@ -15,6 +16,11 @@ export function POST(
     const { id } = await context.params;
     const { wish } = await getOwnedWish(id);
     const input = await readJson(request, setPasswordSchema);
+
+    const policy = validateNewPassword(input.password);
+    if (!policy.ok) {
+      throw new HttpError(400, "weak_password", policy.message);
+    }
 
     const passwordHash = await hashPassword(input.password);
     const updated = await wishRepo().update(id, {

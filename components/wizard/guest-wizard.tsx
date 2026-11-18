@@ -21,6 +21,11 @@ import {
 } from "@/lib/demo/guest-wish";
 import { uploadMedia } from "@/lib/media/client";
 import { usePhotoPreview } from "@/src/context/PhotoPreviewContext";
+import {
+  MAX_PASSWORD_LENGTH,
+  MIN_PASSWORD_LENGTH,
+  isAcceptableNewPassword,
+} from "@/lib/security/password-policy";
 import type { MusicBinding } from "@/lib/music/types";
 import {
   defaultMemoryTemplateId,
@@ -205,7 +210,7 @@ export function GuestWizard({
     ) &&
     draft.quizAnswerIndex >= 0;
   const passwordReady =
-    draft.gateMode === "quiz" || /^\d{4,6}$/.test(draft.password);
+    draft.gateMode === "quiz" || isAcceptableNewPassword(draft.password);
   const gateReady =
     draft.gateMode === "quiz"
       ? quizReady
@@ -231,7 +236,7 @@ export function GuestWizard({
       toast.error(
         draft.gateMode === "quiz"
           ? "Finish the memory quiz first."
-          : "Enter a valid 4–6 digit PIN first.",
+          : `Choose a password of at least ${MIN_PASSWORD_LENGTH} characters first.`,
       );
       return;
     }
@@ -404,7 +409,7 @@ export function GuestWizard({
     } catch (error) {
       toast.error(
         error instanceof Error && error.message === "password_failed"
-          ? "Use a 4–6 digit PIN."
+          ? `Use at least ${MIN_PASSWORD_LENGTH} characters, and avoid an easy-to-guess one.`
           : "Couldn't publish that wish. Try again.",
       );
     } finally {
@@ -417,7 +422,7 @@ export function GuestWizard({
       toast.error(
         draft.gateMode === "quiz"
           ? "Finish the memory quiz first."
-          : "Enter a valid 4–6 digit PIN first.",
+          : `Choose a password of at least ${MIN_PASSWORD_LENGTH} characters first.`,
       );
       return;
     }
@@ -849,17 +854,17 @@ export function GuestWizard({
                       onChange={(event) =>
                         update(
                           "password",
-                          event.target.value.replace(/\D/g, "").slice(0, 6),
+                          event.target.value.slice(0, MAX_PASSWORD_LENGTH),
                         )
                       }
-                      inputMode="numeric"
-                      pattern="[0-9]*"
                       autoComplete="new-password"
-                      maxLength={6}
+                      maxLength={MAX_PASSWORD_LENGTH}
                       className={`mt-1 ${inputClass}`}
                     />
                     <p className={hintClass}>
-                      4–6 digits. Share it separately from the link.
+                      At least {MIN_PASSWORD_LENGTH} characters — a PIN or a
+                      couple of words both work. Share it separately from the
+                      link.
                     </p>
                   </div>
                   <div>
@@ -1042,8 +1047,8 @@ export function GuestWizard({
 
       {step === STEPS.length - 1 && !canSubmit ? (
         <p className="mt-6 rounded-media bg-sand px-4 py-3 text-xs leading-relaxed text-ink-muted">
-          Set a valid 4–6 digit PIN (or finish the memory quiz) to enable the
-          publish button.
+          Set a password of at least {MIN_PASSWORD_LENGTH} characters (or finish
+          the memory quiz) to enable the publish button.
         </p>
       ) : null}
       {step === STEPS.length - 1 && canSubmit && !contentReady ? (

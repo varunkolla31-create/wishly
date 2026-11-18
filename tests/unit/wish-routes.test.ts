@@ -262,19 +262,56 @@ describe("wish API routes", () => {
     });
 
     const response = await setPassword(
-      request("POST", { password: "4821", hint: "A phrase" }),
+      request("POST", { password: "482913", hint: "A phrase" }),
       params(wish.wishId),
     );
 
     expect(response.status).toBe(200);
     const stored = await wishRepo().getById(wish.wishId);
     expect(stored?.passwordHash?.startsWith("$argon2id$")).toBe(true);
-    expect(stored?.passwordHash).not.toContain("4821");
+    expect(stored?.passwordHash).not.toContain("482913");
     expect(stored?.passwordHint).toBe("A phrase");
     expect(stored?.passwordVersion).toBe(2);
     await expect(
-      verifyPassword(stored?.passwordHash ?? null, "4821"),
+      verifyPassword(stored?.passwordHash ?? null, "482913"),
     ).resolves.toBe(true);
+  });
+
+  it("refuses a password below the length floor", async () => {
+    const wish = await wishRepo().create({
+      ownerId: "dev_sender",
+      category: "birthday",
+      templateId: "confetti-pop",
+    });
+
+    const response = await setPassword(
+      request("POST", { password: "4821" }),
+      params(wish.wishId),
+    );
+
+    expect(response.status).toBe(400);
+    const payload = (await response.json()) as {
+      error: { code: string; message: string };
+    };
+    expect(payload.error.code).toBe("weak_password");
+    expect(payload.error.message).toMatch(/at least/i);
+  });
+
+  it("refuses a common password such as a demo word", async () => {
+    const wish = await wishRepo().create({
+      ownerId: "dev_sender",
+      category: "birthday",
+      templateId: "confetti-pop",
+    });
+
+    const response = await setPassword(
+      request("POST", { password: "midnight" }),
+      params(wish.wishId),
+    );
+
+    expect(response.status).toBe(400);
+    const payload = (await response.json()) as { error: { message: string } };
+    expect(payload.error.message).toMatch(/easy to guess/i);
   });
 
   it("refuses to publish an incomplete wish", async () => {

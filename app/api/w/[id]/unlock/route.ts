@@ -2,10 +2,12 @@ import { fail, HttpError, ok, readJson, route } from "@/lib/api/respond";
 import { wishRepo } from "@/lib/repos/index";
 import { verifyPassword } from "@/lib/security/password";
 import {
-  checkRateLimit,
-  clearRateLimit,
-  recordFailure,
-} from "@/lib/security/rate-limit";
+  attemptKeys,
+  clearUnlockFailures,
+  clientIp,
+  gateUnlock,
+  recordUnlockFailure,
+} from "@/lib/security/unlock-guard";
 import {
   signUnlockToken,
   UNLOCK_TTL_SECONDS,
@@ -16,14 +18,12 @@ import { isPublished, isUnlockTimeReached } from "@/lib/wishes/public";
 
 export const runtime = "nodejs";
 
-function clientIp(request: Request): string {
-  const forwarded = request.headers.get("x-forwarded-for");
-  if (forwarded) {
-    const first = forwarded.split(",")[0]?.trim();
-    if (first) return first;
-  }
-  return request.headers.get("x-real-ip")?.trim() || "local";
-}
+/**
+ * One message for every refusal. The old route distinguished "not found",
+ * "wrong password" and "wrong answer", which told a stranger whether a wish id
+ * exists at all. A wrong password, an unknown id and a draft now look identical.
+ */
+const GENERIC_REFUSAL = "That password didn't match. Try again.";
 
 function tooManyTries(retryAfterMs: number) {
   const response = fail(
@@ -46,16 +46,20 @@ export function POST(
   return route(async () => {
     const { id } = await context.params;
     const input = await readJson(request, unlockSchema);
-    const rateKey = `${clientIp(request)}:${id}`;
+    const ip = clientIp(request);
 
-    const gate = checkRateLimit(rateKey);
+    const gate = await gateUnlock(id, ip);
     if (!gate.allowed) return tooManyTries(gate.retryAfterMs);
 
     const wish = await wishRepo().getById(id);
+    const available = wish !== null && isPublished(wish);
 
-    if (!wish || !isPublished(wish)) {
+    if (!available) {
+      // Spend comparable work and record a failure so an unknown id cannot be
+      // probed more cheaply than a real guess.
       await verifyPassword(null, input.password ?? "");
-      throw new HttpError(404, "not_found", "This wish isn't available.");
+      await recordUnlockFailure(id, ip);
+      throw new HttpError(401, "invalid_credentials", GENERIC_REFUSAL);
     }
 
     if (!isUnlockTimeReached(wish)) {
@@ -74,17 +78,14 @@ export function POST(
         : true;
 
     if (!passwordOk || !answerOk) {
-      recordFailure(rateKey);
-      throw new HttpError(
-        401,
-        mode === "quiz" ? "invalid_answer" : "invalid_password",
-        mode === "quiz"
-          ? "That answer didn't match."
-          : "That password didn't match.",
-      );
+      // Record the failure but still answer as a wrong password: the cooldown
+      // applies to the *next* attempt, which is what "five tries, then a
+      // short cooldown" promises on the lock screen.
+      await recordUnlockFailure(id, ip);
+      throw new HttpError(401, "invalid_credentials", GENERIC_REFUSAL);
     }
 
-    clearRateLimit(rateKey);
+    await clearUnlockFailures(gate.keys.length > 0 ? gate.keys : attemptKeys(id, ip));
 
     const token = await signUnlockToken({
       wishId: wish.wishId,
