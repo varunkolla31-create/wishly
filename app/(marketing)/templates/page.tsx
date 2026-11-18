@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import { MemoryReelCatalog } from "@/components/marketing/memory-reel-catalog";
 import { PhotoPreviewBar } from "@/components/marketing/photo-preview-bar";
+import { ReelsTabs } from "@/components/marketing/reels-tabs";
 import { ButtonLink } from "@/components/ui/button";
 import { Reveal } from "@/components/ui/reveal";
 import { pageMetadata } from "@/lib/seo";
@@ -8,11 +8,18 @@ import { pageMetadata } from "@/lib/seo";
 export const metadata: Metadata = pageMetadata({
   title: "3D reels",
   description:
-    "120 original 3D memory reels from 8 rigs and 15 atmosphere presets. Upload 3–10 photos once, preview every reel live, and download a silent 9:16 video.",
+    "8 scenes × 15 moods. Browse every 3D memory reel, or open the workbench to put your own photos in one and export a silent 9:16 video.",
   path: "/templates",
 });
 
-export default function TemplatesPage() {
+export default async function ReelsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ tab?: string; reel?: string }>;
+}) {
+  const { tab } = await searchParams;
+  const initialTab = tab === "workbench" ? "workbench" : "catalog";
+
   return (
     <>
       <PhotoPreviewBar />
@@ -25,38 +32,25 @@ export default function TemplatesPage() {
           Your photos, in a little world.
         </h1>
         <p className="mt-5 max-w-2xl text-lg leading-relaxed text-ink-muted">
-          120 original 3D reels from 8 rigs and 15 atmosphere presets. Upload
-          3–10 photos once and see them inside every reel before you pick one —
-          no redirects, no other editor.
+          8 scenes × 15 moods. Browse the catalog to find a look, then open the
+          workbench to put your own photos inside it and export a silent 9:16
+          reel. Same place, two ways to work.
         </p>
         <div className="mt-8 flex flex-wrap gap-3">
           <ButtonLink href="/create" size="lg">
             Create a wish
           </ButtonLink>
           <ButtonLink href="#reels" variant="outline" size="lg">
-            Preview all 120 reels
+            Browse the catalog
           </ButtonLink>
         </div>
       </section>
 
       <section id="reels" className="scroll-mt-40 border-t border-hairline">
-        <div className="mx-auto max-w-6xl px-4 pb-2 pt-12 sm:px-6">
+        <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
           <Reveal>
-            <p className="text-xs font-semibold uppercase tracking-[0.12em] text-ink-muted">
-              3D reels · made first
-            </p>
-            <h2 className="mt-2 font-serif text-3xl italic leading-tight text-ink sm:text-4xl">
-              Three photos. One small world.
-            </h2>
-            <p className="mt-4 max-w-2xl text-base leading-relaxed text-ink-muted">
-              Add 3–10 photos and a wish message. Wishly renders an interactive 3D
-              scene and a silent 9:16 reel you can post or send. Drag any preview
-              to move through the memory. Every scene respects reduced motion.
-            </p>
+            <ReelsTabs initialTab={initialTab} />
           </Reveal>
-        </div>
-        <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
-          <MemoryReelCatalog />
         </div>
       </section>
 

@@ -24,5 +24,11 @@ export default defineConfig({
     // NODE_ENV=production (some CI images and Windows setups do) wins over it.
     // Pin it here so lib/env.ts never demands production secrets under test.
     env: { NODE_ENV: "test" },
+    // One worker per test file, each importing the Next bundle, occasionally
+    // exceeds the default heap on a 12-core machine and the worker dies during
+    // collection (reported as a file-level failure with no failed assertions).
+    // Serialising the run trades a couple of seconds for determinism.
+    pool: "forks",
+    maxWorkers: 1,
   },
 });

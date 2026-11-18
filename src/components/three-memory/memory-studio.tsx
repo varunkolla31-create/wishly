@@ -55,7 +55,7 @@ export function MemoryStudio({ template }: { template: MemoryTemplate }) {
   return (
     <main className="mx-auto max-w-6xl px-4 pb-20 pt-10 sm:px-6 lg:pt-14">
       <Link
-        href="/studio"
+        href="/templates"
         className="text-sm text-ink-muted transition-colors hover:text-ink"
       >
         ← All 3D reels

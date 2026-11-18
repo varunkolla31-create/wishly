@@ -159,8 +159,8 @@ export default function LandingPage() {
                 templates to download.
               </p>
               <div className="mt-6 flex flex-wrap gap-3">
-                <ButtonLink href="/studio" size="lg">
-                  Try the 3D studio
+                <ButtonLink href="/templates?tab=workbench" size="lg">
+                  Try the 3D workbench
                 </ButtonLink>
                 <ButtonLink href="/templates#reels" variant="outline" size="lg">
                   See all reels

@@ -347,7 +347,7 @@ export function PublishSuccess({
             label="Download Printable QR Gift Tag (PNG)"
           />
           <a
-            href="/studio"
+            href="/templates?tab=workbench"
             target="_blank"
             rel="noreferrer"
             className={shareClass}
