@@ -76,7 +76,9 @@ Production also requires that `AUTH_SECRET` and `WISH_UNLOCK_SECRET` are **not**
 dev default (`dev-only-change-me`); `lib/env.ts` refuses to boot otherwise.
 
 ```
-NEXT_PUBLIC_APP_URL=https://your-domain
+NEXT_PUBLIC_SITE_URL=https://your-domain
+# Optional legacy alias, used only when NEXT_PUBLIC_SITE_URL is unset:
+# NEXT_PUBLIC_APP_URL=https://your-domain
 AUTH_MODE=clerk
 NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=
 CLERK_SECRET_KEY=

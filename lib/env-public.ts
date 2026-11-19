@@ -1,3 +1,5 @@
+import { siteUrl } from "@/lib/config-public";
+
 export { siteUrl as appUrl, contactEmail, grievanceEmail } from "@/lib/config-public";
 
 /**
@@ -5,9 +7,8 @@ export { siteUrl as appUrl, contactEmail, grievanceEmail } from "@/lib/config-pu
  * module is inlined into the browser bundle.
  */
 export const publicEnv = {
+  /** Delegates to the single resolver so preview and production cannot drift. */
   get appUrl(): string {
-    return process.env.NEXT_PUBLIC_SITE_URL
-      ? process.env.NEXT_PUBLIC_SITE_URL.replace(/\/$/, "")
-      : (process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000");
+    return siteUrl();
   },
 } as const;

@@ -4,6 +4,7 @@ import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { canNotifySender, notifyWishOpened } from "@/lib/notify";
 import { mailConfigured } from "@/lib/email";
 import { siteUrl } from "@/lib/config-public";
+import { publicEnv } from "@/lib/env-public";
 import type { Wish } from "@/lib/repos/types";
 
 const ROOT = process.cwd();
@@ -13,6 +14,8 @@ const ENV_KEYS = [
   "NEXT_PUBLIC_APP_URL",
   "NEXT_PUBLIC_VERCEL_PROJECT_PRODUCTION_URL",
   "NEXT_PUBLIC_VERCEL_URL",
+  "VERCEL_PROJECT_PRODUCTION_URL",
+  "VERCEL_URL",
   "RESEND_API_KEY",
   "EMAIL_FROM",
 ] as const;
@@ -87,6 +90,22 @@ describe("site url", () => {
     clearEnv();
     process.env.NEXT_PUBLIC_VERCEL_URL = "wishly-abc123.vercel.app";
     expect(siteUrl()).toBe("https://wishly-abc123.vercel.app");
+  });
+
+  it("reads Vercel's server-side system variables on the server", () => {
+    clearEnv();
+    process.env.VERCEL_PROJECT_PRODUCTION_URL = "wishly.vercel.app";
+    expect(siteUrl()).toBe("https://wishly.vercel.app");
+
+    clearEnv();
+    process.env.VERCEL_URL = "wishly-abc123.vercel.app";
+    expect(siteUrl()).toBe("https://wishly-abc123.vercel.app");
+  });
+
+  it("keeps the public facade on the single resolver", () => {
+    clearEnv();
+    process.env.NEXT_PUBLIC_SITE_URL = "https://wishes.example.com/";
+    expect(publicEnv.appUrl).toBe(siteUrl());
   });
 
   it("defaults to localhost", () => {

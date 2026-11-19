@@ -300,7 +300,7 @@ GEMINI_API_KEY=
 GEMINI_MODEL=gemini-2.0-flash
 AUTH_SECRET=                     # min 16 chars; signs dev media URLs and rate-limit keys
 WISH_UNLOCK_SECRET=              # min 16 chars; signs unlock cookies
-NEXT_PUBLIC_APP_URL=
+NEXT_PUBLIC_SITE_URL=                # public origin; NEXT_PUBLIC_APP_URL is the legacy alias
 FEATURE_BILLING=false
 FEATURE_GROUP_MODE=false
 ```
